@@ -27,8 +27,7 @@ public class LogicalRunway {
     this.asda = asda;
     this.toda = toda;
     this.lda = lda;
-
-    if(dispThreshold != null) {
+    //Add displaced threshold getter
   }
 
 
