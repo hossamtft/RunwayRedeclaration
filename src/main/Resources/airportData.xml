@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<airports>
+  <airport>
+    <id>EGLL</id>
+    <name>Heathrow</name>
+    <runways>
+     <logicalRunway>
+        <bearing>09</bearing>
+       <designator>L</designator>
+        <parameters>
+         <tora>3901</tora>
+         <toda>3901</toda>
+          <asda>3901</asda>
+          <lda>3592</lda>
+          <dispThreshold>309</dispThreshold>
+        </parameters>
+     </logicalRunway>
+      <logicalRunway>
+        <bearing>27</bearing>
+        <designator>R</designator>
+        <parameters>
+         <tora>3882</tora>
+         <toda>3960</toda>
+         <asda>3882</asda>
+         <lda>3882</lda>
+         <dispThreshold>0</dispThreshold>
+        </parameters>
+      </logicalRunway>
+   </runways>
+  </airport>
+</airports>
