@@ -30,6 +30,7 @@ public class LogicalRunway {
     this.bearing = bearing;
     this.asda = asda;
     this.toda = toda;
+    this.tora = tora;
     this.lda = lda;
     this.dispThreshold = tora - lda;
 
