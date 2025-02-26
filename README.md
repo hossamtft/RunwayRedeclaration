@@ -1,4 +1,4 @@
-Group 2 SEG
+**Group 2 SEG**
 
 Git Workflow Guide
 
