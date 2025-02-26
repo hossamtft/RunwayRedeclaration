@@ -9,4 +9,14 @@ public class Obstacle {
   private int distLeftThreshold;
   private int centreOffset;
 
+  public Obstacle(){
+
+  }
+
+  public Obstacle(int height, int width, int distLeftThreshold, int centreOffset) {
+    this.height = height;
+    this.width = width;
+    this.distLeftThreshold = distLeftThreshold;
+    this.centreOffset = centreOffset;
+  }
 }

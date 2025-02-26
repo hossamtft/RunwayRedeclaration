@@ -4,8 +4,8 @@ package uk.ac.soton.group2seg.model;
  * @author louistownsend
  */
 public class LogicalRunway {
-
-  private char designator;
+  private String name;
+  private String designator;
   private int bearing;
   private int asda;
   private int toda;
@@ -21,14 +21,65 @@ public class LogicalRunway {
 
   private Obstacle obstacle;
 
-  public void LogicalRunway(char designator, int bearing, int asda, int toda, int tora, int lda, int dispThreshold) {
+  public LogicalRunway(){
+
+  }
+
+  public LogicalRunway(String designator, int bearing, int asda, int toda, int tora, int lda){
     this.designator = designator;
     this.bearing = bearing;
     this.asda = asda;
     this.toda = toda;
     this.lda = lda;
-    //Add displaced threshold getter
+    this.dispThreshold = 0;
+  }
+
+  public LogicalRunway(String designator, int bearing, int asda, int toda, int tora, int lda, int dispThreshold) {
+    this.designator = designator;
+    this.bearing = bearing;
+    this.asda = asda;
+    this.toda = toda;
+    this.lda = lda;
+    this.dispThreshold = dispThreshold;
+
+    initialise();
+  }
+
+  private void initialise() {
+    currAsda = asda;
+    currLda = lda;
+    currToda = toda;
+    currTora = tora;
+
+    name = bearing + designator;
   }
 
 
+  public String getName() {
+    return name;
+  }
+
+  public String getDesignator() {
+    return designator;
+  }
+
+  public int getCurrAsda() {
+    return currAsda;
+  }
+
+  public int getCurrLda() {
+    return currLda;
+  }
+
+  public int getCurrToda() {
+    return currToda;
+  }
+
+  public int getCurrTora() {
+    return currTora;
+  }
+
+  public int getDispThreshold() {
+    return dispThreshold;
+  }
 }
