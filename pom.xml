@@ -4,7 +4,7 @@
   <groupId>uk.ac.soton.group2seg</groupId>
   <artifactId>group2seg</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>group2seg</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -14,7 +14,7 @@
         <artifactId>javafx-maven-plugin</artifactId>
         <version>0.0.8</version>
         <configuration>
-          <mainClass>/main/java/uk.ac.soton.group2seg/App</mainClass>
+          <mainClass>uk.ac.soton.group2seg.App</mainClass>
         </configuration>
       </plugin>
     </plugins>
