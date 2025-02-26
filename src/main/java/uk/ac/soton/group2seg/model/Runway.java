@@ -9,5 +9,16 @@ public class Runway {
   //Right runway is logical runway between 180 - 359 on a compass
   private  LogicalRunway rightRunway;
 
+  public Runway(LogicalRunway leftRunway, LogicalRunway rightRunway) {
+    this.leftRunway = leftRunway;
+    this.rightRunway = rightRunway;
+  }
+  public LogicalRunway getLeftRunway() {
+    return leftRunway;
+  }
+  public LogicalRunway getRightRunway() {
+    return rightRunway;
+  }
 
 }
+
