@@ -1,93 +1,81 @@
-# Group 2 SEG
+Group 2 SEG
 
+Git Workflow Guide
 
+This guide explains the Git workflow for collaborating on this project using GitLab. Follow these steps to create feature branches, keep them updated, and merge them back into the main branch.
 
-## Getting started
+**Getting Started**
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Before you begin, make sure you have Git installed and have cloned the repository to your local machine.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Clone the Repository
 
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+If you haven't already cloned the repository, run the following command:
 
 ```
-cd existing_repo
-git remote add origin https://git.soton.ac.uk/lmt1n22/group-2-seg.git
-git branch -M main
-git push -uf origin main
+git clone https://git.soton.ac.uk/lmt1n22/group-2-seg.git
+cd group-2-seg
 ```
 
-## Integrate with your tools
+**Creating a Feature Branch**
 
-- [ ] [Set up project integrations](https://git.soton.ac.uk/lmt1n22/group-2-seg/-/settings/integrations)
+When working on a new feature or bug fix, create a new branch from the main branch.
 
-## Collaborate with your team
+```
+git checkout main          # Switch to the main branch
+git pull origin main       # Ensure you have the latest changes
+git checkout -b feature-branch-name  # Create and switch to a new branch
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+Use a descriptive name for your branch, such as feature-login or fix-dashboard-bug.
 
-## Test and Deploy
+**Pushing Your Branch to Remote**
 
-Use the built-in continuous integration in GitLab.
+Once you have made changes and committed them locally, push your branch to the remote repository:
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```
+git add .                  # Stage changes
+git commit -m "Describe your changes"  # Commit changes
+git push origin feature-branch-name  # Push branch to remote
+```
 
-***
+**Keeping Your Branch Updated**
 
-# Editing this README
+To avoid merge conflicts, regularly update your branch with the latest changes from main:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+```
+git checkout main          # Switch to the main branch
+git pull origin main       # Get latest changes
+git checkout feature-branch-name  # Switch back to your feature branch
+git merge main             # Merge latest main branch changes
+```
+Resolve any conflicts if they appear, then commit and push the resolved code.
 
-## Suggestions for a good README
+**Creating a Merge Request (MR)**
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Once your feature is complete and tested, create a Merge Request (MR) to merge your branch into main:
 
-## Name
-Choose a self-explaining name for your project.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+- Go to the GitLab project page.
+- 
+- Navigate to Merge Requests.
+- 
+- Click New Merge Request.
+- 
+- Select feature-branch-name as the source branch and main as the target branch.
+- 
+- Add a title and description for your changes.
+- 
+- Request a review from a team member.
+- 
+- Once approved, merge the branch.
+- 
+- After merging, delete your branch to keep the repository clean:
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+```
+git branch -d feature-branch-name  # Delete local branch
+git push origin --delete feature-branch-name  # Delete remote branch
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+For any questions, reach out to the team on the project chat or issue tracker.
