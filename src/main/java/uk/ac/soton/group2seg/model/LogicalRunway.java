@@ -25,22 +25,13 @@ public class LogicalRunway {
 
   }
 
-  public LogicalRunway(String designator, int bearing, int asda, int toda, int tora, int lda){
+  public LogicalRunway(String designator, int bearing, int asda, int toda, int tora, int lda) {
     this.designator = designator;
     this.bearing = bearing;
     this.asda = asda;
     this.toda = toda;
     this.lda = lda;
-    this.dispThreshold = 0;
-  }
-
-  public LogicalRunway(String designator, int bearing, int asda, int toda, int tora, int lda, int dispThreshold) {
-    this.designator = designator;
-    this.bearing = bearing;
-    this.asda = asda;
-    this.toda = toda;
-    this.lda = lda;
-    this.dispThreshold = dispThreshold;
+    this.dispThreshold = tora - lda;
 
     initialise();
   }
