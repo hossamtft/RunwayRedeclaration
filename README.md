@@ -8,7 +8,7 @@ This guide explains the Git workflow for collaborating on this project using Git
 
 Before you begin, make sure you have Git installed and have cloned the repository to your local machine.
 
-Clone the Repository
+**Clone the Repository**
 
 If you haven't already cloned the repository, run the following command:
 
@@ -34,7 +34,7 @@ Use a descriptive name for your branch, such as feature-login or fix-dashboard-b
 Once you have made changes and committed them locally, push your branch to the remote repository:
 
 ```
-git add .                  # Stage changes
+git add .                  # Add your local branch to version control
 git commit -m "Describe your changes"  # Commit changes
 git push origin feature-branch-name  # Push branch to remote
 ```
@@ -57,25 +57,17 @@ Once your feature is complete and tested, create a Merge Request (MR) to merge y
 
 
 - Go to the GitLab project page.
-- 
 - Navigate to Merge Requests.
-- 
 - Click New Merge Request.
-- 
 - Select feature-branch-name as the source branch and main as the target branch.
-- 
 - Add a title and description for your changes.
-- 
 - Request a review from a team member.
-- 
 - Once approved, merge the branch.
-- 
 - After merging, delete your branch to keep the repository clean:
 
 ```
 git branch -d feature-branch-name  # Delete local branch
 git push origin --delete feature-branch-name  # Delete remote branch
 ```
-
 
 For any questions, reach out to the team on the project chat or issue tracker.
