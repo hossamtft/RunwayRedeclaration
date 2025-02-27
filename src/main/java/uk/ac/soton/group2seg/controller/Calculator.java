@@ -57,5 +57,13 @@ public class Calculator {
 
     }
 
+    public int calculateLDALandingOver(LogicalRunway sideRunway, Obstacle obstacle) {
+        int originalLDA = sideRunway.getLda();
+        int slopeRequirmentHeight = obstacle.getHeight() * SLOPE_RATIO;
+        int slopeRequiremntOrRESA = Math.max(slopeRequirmentHeight, RESA);
+        int newLDA = originalLDA - slopeRequiremntOrRESA - STRIP_END;
+        return newLDA;
+    }
+
 }
 
