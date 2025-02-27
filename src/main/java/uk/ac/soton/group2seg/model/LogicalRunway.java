@@ -11,6 +11,7 @@ import jakarta.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LogicalRunway {
+
   @XmlElement(name = "name")
   private String name;
   @XmlElement(name = "asda")
@@ -57,7 +58,6 @@ public class LogicalRunway {
     currTora = tora;
 
   }
-
 
   public String getName() {
     return name;
