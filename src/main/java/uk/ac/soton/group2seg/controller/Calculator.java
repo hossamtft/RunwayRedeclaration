@@ -39,5 +39,22 @@ public class Calculator {
 
 
     }
+
+    public void recalculateForLogicalRunway(LogicalRunway sideRunway, Obstacle obstacle, int distanceFromThreshold) {
+
+    }
+
+    public String obstaclePosition(Obstacle obstacle) {
+        if (obstacle.getDistLeftThreshold() > obstacle.getDistRightThreshold()) {
+            // Closer to left threshold
+            // Would be going away/over for higher runway, and towards obstacle for lower runway
+        }
+        else {
+            // Closer to right threshold
+            // Would be going towards obstacle for higher runway and away/over from obstacle for lower runway
+        }
+
+    }
+
 }
 
