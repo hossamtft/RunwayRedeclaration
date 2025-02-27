@@ -27,16 +27,33 @@ public class Calculator {
         this.runway = runway;
         this.leftRunway = runway.getLowerRunway();
         this.rightRunway = runway.getHigherRunway();
-
-
     }
 
     public void recalculateRunwayParameters(Obstacle obstacle) {
         int obstacleHeight = obstacle.getHeight();
         int obstacleWidth = obstacle.getWidth();
         int obstacleDistanceFromLeftThresh = obstacle.getDistLeftThreshold();
-        final int RESA = 240; // in meters, Runway End Safety Area
+        int obstacleDistanceFromRightThresh = obstacle.getDistRightThreshold();
+
+        recalculateForLogicalRunway(leftRunway, obstacle, obstacleDistanceFromLeftThresh);
+        recalculateForLogicalRunway(rightRunway, obstacle, obstacleDistanceFromRightThresh);
+    }
+
+    public void recalculateForLogicalRunway(LogicalRunway sideRunway, Obstacle obstacle, int distanceFromThreshold) {
 
     }
+
+    public String obstaclePosition(Obstacle obstacle) {
+        if (obstacle.getDistLeftThreshold() > obstacle.getDistRightThreshold()) {
+            // Closer to left threshold
+            // Would be going away/over for higher runway, and towards obstacle for lower runway
+        }
+        else {
+            // Closer to right threshold
+            // Would be going towards obstacle for higher runway and away/over from obstacle for lower runway
+        }
+
+    }
+
 }
 
