@@ -7,6 +7,7 @@ public class Obstacle {
   private int height;
   private int width;
   private int distLeftThreshold;
+  private int distRightThreshold;
   private int centreOffset;
 
   public Obstacle(){
