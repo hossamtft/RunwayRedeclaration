@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<airports>
+<airportList>
   <airport>
     <id>EGLL</id>
     <name>London Heathrow</name>
   </airport>
-</airports>
+  <airport>
+    <id>EGKK</id>
+    <name>London Gatwick</name>
+  </airport>
+</airportList>
