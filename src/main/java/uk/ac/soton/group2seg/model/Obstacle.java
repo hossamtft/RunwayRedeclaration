@@ -38,4 +38,8 @@ public class Obstacle {
   public int getCentreOffset() {
     return centreOffset;
   }
+  public int getDistRightThreshold() {
+    return distRightThreshold;
+  }
+
 }
