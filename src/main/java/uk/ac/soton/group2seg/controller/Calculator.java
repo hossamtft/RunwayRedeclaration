@@ -25,8 +25,8 @@ public class Calculator {
 
     public Calculator(Runway runway) {
         this.runway = runway;
-        this.leftRunway = runway.getLeftRunway();
-        this.rightRunway = runway.getRightRunway();
+        this.leftRunway = runway.getLowerRunway();
+        this.rightRunway = runway.getHigherRunway();
 
 
     }
