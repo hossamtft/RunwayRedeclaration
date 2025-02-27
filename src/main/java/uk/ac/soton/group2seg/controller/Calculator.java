@@ -47,10 +47,12 @@ public class Calculator {
         if (obstacle.getDistLeftThreshold() > obstacle.getDistRightThreshold()) {
             // Closer to left threshold
             // Would be going away/over for higher runway, and towards obstacle for lower runway
+            return "Left"; // as in closer to left
         }
         else {
             // Closer to right threshold
             // Would be going towards obstacle for higher runway and away/over from obstacle for lower runway
+            return "Right"; // as in closer to right
         }
 
     }
