@@ -1,33 +1,46 @@
 package uk.ac.soton.group2seg.model;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+
 /**
  * @author louistownsend
  */
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class LogicalRunway {
+  @XmlElement(name = "name")
   private String name;
-  private String designator;
-  private int bearing;
+  @XmlElement(name = "asda")
   private int asda;
+  @XmlElement(name = "toda")
   private int toda;
+  @XmlElement(name = "tora")
   private int tora;
+  @XmlElement(name = "lda")
   private int lda;
 
-  private int dispThreshold = 0;
-
+  @XmlTransient
+  private int dispThreshold;
+  @XmlTransient
   private int currAsda;
+  @XmlTransient
   private int currToda;
+  @XmlTransient
   private int currTora;
+  @XmlTransient
   private int currLda;
-
+  @XmlTransient
   private Obstacle obstacle;
 
   public LogicalRunway(){
 
   }
 
-  public LogicalRunway(String designator, int bearing, int asda, int toda, int tora, int lda) {
-    this.designator = designator;
-    this.bearing = bearing;
+  public LogicalRunway(String name, int asda, int toda, int tora, int lda) {
+    this.name = name;
     this.asda = asda;
     this.toda = toda;
     this.tora = tora;
@@ -43,16 +56,11 @@ public class LogicalRunway {
     currToda = toda;
     currTora = tora;
 
-    name = bearing + designator;
   }
 
 
   public String getName() {
     return name;
-  }
-
-  public String getDesignator() {
-    return designator;
   }
 
   public int getCurrAsda() {
@@ -74,4 +82,6 @@ public class LogicalRunway {
   public int getDispThreshold() {
     return dispThreshold;
   }
+
+
 }

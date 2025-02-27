@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<airport>
+  <name>London-Heathrow</name>
+  <id>EGLL</id>
+  <runways>
+    <runway>
+      <name>09L/27R</name>
+      <logicalRunway>
+        <name>09L</name>
+        <tora>3901</tora>
+        <toda>3901</toda>
+        <asda>3901</asda>
+        <lda>3592</lda>
+      </logicalRunway>
+      <logicalRunway>
+        <name>27R</name>
+        <tora>3882</tora>
+        <toda>3960</toda>
+        <asda>3882</asda>
+        <lda>3882</lda>
+      </logicalRunway>
+    </runway>
+    <runway>
+      <name>09R/27L</name>
+      <logicalRunway>
+        <name>09R</name>
+        <tora>3658</tora>
+        <toda>3658</toda>
+        <asda>3658</asda>
+        <lda>3350</lda>
+      </logicalRunway>
+      <logicalRunway>
+        <name>27L</name>
+        <tora>3658</tora>
+        <toda>3658</toda>
+        <asda>3658</asda>
+        <lda>3658</lda>
+      </logicalRunway>
+    </runway>
+  </runways>
+</airport>
