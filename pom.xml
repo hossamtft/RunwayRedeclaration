@@ -8,6 +8,11 @@
   <name>group2seg</name>
   <url>http://maven.apache.org</url>
 
+  <properties>
+    <maven.compiler.release>21</maven.compiler.release>
+  </properties>
+
+
   <build>
     <plugins>
       <plugin>
@@ -47,6 +52,11 @@
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
       <version>4.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>4.0.4</version>
     </dependency>
 
   </dependencies>
