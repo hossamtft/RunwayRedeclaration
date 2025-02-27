@@ -35,7 +35,8 @@ public class Calculator {
         int obstacleHeight = obstacle.getHeight();
         int obstacleWidth = obstacle.getWidth();
         int obstacleDistanceFromLeftThresh = obstacle.getDistLeftThreshold();
-        final int RESA = 240; // in meters, Runway End Safety Area
+        int obstacleDistanceFromRightThresh = obstacle.getDistRightThreshold();
+
 
     }
 }
