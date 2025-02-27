@@ -65,5 +65,12 @@ public class Calculator {
         return newLDA;
     }
 
+    public int calculateLDALandingTowards(LogicalRunway sideRunway, Obstacle obstacle) {
+        int originalLDA = sideRunway.getLda();
+        int distanceFromThreshold = obstacle.getDistLeftThreshold();
+        int newLDA = distanceFromThreshold - RESA - STRIP_END;
+        return newLDA;
+    }
+
 }
 
