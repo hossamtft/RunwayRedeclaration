@@ -46,12 +46,12 @@ public class Calculator {
     public String obstaclePosition(Obstacle obstacle) {
         if (obstacle.getDistLeftThreshold() > obstacle.getDistRightThreshold()) {
             // Closer to left threshold
-            // Would be going away/over for higher runway, and towards obstacle for lower runway
+            // Would be going away/over for higher runway ( TORA TODA ASDA ) , and towards obstacle for lower runway ( LDA )
             return "Left"; // as in closer to left
         }
         else {
             // Closer to right threshold
-            // Would be going towards obstacle for higher runway and away/over from obstacle for lower runway
+            // Would be going towards obstacle for higher runway ( LDA )  and away/over from obstacle for lower runway ( TORA TODA ASDA )
             return "Right"; // as in closer to right
         }
 
