@@ -27,8 +27,6 @@ public class Calculator {
         this.runway = runway;
         this.leftRunway = runway.getLowerRunway();
         this.rightRunway = runway.getHigherRunway();
-
-
     }
 
     public void recalculateRunwayParameters(Obstacle obstacle) {
@@ -37,7 +35,8 @@ public class Calculator {
         int obstacleDistanceFromLeftThresh = obstacle.getDistLeftThreshold();
         int obstacleDistanceFromRightThresh = obstacle.getDistRightThreshold();
 
-
+        recalculateForLogicalRunway(leftRunway, obstacle, obstacleDistanceFromLeftThresh);
+        recalculateForLogicalRunway(rightRunway, obstacle, obstacleDistanceFromRightThresh);
     }
 
     public void recalculateForLogicalRunway(LogicalRunway sideRunway, Obstacle obstacle, int distanceFromThreshold) {
