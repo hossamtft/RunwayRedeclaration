@@ -14,6 +14,14 @@ public class Calculator {
     private LogicalRunway leftRunway;
     private LogicalRunway rightRunway;
 
+    // Constants
+    private final int RESA = 240; // in meters, Runway End Safety Area
+    private final int STRIP_END = 60;
+    private final int BLAST_PROTECTION_MINIMUM = 300;
+    private final int BLAST_PROTECTION_MAXIMUM = 500;
+    private final int SLOPE_RATIO = 50; // 1:50
+
+
 
     public Calculator(Runway runway) {
         this.runway = runway;
