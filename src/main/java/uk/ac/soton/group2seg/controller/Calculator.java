@@ -62,6 +62,8 @@ public class Calculator {
         int slopeRequirmentHeight = obstacle.getHeight() * SLOPE_RATIO;
         int slopeRequiremntOrRESA = Math.max(slopeRequirmentHeight, RESA);
         int newLDA = originalLDA - slopeRequiremntOrRESA - STRIP_END;
+        // For Logging/Steps
+        // Formula = newLDA = OriginalLDA - (Possibly ObstacleDistance) - max(Height*50, RESA) - Strip End
         return newLDA;
     }
 
@@ -69,7 +71,31 @@ public class Calculator {
         int originalLDA = sideRunway.getLda();
         int distanceFromThreshold = obstacle.getDistLeftThreshold();
         int newLDA = distanceFromThreshold - RESA - STRIP_END;
+        //For Logging/ Steps
+        // Formula = newLDA = distance from displaced threshold - RESA - Strip End
         return newLDA;
+    }
+
+    public int takingOffTowards(LogicalRunway sideRunway, Obstacle obstacle) {
+        int slopeRequirmentHeight = obstacle.getHeight() * SLOPE_RATIO;
+        int slopeRequiremntOrRESA = Math.max(slopeRequirmentHeight, RESA);
+        int distanceOfObstacleFromThreshold = 0;// placeholder
+        int newTora = sideRunway.getTora() + distanceOfObstacleFromThreshold - slopeRequiremntOrRESA - STRIP_END;
+        int newAsda = newTora;
+        int newToda = newTora;
+        return newTora;
+        // For Logging/Steps
+        // Formula TORA = Obstacle Distance + Displace Threshold - MAX(RESA, Obstacle height*50) - Stripend
+        // TORA = TODA = ASDA
+    }
+
+    public int takingOffAway(LogicalRunway sideRunway, Obstacle obstacle) {
+        //For Logging/Steps
+        //Formula:
+        // newTora = originalTora - ObstacleDistance - BlastProtection
+        // newAsda = originalAsda - ObstacleDistance - BlastProtection
+        // newToda = OriginalToda - ObstacleDistance - BlastProtection
+        return 0;
     }
 
 }
