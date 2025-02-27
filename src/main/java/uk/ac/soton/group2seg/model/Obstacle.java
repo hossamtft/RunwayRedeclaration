@@ -7,6 +7,7 @@ public class Obstacle {
   private int height;
   private int width;
   private int distLeftThreshold;
+  private int distRightThreshold;
   private int centreOffset;
 
   public Obstacle(){
@@ -37,4 +38,8 @@ public class Obstacle {
   public int getCentreOffset() {
     return centreOffset;
   }
+  public int getDistRightThreshold() {
+    return distRightThreshold;
+  }
+
 }
