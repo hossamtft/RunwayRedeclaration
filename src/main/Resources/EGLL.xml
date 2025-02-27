@@ -5,7 +5,7 @@
   <id>EGLL</id>
   <runways>
     <runway>
-      <name>09L/27R</name>
+      <runwayName>09L/27R</runwayName>
       <logicalRunway>
         <name>09L</name>
         <tora>3901</tora>
@@ -22,7 +22,7 @@
       </logicalRunway>
     </runway>
     <runway>
-      <name>09R/27L</name>
+      <runwayName>09R/27L</runwayName>
       <logicalRunway>
         <name>09R</name>
         <tora>3658</tora>
