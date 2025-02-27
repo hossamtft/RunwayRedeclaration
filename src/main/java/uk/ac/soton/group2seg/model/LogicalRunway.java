@@ -100,6 +100,18 @@ public class LogicalRunway {
   public int getDispThreshold() {
     return dispThreshold;
   }
+  public int getAsda() {
+    return asda;
+  }
+  public int getToda() {
+    return toda;
+  }
+  public int getTora() {
+    return tora;
+  }
+  public int getLda() {
+    return lda;
+  }
 
   public void setCurrAsda(int currAsda) {
     this.currAsda = currAsda;
