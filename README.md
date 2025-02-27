@@ -4,6 +4,7 @@ Git Workflow Guide
 
 This guide explains the Git workflow for collaborating on this project using GitLab. Follow these steps to create feature branches, keep them updated, and merge them back into the main branch.
 
+________________________________________________________________________________________________________
 **Getting Started**
 
 Before you begin, make sure you have Git installed and have cloned the repository to your local machine.
@@ -17,6 +18,7 @@ git clone https://git.soton.ac.uk/lmt1n22/group-2-seg.git
 cd group-2-seg
 ```
 
+________________________________________________________________________________________________________
 **Creating a Feature Branch**
 
 When working on a new feature or bug fix, create a new branch from the main branch.
@@ -29,6 +31,8 @@ git checkout -b feature-branch-name  # Create and switch to a new branch
 
 Use a descriptive name for your branch, such as feature-login or fix-dashboard-bug.
 
+________________________________________________________________________________________________________
+
 **Pushing Your Branch to Remote**
 
 Once you have made changes and committed them locally, push your branch to the remote repository:
@@ -38,7 +42,7 @@ git add .                  # Add your local branch to version control
 git commit -m "Describe your changes"  # Commit changes
 git push origin feature-branch-name  # Push branch to remote
 ```
-
+________________________________________________________________________________________________________
 **Keeping Your Branch Updated**
 
 To avoid merge conflicts, regularly update your branch with the latest changes from main:
@@ -51,6 +55,7 @@ git merge main             # Merge latest main branch changes
 ```
 Resolve any conflicts if they appear, then commit and push the resolved code.
 
+________________________________________________________________________________________________________
 **Creating a Merge Request (MR)**
 
 Once your feature is complete and tested, create a Merge Request (MR) to merge your branch into main:
@@ -71,3 +76,15 @@ git push origin --delete feature-branch-name  # Delete remote branch
 ```
 
 For any questions, reach out to the team on the project chat or issue tracker.
+
+________________________________________________________________________________________________________
+
+**Getting SceneBuilder working**
+
+SceneBuilder is an application to allow us to create JavaFX GUIs visually. Go to this link and download the version of scenebuilder for your system
+
+https://gluonhq.com/products/scene-builder/#download
+
+
+After that is done go to **IntelliJ settings -> Languages & Frameworks -> JavaFX** and copy and paste the path to SceneBuilder on your machine.
+You should now be able to open and use SceneBuilder on any FXML file in the project.
