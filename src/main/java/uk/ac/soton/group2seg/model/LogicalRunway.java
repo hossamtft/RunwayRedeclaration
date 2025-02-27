@@ -14,12 +14,16 @@ public class LogicalRunway {
 
   @XmlElement(name = "name")
   private String name;
+
   @XmlElement(name = "asda")
   private int asda;
+
   @XmlElement(name = "toda")
   private int toda;
+
   @XmlElement(name = "tora")
   private int tora;
+
   @XmlElement(name = "lda")
   private int lda;
 
@@ -37,6 +41,7 @@ public class LogicalRunway {
   private Obstacle obstacle;
 
   public LogicalRunway(){
+    initialise();
 
   }
 
@@ -51,12 +56,25 @@ public class LogicalRunway {
     initialise();
   }
 
-  private void initialise() {
+  public void initialise() {
     currAsda = asda;
     currLda = lda;
     currToda = toda;
     currTora = tora;
 
+  }
+
+  public String getDistances() {
+    if(toda == 0) {
+      initialise();
+    }
+    String distances = name + "\n"
+        + "TORA: " + currTora + "m"
+        + "\nTODA: " + currToda + "m"
+        + "\nASDA: " + currAsda + "m"
+        + "\nLDA: " + currLda + "m";
+
+    return distances;
   }
 
   public String getName() {
