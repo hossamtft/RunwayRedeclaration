@@ -11,8 +11,8 @@ import uk.ac.soton.group2seg.model.Runway;
 public class Calculator {
     // Runway Calculation is done on
     private Runway runway;
-    private LogicalRunway leftRunway;
-    private LogicalRunway rightRunway;
+    private LogicalRunway lowerRunway;
+    private LogicalRunway higherRunway;
 
     // Constants
     private final int RESA = 240; // in meters, Runway End Safety Area
@@ -25,23 +25,26 @@ public class Calculator {
 
     public Calculator(Runway runway) {
         this.runway = runway;
-        this.leftRunway = runway.getLowerRunway();
-        this.rightRunway = runway.getHigherRunway();
+        this.lowerRunway = runway.getLowerRunway();
+        this.higherRunway = runway.getHigherRunway();
     }
 
     public void recalculateRunwayParameters(Obstacle obstacle) {
-        int obstacleHeight = obstacle.getHeight();
-        int obstacleWidth = obstacle.getWidth();
-        int obstacleDistanceFromLeftThresh = obstacle.getDistLeftThreshold();
-        int obstacleDistanceFromRightThresh = obstacle.getDistRightThreshold();
 
-        recalculateForLogicalRunway(leftRunway, obstacle, obstacleDistanceFromLeftThresh);
-        recalculateForLogicalRunway(rightRunway, obstacle, obstacleDistanceFromRightThresh);
+        String closerToThresh = obstaclePosition(obstacle);
+
+        if (closerToThresh == "Left") {
+            takingOffTowards(higherRunway, obstacle);
+            calculateLDALandingTowards(lowerRunway, obstacle); // check this later
+        }
+        else if (closerToThresh == "Right") {
+            calculateLDALandingTowards(higherRunway, obstacle); // check these
+            takingOffTowards(lowerRunway, obstacle);
+        }
+        // something wrong need to also add Landing Over scenario and taking off away scenario
+
     }
 
-    public void recalculateForLogicalRunway(LogicalRunway sideRunway, Obstacle obstacle, int distanceFromThreshold) {
-
-    }
 
     public String obstaclePosition(Obstacle obstacle) {
         if (obstacle.getDistLeftThreshold() > obstacle.getDistRightThreshold()) {
@@ -63,7 +66,8 @@ public class Calculator {
         int slopeRequiremntOrRESA = Math.max(slopeRequirmentHeight, RESA);
         int newLDA = originalLDA - slopeRequiremntOrRESA - STRIP_END;
         // For Logging/Steps
-        // Formula = newLDA = OriginalLDA - (Possibly ObstacleDistance) - max(Height*50, RESA) - Strip End
+        // Formula = newLDA = OriginalLDA - (Possibly ObstacleDistance)  - max(Height*50, RESA) - Strip End
+        // TODO: Add Obstacle Distance
         return newLDA;
     }
 
@@ -80,6 +84,7 @@ public class Calculator {
         int slopeRequirmentHeight = obstacle.getHeight() * SLOPE_RATIO;
         int slopeRequiremntOrRESA = Math.max(slopeRequirmentHeight, RESA);
         int distanceOfObstacleFromThreshold = 0;// placeholder
+        // TODO: Add Obstacle Distance
         int newTora = sideRunway.getTora() + distanceOfObstacleFromThreshold - slopeRequiremntOrRESA - STRIP_END;
         int newAsda = newTora;
         int newToda = newTora;
