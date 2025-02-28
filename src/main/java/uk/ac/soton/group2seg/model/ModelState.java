@@ -11,5 +11,7 @@ public class ModelState {
     currentAirport = JaxbUtility.loadAirport("EGLL.xml");
   }
 
-
+  public AirportList getAirportList() {
+    return airportList;
+  }
 }
