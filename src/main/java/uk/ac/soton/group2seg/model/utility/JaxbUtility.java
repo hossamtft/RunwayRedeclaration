@@ -19,33 +19,49 @@ import uk.ac.soton.group2seg.model.AirportList;
 
 public class JaxbUtility {
 
-  public static Airport loadAirport(Path xmlPath) throws JAXBException, IOException {
-    JAXBContext context = JAXBContext.newInstance(Airport.class);
-    Unmarshaller unmarshaller = context.createUnmarshaller();
+  public static Airport loadAirport(String xmlFilePath) {
+    try{
+      Path xmlPath = Path.of("src/main/resources/" + xmlFilePath);
+      JAXBContext context = JAXBContext.newInstance(Airport.class);
+      Unmarshaller unmarshaller = context.createUnmarshaller();
 
-    try(Reader reader = Files.newBufferedReader(xmlPath)) {
-      return (Airport) unmarshaller.unmarshal(reader);
+      try(Reader reader = Files.newBufferedReader(xmlPath)) {
+        return (Airport) unmarshaller.unmarshal(reader);
+      } catch (IOException e) {
+        e.printStackTrace();
+        System.err.println(e.getMessage());
+      }
+    }catch (JAXBException e){
+      e.printStackTrace();
+      System.err.println(e.getMessage());
     }
+    return null;
   }
 
   /**
    * Parses XML File into list of airport names and ids
-   * @param xmlFilePath The file path of the airport list
    * */
-  public static AirportList parseAirports(String xmlFilePath) throws JAXBException {
-    File xmlFile = new File(xmlFilePath);
-    JAXBContext jaxbContext = JAXBContext.newInstance(AirportListXML.class);
-    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+  public static AirportList parseAirports() {
+    File xmlFile = new File("src/main/Resources/airportList.xml");
 
-    AirportListXML airportListXML = (AirportListXML) unmarshaller.unmarshal(xmlFile);
+    try {
+      JAXBContext jaxbContext = JAXBContext.newInstance(AirportListXML.class);
+      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-    AirportList airportList = new AirportList();
+      AirportListXML airportListXML = (AirportListXML) unmarshaller.unmarshal(xmlFile);
+      AirportList airportList = new AirportList();
 
-    for(AirportXml airportXml : airportListXML.getAirports()) {
-      airportList.addAirportByString(airportXml.getId(), airportXml.getName());
+      for(AirportXml airportXml : airportListXML.getAirports()) {
+        airportList.addAirportByString(airportXml.getId(), airportXml.getName());
+      }
+
+      return airportList;
+
+    }catch (JAXBException e) {
+      e.printStackTrace();
+      System.err.println(e.getMessage());
     }
-
-    return airportList;
+    return null;
   }
 
   @XmlRootElement(name = "airportList")

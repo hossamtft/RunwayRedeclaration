@@ -26,7 +26,7 @@ public class Runway {
    * Initialises the list of logical runways.
    */
   public Runway() {
-    this.logicalRunways = new ArrayList<>();
+    //this.logicalRunways = new ArrayList<>();
   }
 
   /**

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<airport>
+  <name>London-Gatwick</name>
+  <id>EGKK</id>
+  <runways>
+    <runway>
+      <runwayName>08R/26L</runwayName>
+      <logicalRunway>
+        <name>08R</name>
+        <tora>3159</tora>
+        <toda>3311</toda>
+        <asda>3233</asda>
+        <lda>2765</lda>
+      </logicalRunway>
+      <logicalRunway>
+        <name>26L</name>
+        <tora>3255</tora>
+        <toda>3399</toda>
+        <asda>3317</asda>
+        <lda>2830</lda>
+      </logicalRunway>
+    </runway>
+    <runway>
+      <runwayName>08L/26R</runwayName>
+      <logicalRunway>
+        <name>08L</name>
+        <tora>2561</tora>
+        <toda>3040</toda>
+        <asda>2561</asda>
+        <lda>2241</lda>
+      </logicalRunway>
+      <logicalRunway>
+        <name>26R</name>
+        <tora>2515</tora>
+        <toda>2657</toda>
+        <asda>2515</asda>
+        <lda>2146</lda>
+      </logicalRunway>
+    </runway>
+  </runways>
+</airport>

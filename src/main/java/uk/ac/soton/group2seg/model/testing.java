@@ -12,8 +12,8 @@ public class testing {
     Airport airport;
 
     try{
-      airportList = JaxbUtility.parseAirports("src/main/Resources/airportList.xml");
-      airport = JaxbUtility.loadAirport(Path.of("src/main/Resources/EGLL.xml"));
+      airportList = JaxbUtility.parseAirports();
+      airport = JaxbUtility.loadAirport("EGKK.xml");
 
       System.out.println(airportList.getList());
 
