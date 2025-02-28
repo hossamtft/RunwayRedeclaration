@@ -98,8 +98,9 @@ public class LogicalRunway {
   }
 
   public int getDispThreshold() {
-    return dispThreshold;
+    return tora-lda;
   }
+
   public int getAsda() {
     return asda;
   }
