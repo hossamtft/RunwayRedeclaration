@@ -126,6 +126,56 @@ public class LogicalRunway {
   public void setCurrTora(int currTora) {
     this.currTora = currTora;
   }
+  public int getAsda() {
+    return asda;
+  }
+  public int getToda() {
+    return toda;
+  }
+  public int getTora() {
+    return tora;
+  }
+  public int getLda() {
+    return lda;
+  }
+
+  public void setCurrAsda(int currAsda) {
+    this.currAsda = currAsda;
+  }
+  public void setCurrLda(int currLda) {
+    this.currLda = currLda;
+  }
+  public void setCurrToda(int currToda) {
+    this.currToda = currToda;
+  }
+  public void setCurrTora(int currTora) {
+    this.currTora = currTora;
+  }
+  public int getAsda() {
+    return asda;
+  }
+  public int getToda() {
+    return toda;
+  }
+  public int getTora() {
+    return tora;
+  }
+  public int getLda() {
+    return lda;
+  }
+
+  public void setCurrAsda(int currAsda) {
+    this.currAsda = currAsda;
+  }
+  public void setCurrLda(int currLda) {
+    this.currLda = currLda;
+  }
+  public void setCurrToda(int currToda) {
+    this.currToda = currToda;
+  }
+  public void setCurrTora(int currTora) {
+    this.currTora = currTora;
+  }
 
 
 }

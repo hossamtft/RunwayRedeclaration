@@ -5,7 +5,9 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Represents an airport, containing an identifier (eg, EGLL), name (eg London Heathrow) and a list
@@ -26,10 +28,18 @@ public class Airport {
   @XmlElement(name = "runway")
   private ArrayList<Runway> runways;
 
+  @XmlTransient
+  private HashMap<String, Runway> runwayMap;
+
+  @XmlTransient
+  private Runway currentRunway;
+
   /**
    * Default empty constructor required for JAXB
    */
-  public Airport(){}
+  public Airport(){
+    System.out.println("Airport constructor");
+  }
 
   /**
    * Constructs an Airport with the given identifier and name.
@@ -49,6 +59,18 @@ public class Airport {
    */
   public void addRunway(Runway runway){
     runways.add(runway);
+  }
+
+  public void initialise() {
+    for(Runway runway : runways) {
+      runwayMap.put(runway.getName(), runway);
+    }
+  }
+
+
+  public void selectRunway(String runwayName) {
+    currentRunway = runwayMap.get(runwayName);
+    System.out.println("Setting current runway to: " + runwayName);
   }
 
   /**
@@ -80,6 +102,7 @@ public class Airport {
    * @param name The airport name
    */
   protected void setName(String name) {
+    System.out.println("Setting name");
     this.name = name;
   }
 
