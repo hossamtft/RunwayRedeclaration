@@ -1,4 +1,4 @@
-package uk.ac.soton.group2seg.view;
+package view;
 
 /**
  * @author louistownsend
