@@ -32,7 +32,9 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<?import com.gluonhq.charm.glisten.control.DropdownButton?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
@@ -104,13 +106,15 @@
               </textFill>
             </Label>
                   <ButtonBar layoutX="9.0" layoutY="460.0" prefHeight="40.0" prefWidth="200.0" />
-                  <DropdownButton layoutX="21.0" layoutY="58.0">
-                      <items>
-                          <MenuItem text="Airport 1" />
-                          <MenuItem text="Airport 2" />
-                          <MenuItem text="Airport 3" />
-                      </items>
-                  </DropdownButton>
+                  <ComboBox layoutX="21.0" layoutY="58.0" prefWidth="120.0">
+                    <items>
+                      <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Airport 1" />
+                        <String fx:value="Airport 2" />
+                        <String fx:value="Airport 3" />
+                      </FXCollections>
+                    </items>
+                  </ComboBox>
                   <Button layoutX="160.0" layoutY="55.0" mnemonicParsing="false" text="create" />
           </children>
         </AnchorPane>

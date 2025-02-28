@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<airport>
+  <name></name>
+  <id></id>
+  <runways>
+    <runway>
+      <runwayName></runwayName>
+      <logicalRunway>
+        <name></name>
+        <tora></tora>
+        <toda></toda>
+        <asda></asda>
+        <lda></lda>
+      </logicalRunway>
+      <logicalRunway>
+        <name></name>
+        <tora></tora>
+        <toda></toda>
+        <asda></asda>
+        <lda></lda>
+      </logicalRunway>
+    </runway>
+  </runways>
+</airport>
