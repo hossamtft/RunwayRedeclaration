@@ -3,12 +3,11 @@ package uk.ac.soton.group2seg.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import uk.ac.soton.group2seg.view.RunwayView;
 
 public class viewController
 {
     @FXML
-    private DropdownButton airportDropdown;
+    private ComboBox airportDropdown;
 
     @FXML
     private Button createButton;
