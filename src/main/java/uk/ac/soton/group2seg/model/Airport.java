@@ -29,7 +29,7 @@ public class Airport {
   private ArrayList<Runway> runways;
 
   @XmlTransient
-  private HashMap<String, Runway> runwayMap;
+  private HashMap<String, Runway> runwayMap = new HashMap<>();
 
   @XmlTransient
   private Runway currentRunway;
@@ -51,6 +51,7 @@ public class Airport {
     this.id = id;
     this.name = name;
     this.runways = new ArrayList<>();
+    this.runwayMap = new HashMap<>();
   }
 
   /**
@@ -65,9 +66,13 @@ public class Airport {
     for(Runway runway : runways) {
       runwayMap.put(runway.getName(), runway);
     }
+
   }
 
-
+  /**
+   * Select the current runway using its bidirectional designator (ie "8R/26L")
+   * @param runwayName The name of the runway
+   */
   public void selectRunway(String runwayName) {
     currentRunway = runwayMap.get(runwayName);
     System.out.println("Setting current runway to: " + runwayName);
@@ -77,11 +82,11 @@ public class Airport {
    * Retrieves the list of runways at this airport.
    * This method is used by JAXB during XML marshalling.
    *
-   * @return The list of runways
+   * @return A hashmap - Key= Runway name, Value = Runway object
    */
 
-  public ArrayList<Runway> getRunways() {
-    return runways;
+  private HashMap<String, Runway> getRunways() {
+    return runwayMap;
   }
 
   /***

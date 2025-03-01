@@ -1,5 +1,6 @@
 package uk.ac.soton.group2seg.model;
 
+import java.util.ArrayList;
 import uk.ac.soton.group2seg.model.utility.JaxbUtility;
 
 public class ModelState {
@@ -8,11 +9,18 @@ public class ModelState {
 
   public ModelState (){
     airportList = JaxbUtility.parseAirports();
-    currentAirport = JaxbUtility.loadAirport("EGLL.xml");
+
   }
 
   public AirportList getAirportList() {
     return airportList;
   }
+
+  public void loadAirport(String airportId) {
+    currentAirport = JaxbUtility.loadAirport(airportId + ".xml");
+    currentAirport.initialise();
+  }
+
+  /*public ArrayList<Runway>*/
 
 }
