@@ -19,18 +19,14 @@ public class testing {
 
       System.out.println(airport.getName());
 
-      ArrayList<Runway> runways = airport.getRunways();
+      airport.initialise();
 
-      for(Runway runway : runways) {
-        LogicalRunway lowerRunway = runway.getLowerRunway();
-        lowerRunway.initialise();
-        LogicalRunway higherRunway = runway.getHigherRunway();
-        higherRunway.initialise();
+      airport.selectRunway("08R/26L");
 
-        System.out.println(runway.getName());
-        System.out.println(lowerRunway.getDistances());
-        System.out.println(higherRunway.getDistances());
-      }
+      airport.selectRunway("08L/26R");
+
+//      System.out.println();
+
 
     }catch (Exception e){
       e.printStackTrace();
