@@ -6,9 +6,9 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
+ * Models single direction of a given runway (e.g. 26L)
  * @author louistownsend
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LogicalRunway {
 
@@ -28,8 +28,6 @@ public class LogicalRunway {
   private int lda;
 
   @XmlTransient
-  private int dispThreshold;
-  @XmlTransient
   private int currAsda;
   @XmlTransient
   private int currToda;
@@ -40,6 +38,10 @@ public class LogicalRunway {
   @XmlTransient
   private Obstacle obstacle;
 
+
+  /**
+   * Empty constructor required for JAXB unmarshalling
+   */
   public LogicalRunway(){
     initialise();
 
@@ -51,7 +53,6 @@ public class LogicalRunway {
     this.toda = toda;
     this.tora = tora;
     this.lda = lda;
-    this.dispThreshold = tora - lda;
 
     initialise();
   }

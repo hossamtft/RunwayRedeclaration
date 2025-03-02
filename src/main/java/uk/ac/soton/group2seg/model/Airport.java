@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Represents an airport, containing an identifier (eg, EGLL), name (eg London Heathrow) and a list
+ * Represents an airport, containing an identifier (eg, EGLL), name (e.g. London Heathrow) and a list
  * of runways.
  * This class is annotated for marshalling and unmarshalling using JAXB
  * @author louistownsend
@@ -29,7 +29,7 @@ public class Airport {
   private ArrayList<Runway> runways;
 
   @XmlTransient
-  private HashMap<String, Runway> runwayMap;
+  private HashMap<String, Runway> runwayMap = new HashMap<>();
 
   @XmlTransient
   private Runway currentRunway;
@@ -51,6 +51,17 @@ public class Airport {
     this.id = id;
     this.name = name;
     this.runways = new ArrayList<>();
+    this.runwayMap = new HashMap<>();
+  }
+
+  /**
+   * Initialises runways at the airport
+   * */
+  public void initialise() {
+    for(Runway runway : runways) {
+      runwayMap.put(runway.getName(), runway);
+    }
+
   }
 
   /**
@@ -61,13 +72,10 @@ public class Airport {
     runways.add(runway);
   }
 
-  public void initialise() {
-    for(Runway runway : runways) {
-      runwayMap.put(runway.getName(), runway);
-    }
-  }
-
-
+  /**
+   * Select the current runway using its bidirectional designator (ie "8R/26L")
+   * @param runwayName The name of the runway
+   */
   public void selectRunway(String runwayName) {
     currentRunway = runwayMap.get(runwayName);
     System.out.println("Setting current runway to: " + runwayName);
@@ -77,11 +85,11 @@ public class Airport {
    * Retrieves the list of runways at this airport.
    * This method is used by JAXB during XML marshalling.
    *
-   * @return The list of runways
+   * @return A hashmap - Key= Runway name, Value = Runway object
    */
 
-  public ArrayList<Runway> getRunways() {
-    return runways;
+  public HashMap<String, Runway> getRunways() {
+    return runwayMap;
   }
 
   /***
