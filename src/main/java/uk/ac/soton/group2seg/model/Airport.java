@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Represents an airport, containing an identifier (eg, EGLL), name (eg London Heathrow) and a list
+ * Represents an airport, containing an identifier (eg, EGLL), name (e.g. London Heathrow) and a list
  * of runways.
  * This class is annotated for marshalling and unmarshalling using JAXB
  * @author louistownsend
@@ -55,18 +55,21 @@ public class Airport {
   }
 
   /**
-   * Adds a runway to the airport
-   * @param runway The runway to add
-   */
-  public void addRunway(Runway runway){
-    runways.add(runway);
-  }
-
+   * Initialises runways at the airport
+   * */
   public void initialise() {
     for(Runway runway : runways) {
       runwayMap.put(runway.getName(), runway);
     }
 
+  }
+
+  /**
+   * Adds a runway to the airport
+   * @param runway The runway to add
+   */
+  public void addRunway(Runway runway){
+    runways.add(runway);
   }
 
   /**

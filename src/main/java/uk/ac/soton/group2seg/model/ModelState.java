@@ -8,23 +8,33 @@ public class ModelState {
   private HashMap<String,String> airportList;
   private Airport currentAirport;
 
+/**
+ * Initialise the model
+ */
   public ModelState (){
     airportList = JaxbUtility.parseAirports();
 
   }
 
+  /**
+   * Returns the hashmap of the airport list
+   * @return "Hashmap<AirportName, AirportId>"
+   */
   public HashMap<String,String> getAirportList() {
     return airportList;
   }
 
+
+  /**
+   * Load an airport by its name (e.g. London Heathrow)
+   * @param airportName The name of the airport to load
+   * */
   public void loadAirport(String airportName) {
     String airportId = airportList.get(airportName);
     currentAirport = JaxbUtility.loadAirport(airportId + ".xml");
-    currentAirport.initialise();
-  }
 
-  public HashMap<String, Runway> getRunways() {
-    return currentAirport.getRunways();
+    assert currentAirport != null;
+    currentAirport.initialise();
   }
 
 }

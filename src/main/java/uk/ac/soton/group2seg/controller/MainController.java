@@ -7,9 +7,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import uk.ac.soton.group2seg.model.ModelState;
 
+/**
+ * The main controller for the application
+ */
 public class MainController {
 
-  ModelState modelState;
+  private ModelState modelState;
 
   @FXML
   public ComboBox<String> airportListCombo;
@@ -17,6 +20,9 @@ public class MainController {
   @FXML
   private Label label;
 
+  /**
+   * Initialise the application
+   * */
   @FXML
   public void initialize() {
     modelState = new ModelState();
@@ -24,6 +30,9 @@ public class MainController {
   }
 
 
+  /**
+   * Handle button press for airport loading
+   * */
   public void handleSelection() {
     String selectedAirport = airportListCombo.getValue();
 
@@ -34,5 +43,7 @@ public class MainController {
 
     System.out.println("Loading airport: " + selectedAirport);
     modelState.loadAirport(selectedAirport);
+
+    //Runway list combo box needed
   }
 }
