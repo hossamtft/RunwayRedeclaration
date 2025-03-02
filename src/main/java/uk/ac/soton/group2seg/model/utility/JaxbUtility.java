@@ -19,9 +19,13 @@ import uk.ac.soton.group2seg.model.Airport;
 
 public class JaxbUtility {
 
-  public static Airport loadAirport(String xmlFilePath) {
+  /**
+   * Loads an airport from its XML file
+   * @param xmlFileName The XML file name
+   * */
+  public static Airport loadAirport(String xmlFileName) {
     try{
-      Path xmlPath = Path.of("src/main/resources/" + xmlFilePath);
+      Path xmlPath = Path.of("src/main/resources/" + xmlFileName);
       JAXBContext context = JAXBContext.newInstance(Airport.class);
       Unmarshaller unmarshaller = context.createUnmarshaller();
 
