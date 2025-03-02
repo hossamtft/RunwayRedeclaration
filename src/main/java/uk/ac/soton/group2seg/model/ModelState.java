@@ -1,26 +1,30 @@
 package uk.ac.soton.group2seg.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import uk.ac.soton.group2seg.model.utility.JaxbUtility;
 
 public class ModelState {
-  AirportList airportList;
-  Airport currentAirport;
+  private HashMap<String,String> airportList;
+  private Airport currentAirport;
 
   public ModelState (){
     airportList = JaxbUtility.parseAirports();
 
   }
 
-  public AirportList getAirportList() {
+  public HashMap<String,String> getAirportList() {
     return airportList;
   }
 
-  public void loadAirport(String airportId) {
+  public void loadAirport(String airportName) {
+    String airportId = airportList.get(airportName);
     currentAirport = JaxbUtility.loadAirport(airportId + ".xml");
     currentAirport.initialise();
   }
 
-  /*public ArrayList<Runway>*/
+  public HashMap<String, Runway> getRunways() {
+    return currentAirport.getRunways();
+  }
 
 }
