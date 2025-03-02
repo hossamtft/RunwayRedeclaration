@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import uk.ac.soton.group2seg.model.Airport;
-import uk.ac.soton.group2seg.model.AirportList;
 
 public class JaxbUtility {
 
@@ -41,21 +41,21 @@ public class JaxbUtility {
   /**
    * Parses XML File into list of airport names and ids
    * */
-  public static AirportList parseAirports() {
+  public static HashMap<String, String> parseAirports() {
     File xmlFile = new File("src/main/Resources/airportList.xml");
+    HashMap<String, String> airportMap = new HashMap<>();
 
     try {
       JAXBContext jaxbContext = JAXBContext.newInstance(AirportListXML.class);
       Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
       AirportListXML airportListXML = (AirportListXML) unmarshaller.unmarshal(xmlFile);
-      AirportList airportList = new AirportList();
 
       for(AirportXml airportXml : airportListXML.getAirports()) {
-        airportList.addAirportByString(airportXml.getId(), airportXml.getName());
+        airportMap.put(airportXml.getName(), airportXml.getId());
       }
 
-      return airportList;
+      return airportMap;
 
     }catch (JAXBException e) {
       e.printStackTrace();

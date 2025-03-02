@@ -85,7 +85,7 @@ public class Airport {
    * @return A hashmap - Key= Runway name, Value = Runway object
    */
 
-  private HashMap<String, Runway> getRunways() {
+  public HashMap<String, Runway> getRunways() {
     return runwayMap;
   }
 

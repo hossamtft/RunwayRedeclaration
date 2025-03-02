@@ -52,7 +52,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="750" prefWidth="1000" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -106,16 +106,8 @@
               </textFill>
             </Label>
                   <ButtonBar layoutX="9.0" layoutY="460.0" prefHeight="40.0" prefWidth="200.0" />
-                  <ComboBox layoutX="21.0" layoutY="58.0" prefWidth="120.0">
-                    <items>
-                      <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Airport 1" />
-                        <String fx:value="Airport 2" />
-                        <String fx:value="Airport 3" />
-                      </FXCollections>
-                    </items>
-                  </ComboBox>
-                  <Button layoutX="160.0" layoutY="55.0" mnemonicParsing="false" text="create" />
+                  <ComboBox fx:id="airportListCombo" layoutX="21.0" layoutY="58.0" prefWidth="120.0" maxWidth="300"/>
+                  <Button layoutX="160.0" layoutY="58.0" mnemonicParsing="false" text="Load" onAction="#handleSelection"/>
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">

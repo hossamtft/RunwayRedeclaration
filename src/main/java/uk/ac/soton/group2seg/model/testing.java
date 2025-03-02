@@ -8,30 +8,15 @@ import uk.ac.soton.group2seg.model.utility.JaxbUtility;
 public class testing {
 
   public static void main(String[] args){
-    AirportList airportList;
-    Airport airport;
+   ModelState modelState = new ModelState();
 
-    try{
-      airportList = JaxbUtility.parseAirports();
-      airport = JaxbUtility.loadAirport("EGKK.xml");
+   System.out.println(modelState.getAirportList());
 
-      System.out.println(airportList.getList());
+   modelState.loadAirport("London Heathrow");
 
-      System.out.println(airport.getName());
-
-      airport.initialise();
-
-      airport.selectRunway("08R/26L");
-
-      airport.selectRunway("08L/26R");
-
-//      System.out.println();
+   //modelState.
 
 
-    }catch (Exception e){
-      e.printStackTrace();
-      System.out.println(e.getMessage());
-    }
 
   }
 
