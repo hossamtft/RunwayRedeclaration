@@ -61,7 +61,6 @@ public class Airport {
     for(Runway runway : runways) {
       runwayMap.put(runway.getName(), runway);
     }
-
   }
 
   /**
