@@ -77,12 +77,11 @@ public class Airport {
    */
   public void selectRunway(String runwayName) {
     currentRunway = runwayMap.get(runwayName);
+    currentRunway.getHigherRunway().initialise();
+    currentRunway.getLowerRunway().initialise();
     System.out.println("Setting current runway to: " + runwayName);
   }
 
-  public Runway getCurrentRunway() {
-    return currentRunway;
-  }
 
   /**
    * Retrieves the list of runways at this airport.
@@ -132,5 +131,9 @@ public class Airport {
    */
   protected void setRunways(ArrayList<Runway> runways) {
     this.runways = runways;
+  }
+
+  public Runway getCurrentRunway() {
+    return currentRunway;
   }
 }

@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import uk.ac.soton.group2seg.model.ModelState;
 
 /**
@@ -12,8 +13,10 @@ import uk.ac.soton.group2seg.model.ModelState;
  */
 public class MainController {
 
-
   private ModelState modelState;
+
+  @FXML
+  public Label lowerRunwayDetails;
 
   @FXML
   public Button runwayLoadButton;
@@ -65,5 +68,7 @@ public class MainController {
 
     modelState.selectRunway(selectedRunway);
     System.out.println("Selected: " + selectedRunway);
+
+    lowerRunwayDetails.setText(modelState.getCurrentRunway().getLowerRunway().getDistances());
   }
 }
