@@ -93,42 +93,58 @@
         </Menu>
       </menus>
     </MenuBar>
-    <SplitPane dividerPositions="0.25111358574610243, 0.8190423162583519" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
-      <items>
-        <AnchorPane>
+    <HBox prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+        <!-- First VBox: Airport Options (25% width from original divider position) -->
+        <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="250">
           <children>
-            <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Airport options" textAlignment="CENTER" wrapText="false">
-              <font>
-                <Font size="18.0" fx:id="x1" />
-              </font>
-              <textFill>
-                <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
-              </textFill>
-            </Label>
-                  <ButtonBar layoutX="9.0" layoutY="460.0" prefHeight="40.0" prefWidth="200.0" />
-                  <ComboBox fx:id="airportListCombo" layoutX="21.0" layoutY="58.0" prefWidth="120.0" maxWidth="300"/>
-                  <Button layoutX="160.0" layoutY="58.0" mnemonicParsing="false" text="Load" onAction="#handleAirportSelection"/>
-                  <ComboBox fx:id="runwayListCombo" layoutX="21.0" layoutY="100" prefWidth="120.0" maxWidth="300.0" visible="false"/>
-                  <Button fx:id="runwayLoadButton" layoutX="160.0" layoutY="100" mnemonicParsing="false" text="Load" onAction="#handleRunwaySelection" visible="false"/>
-
-          </children>
-        </AnchorPane>
-        <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
-          <content>
-            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
+            <AnchorPane>
               <children>
-                <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Runway" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Airport options" textAlignment="CENTER" wrapText="false">
+                  <font>
+                    <Font size="18.0" fx:id="x1" />
+                  </font>
+                  <textFill>
+                    <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
+                  </textFill>
+                </Label>
+                <ButtonBar layoutX="9.0" layoutY="460.0" prefHeight="40.0" prefWidth="200.0" />
+                <ComboBox fx:id="airportListCombo" layoutX="21.0" layoutY="58.0" prefWidth="120.0" maxWidth="300"/>
+                <Button layoutX="160.0" layoutY="58.0" mnemonicParsing="false" text="Load" onAction="#handleAirportSelection"/>
+                <ComboBox fx:id="runwayListCombo" layoutX="21.0" layoutY="100" prefWidth="120.0" maxWidth="300.0" visible="false"/>
+                <Button fx:id="runwayLoadButton" layoutX="160.0" layoutY="100" mnemonicParsing="false" text="Load" onAction="#handleRunwaySelection" visible="false"/>
               </children>
             </AnchorPane>
-          </content>
-        </ScrollPane>
-        <AnchorPane>
-          <children>
-            <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Details" textAlignment="CENTER" textFill="$x2" wrapText="false" />
           </children>
-        </AnchorPane>
-      </items>
-    </SplitPane>
+        </VBox>
+
+        <!-- Second VBox: Runway (57% width based on original divider positions) -->
+        <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="570">
+          <children>
+            <ScrollPane prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+              <content>
+                <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
+                  <children>
+                    <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Runway" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                  </children>
+                </AnchorPane>
+              </content>
+            </ScrollPane>
+          </children>
+        </VBox>
+
+        <!-- Third VBox: Details (18% width based on original divider positions) -->
+        <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="180">
+          <children>
+            <AnchorPane>
+              <children>
+                <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Details" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+              </children>
+            </AnchorPane>
+          </children>
+        </VBox>
+      </children>
+    </HBox>
     <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
       <children>
         <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
