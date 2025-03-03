@@ -51,6 +51,11 @@ public class ModelState {
    * */
   public void selectRunway(String runwayName) {
     currentAirport.selectRunway(runwayName);
+    currentRunway = currentAirport.getCurrentRunway();
+  }
+
+  public Runway getCurrentRunway() {
+    return currentRunway;
   }
 
   public void getRunwayDetails() {
