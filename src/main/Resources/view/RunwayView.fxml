@@ -45,12 +45,11 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
-<VBox prefHeight="750" prefWidth="1000" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
+<VBox prefHeight="750" prefWidth="1000" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
   <children>
-    <!-- Main Layout -->
+
     <HBox prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-        <!-- First VBox: Airport Options (25% width from original divider position) -->
         <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="250">
           <children>
             <AnchorPane>
@@ -72,11 +71,6 @@
             </AnchorPane>
           </children>
         </VBox>
-
-
-
-
-        <!-- Center VBox: Runway -->
         <VBox prefWidth="570" HBox.hgrow="SOMETIMES">
           <children>
             <ScrollPane VBox.vgrow="ALWAYS">
@@ -91,12 +85,10 @@
           </children>
         </VBox>
 
-        <!-- Right VBox: Details (Wider) -->
         <VBox prefWidth="250" HBox.hgrow="ALWAYS">
           <children>
             <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Details" />
 
-            <!-- Original Values Table -->
             <TableView fx:id="originalTableView" prefHeight="100" prefWidth="230">
               <columns>
                 <TableColumn fx:id="column1" prefWidth="55" text="ASDA" />
@@ -118,6 +110,5 @@
         </VBox>
       </children>
     </HBox>
-
     </children>
 </VBox>
