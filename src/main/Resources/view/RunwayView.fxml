@@ -50,7 +50,8 @@
 
     <HBox prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-        <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="250">
+        <!-- Dropdown selection VBox -->
+        <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="200">
           <children>
             <AnchorPane>
               <children>
@@ -71,7 +72,9 @@
             </AnchorPane>
           </children>
         </VBox>
-        <VBox prefWidth="570" HBox.hgrow="SOMETIMES">
+
+        <!-- Runway view VBox -->
+        <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="570">
           <children>
             <ScrollPane VBox.vgrow="ALWAYS">
               <content>
@@ -85,7 +88,8 @@
           </children>
         </VBox>
 
-        <VBox prefWidth="250" HBox.hgrow="ALWAYS">
+        <!-- Runway details VBox -->
+        <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="180">
           <children>
             <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Details" />
 
