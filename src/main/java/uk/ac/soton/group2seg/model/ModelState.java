@@ -2,6 +2,7 @@ package uk.ac.soton.group2seg.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import uk.ac.soton.group2seg.model.utility.JaxbUtility;
 
 public class ModelState {
@@ -35,6 +36,21 @@ public class ModelState {
 
     assert currentAirport != null;
     currentAirport.initialise();
+  }
+
+  /**
+   * Get runway names
+   */
+  public Set<String> getRunways() {
+    return currentAirport.getRunways().keySet();
+  }
+
+  /**
+   * Select which runway to view
+   * @param runwayName The name of the runway to select
+   * */
+  public void selectRunway(String runwayName) {
+    currentAirport.selectRunway(runwayName);
   }
 
 }

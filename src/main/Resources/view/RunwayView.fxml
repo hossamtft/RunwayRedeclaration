@@ -107,7 +107,10 @@
             </Label>
                   <ButtonBar layoutX="9.0" layoutY="460.0" prefHeight="40.0" prefWidth="200.0" />
                   <ComboBox fx:id="airportListCombo" layoutX="21.0" layoutY="58.0" prefWidth="120.0" maxWidth="300"/>
-                  <Button layoutX="160.0" layoutY="58.0" mnemonicParsing="false" text="Load" onAction="#handleSelection"/>
+                  <Button layoutX="160.0" layoutY="58.0" mnemonicParsing="false" text="Load" onAction="#handleAirportSelection"/>
+                  <ComboBox fx:id="runwayListCombo" layoutX="21.0" layoutY="100" prefWidth="120.0" maxWidth="300.0" visible="false"/>
+                  <Button fx:id="runwayLoadButton" layoutX="160.0" layoutY="100" mnemonicParsing="false" text="Load" onAction="#handleRunwaySelection" visible="false"/>
+
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
