@@ -80,6 +80,10 @@ public class Airport {
     System.out.println("Setting current runway to: " + runwayName);
   }
 
+  public Runway getCurrentRunway() {
+    return currentRunway;
+  }
+
   /**
    * Retrieves the list of runways at this airport.
    * This method is used by JAXB during XML marshalling.
