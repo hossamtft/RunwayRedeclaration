@@ -74,14 +74,14 @@ public class Runway {
 
   /**
    * Retrieves the logical runway designated as the lower runway.
-   * This is the runway with a heading between 0 and 17.
+   * This is the runway with a heading between 01 and 18.
    *
    * @return The lower logical runway, or null if no suitable runway is found.
    */
   public LogicalRunway getLowerRunway() {
     for (LogicalRunway lr : logicalRunways) {
       int heading = parseHeading(lr.getName());
-      if (heading >= 0 && heading <= 17) {
+      if (heading >= 1 && heading <= 18) {
         return lr;
       }
     }
@@ -90,14 +90,14 @@ public class Runway {
 
   /**
    * Retrieves the logical runway designated as the upper runway.
-   * This is the runway with a heading between 18 and 35.
+   * This is the runway with a heading between 19 and 36.
    *
    * @return The upper logical runway, or null if no suitable runway is found.
    */
   public LogicalRunway getHigherRunway() {
     for (LogicalRunway lr : logicalRunways) {
       int heading = parseHeading(lr.getName());
-      if (heading >= 18 && heading <= 35) {
+      if (heading >= 19 && heading <= 36) {
         return lr;
       }
     }
