@@ -3,8 +3,8 @@ package uk.ac.soton.group2seg.controller;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import uk.ac.soton.group2seg.model.ModelState;
 
 /**
@@ -12,13 +12,18 @@ import uk.ac.soton.group2seg.model.ModelState;
  */
 public class MainController {
 
+
   private ModelState modelState;
+
+  @FXML
+  public Button runwayLoadButton;
 
   @FXML
   public ComboBox<String> airportListCombo;
 
   @FXML
-  private Label label;
+  public ComboBox<String> runwayListCombo;
+
 
   /**
    * Initialise the application
@@ -33,7 +38,7 @@ public class MainController {
   /**
    * Handle button press for airport loading
    * */
-  public void handleSelection() {
+  public void handleAirportSelection() {
     String selectedAirport = airportListCombo.getValue();
 
     if(selectedAirport == null) {
@@ -44,6 +49,21 @@ public class MainController {
     System.out.println("Loading airport: " + selectedAirport);
     modelState.loadAirport(selectedAirport);
 
-    //Runway list combo box needed
+    runwayListCombo.getItems().addAll(FXCollections.observableArrayList(modelState.getRunways()));
+    runwayListCombo.setVisible(true);
+
+    runwayLoadButton.setVisible(true);
+  }
+
+  public void handleRunwaySelection() {
+    String selectedRunway = runwayListCombo.getValue();
+
+    if (selectedRunway == null) {
+      System.out.println("No runway selected");
+      return;
+    }
+
+    modelState.selectRunway(selectedRunway);
+    System.out.println("Selected: " + selectedRunway);
   }
 }
