@@ -89,25 +89,27 @@
         </VBox>
 
         <!-- Runway details VBox -->
-        <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="180">
+        <VBox HBox.hgrow="SOMETIMES" prefWidth="240">
           <children>
             <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Details" />
 
             <TableView fx:id="originalTableView" prefHeight="100" prefWidth="230">
               <columns>
-                <TableColumn fx:id="column1" prefWidth="55" text="ASDA" />
-                <TableColumn fx:id="column2" prefWidth="55" text="TORA" />
-                <TableColumn fx:id="column3" prefWidth="55" text="TODA" />
-                <TableColumn fx:id="column4" prefWidth="61.0" text="LDA" />
+                <TableColumn fx:id="nameCol" prefWidth="55" text="Runway"/>
+                <TableColumn fx:id="asdaCol" prefWidth="55" text="ASDA" />
+                <TableColumn fx:id="toraCol" prefWidth="55" text="TORA" />
+                <TableColumn fx:id="todaCol" prefWidth="55" text="TODA" />
+                <TableColumn fx:id="ldaCol" prefWidth="61.0" text="LDA" />
               </columns>
             </TableView>
 
             <TableView fx:id="currentTableView" prefHeight="100" prefWidth="230">
               <columns>
-                <TableColumn fx:id="currentColumn1" prefWidth="55" text="ASDA" />
-                <TableColumn fx:id="currentColumn2" prefWidth="55" text="TORA" />
-                <TableColumn fx:id="currentColumn3" prefWidth="55" text="TODA" />
-                <TableColumn fx:id="currentColumn4" prefWidth="61.0" text="LDA" />
+                <TableColumn fx:id="currNameCol" prefWidth="55" text="Runway"/>
+                <TableColumn fx:id="currAsdaCol" prefWidth="55" text="ASDA" />
+                <TableColumn fx:id="currToraCol" prefWidth="55" text="TORA" />
+                <TableColumn fx:id="currTodaCol" prefWidth="55" text="TODA" />
+                <TableColumn fx:id="currLdaCol" prefWidth="61.0" text="LDA" />
               </columns>
             </TableView>
           </children>
