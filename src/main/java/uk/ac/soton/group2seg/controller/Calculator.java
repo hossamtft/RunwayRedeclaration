@@ -59,27 +59,29 @@ public class Calculator {
     }
 
     public int calculateLDALandingOver(LogicalRunway sideRunway, Obstacle obstacle) {
-        logger.info("Calculating LDA over obstacle for runway: " + sideRunway.getName());
+        System.out.println("Calculating LDA over obstacle for runway: " + sideRunway.getName());
         int originalLDA = sideRunway.getLda();
         int slopeRequirmentHeight = obstacle.getHeight() * SLOPE_RATIO;
         int slopeRequiremntOrRESA = Math.max(slopeRequirmentHeight, RESA);
         int newLDA = originalLDA - slopeRequiremntOrRESA - STRIP_END;
         // For Logging/Steps
         // Formula = newLDA = OriginalLDA - (Possibly ObstacleDistance)  - max(Height*50, RESA) - Strip End
+        sideRunway.setCurrLda(newLDA);
         return newLDA;
     }
 
     public int calculateLDALandingTowards(LogicalRunway sideRunway, Obstacle obstacle, int distanceFromThreshold) {
-        logger.info("Calculating LDA towards obstacle for runway: " + sideRunway.getName());
+        System.out.println("Calculating LDA towards obstacle for runway: " + sideRunway.getName());
         int newLDA = distanceFromThreshold - RESA - STRIP_END;
 
         //For Logging/ Steps
         // Formula = newLDA = distance from displaced threshold - RESA - Strip End
+        sideRunway.setCurrLda(newLDA);
         return newLDA;
     }
 
     public int takingOffTowards(LogicalRunway sideRunway, Obstacle obstacle,int distanceFromThreshold) {
-        logger.info("Calculating TORA towards obstacle for runway: " + sideRunway.getName());
+        System.out.println("Calculating TORA towards obstacle for runway: " + sideRunway.getName());
         int slopeRequirementHeight = obstacle.getHeight() * SLOPE_RATIO;
         int slopeRequirementOrRESA = Math.max(slopeRequirementHeight, RESA);
         int newTora = distanceFromThreshold + sideRunway.getDispThreshold() - slopeRequirementOrRESA - STRIP_END;
@@ -97,7 +99,7 @@ public class Calculator {
     }
 
     public int takingOffAway(LogicalRunway sideRunway, Obstacle obstacle,int distanceFromThreshold) {
-        logger.info("Calculating TORA away from obstacle for runway: " + sideRunway.getName());
+        System.out.println("Calculating TORA away from obstacle for runway: " + sideRunway.getName());
         //For Logging/Steps
         //Formula:
         // newTora = originalTora - ObstacleDistance - BlastProtection
