@@ -15,7 +15,7 @@ public class App extends Application {
             Parent root = loader.load();
 
             primaryStage.setTitle("JavaFX Scene Builder Example");
-            primaryStage.setScene(new Scene(root, 1000, 750));
+            primaryStage.setScene(new Scene(root, 1300, 800));
             primaryStage.show();
         }
 
