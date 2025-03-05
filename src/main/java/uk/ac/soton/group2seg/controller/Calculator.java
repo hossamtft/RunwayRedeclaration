@@ -29,33 +29,31 @@ public class Calculator {
         this.higherRunway = runway.getHigherRunway();
     }
 
-    public void recalculateRunwayParameters(Obstacle obstacle) {
 
-        String closerToThresh = obstaclePosition(obstacle);
+    public void obstaclePosition(Obstacle obstacle) {
+        int distanceLowerThresh = obstacle.getDistLowerThreshold();
+        int distanceHigherThresh = higherRunway.getLda() - distanceLowerThresh;
+        obstacle.setDistHigherThreshold(distanceHigherThresh);
 
-        if (closerToThresh == "Left") {
-            takingOffTowards(higherRunway, obstacle);
-            calculateLDALandingTowards(lowerRunway, obstacle); // check this later
-        }
-        else if (closerToThresh == "Right") {
-            calculateLDALandingTowards(higherRunway, obstacle); // check these
-            takingOffTowards(lowerRunway, obstacle);
-        }
-        // something wrong need to also add Landing Over scenario and taking off away scenario
-
-    }
-
-
-    public String obstaclePosition(Obstacle obstacle) {
-        if (obstacle.getDistLeftThreshold() > obstacle.getDistRightThreshold()) {
-            // Closer to left threshold
+        if (distanceLowerThresh > distanceHigherThresh) {
+            // Closer to lower threshold (ie 09L)
             // Would be going away/over for higher runway ( TORA TODA ASDA ) , and towards obstacle for lower runway ( LDA )
-            return "Left"; // as in closer to left
+
+            takingOffTowards(lowerRunway, obstacle);
+            calculateLDALandingTowards(lowerRunway, obstacle); // check this later
+
+            takingOffAway(higherRunway, obstacle);
+            calculateLDALandingOver(higherRunway, obstacle);
         }
         else {
-            // Closer to right threshold
+            // Closer to right threshold (ie 27R)
             // Would be going towards obstacle for higher runway ( LDA )  and away/over from obstacle for lower runway ( TORA TODA ASDA )
-            return "Right"; // as in closer to right
+
+            takingOffTowards(higherRunway, obstacle);
+            calculateLDALandingTowards(higherRunway, obstacle); // check these4
+
+            takingOffAway(lowerRunway, obstacle);
+            calculateLDALandingOver(lowerRunway, obstacle);
         }
 
     }
@@ -73,7 +71,7 @@ public class Calculator {
 
     public int calculateLDALandingTowards(LogicalRunway sideRunway, Obstacle obstacle) {
         int originalLDA = sideRunway.getLda();
-        int distanceFromThreshold = obstacle.getDistLeftThreshold();
+        int distanceFromThreshold = obstacle.getDistLowerThreshold();
         int newLDA = distanceFromThreshold - RESA - STRIP_END;
         //For Logging/ Steps
         // Formula = newLDA = distance from displaced threshold - RESA - Strip End
@@ -85,7 +83,7 @@ public class Calculator {
         int slopeRequiremntOrRESA = Math.max(slopeRequirmentHeight, RESA);
         int distanceOfObstacleFromThreshold = 0;// placeholder
         // TODO: Add Obstacle Distance
-        int newTora = sideRunway.getTora() + distanceOfObstacleFromThreshold - slopeRequiremntOrRESA - STRIP_END;
+        int newTora = sideRunway.getDispThreshold() + distanceOfObstacleFromThreshold - slopeRequiremntOrRESA - STRIP_END;
         int newAsda = newTora;
         int newToda = newTora;
         return newTora;

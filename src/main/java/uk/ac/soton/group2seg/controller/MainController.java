@@ -54,8 +54,6 @@ public class MainController {
   @FXML
   public TableColumn<LogicalRunway, Integer> currLdaCol;
 
-  private ModelState modelState;
-
   @FXML
   public Label lowerRunwayDetails;
 
@@ -68,6 +66,8 @@ public class MainController {
   @FXML
   public ComboBox<String> runwayListCombo;
 
+  private ModelState modelState;
+  private Calculator calculator;
 
   /**
    * Initialise the application
@@ -110,6 +110,7 @@ public class MainController {
     modelState.selectRunway(selectedRunway);
     System.out.println("Selected: " + selectedRunway);
 
+    this.calculator = new Calculator(modelState.getCurrentRunway());
     initialiseTables();
   }
 
