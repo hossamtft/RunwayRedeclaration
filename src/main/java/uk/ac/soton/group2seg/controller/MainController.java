@@ -150,4 +150,11 @@ public class MainController {
 
   }
 
+  private void updateTables() {
+
+    currentTableView.getItems().clear();
+    currentTableView.setItems(FXCollections.observableArrayList(modelState.getCurrentRunway()
+            .getLogicalRunways()));
+  }
+
 }

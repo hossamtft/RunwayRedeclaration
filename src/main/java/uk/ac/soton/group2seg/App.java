@@ -14,7 +14,7 @@ public class App extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RunwayView.fxml"));
             Parent root = loader.load();
 
-            primaryStage.setTitle("JavaFX Scene Builder Example");
+            primaryStage.setTitle("Runway Redeclaration Tool");
             primaryStage.setScene(new Scene(root, 1300, 800));
             primaryStage.show();
         }
