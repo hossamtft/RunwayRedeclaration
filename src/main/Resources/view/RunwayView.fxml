@@ -90,27 +90,29 @@
         </VBox>
 
         <!-- Runway details VBox -->
-        <VBox HBox.hgrow="NEVER" prefWidth="300">
+        <VBox HBox.hgrow="NEVER" prefWidth="320">
           <children>
             <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Details" />
 
-            <TableView fx:id="originalTableView" prefHeight="100" prefWidth="300">
+            <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Original Values" />
+            <TableView fx:id="originalTableView" prefHeight="100" prefWidth="320">
               <columns>
-                <TableColumn fx:id="nameCol" prefWidth="55" text="Runway"/>
-                <TableColumn fx:id="asdaCol" prefWidth="55" text="ASDA" />
-                <TableColumn fx:id="toraCol" prefWidth="55" text="TORA" />
-                <TableColumn fx:id="todaCol" prefWidth="55" text="TODA" />
-                <TableColumn fx:id="ldaCol" prefWidth="55" text="LDA" />
+                <TableColumn fx:id="nameCol" prefWidth="64" text="Runway"/>
+                <TableColumn fx:id="asdaCol" prefWidth="64" text="ASDA" />
+                <TableColumn fx:id="toraCol" prefWidth="64" text="TORA" />
+                <TableColumn fx:id="todaCol" prefWidth="64" text="TODA" />
+                <TableColumn fx:id="ldaCol" prefWidth="64" text="LDA" />
               </columns>
             </TableView>
 
-            <TableView fx:id="currentTableView" prefHeight="100" prefWidth="230">
+            <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Current Values" />
+            <TableView fx:id="currentTableView" prefHeight="100" prefWidth="320">
               <columns>
-                <TableColumn fx:id="currNameCol" prefWidth="55" text="Runway"/>
-                <TableColumn fx:id="currAsdaCol" prefWidth="55" text="ASDA" />
-                <TableColumn fx:id="currToraCol" prefWidth="55" text="TORA" />
-                <TableColumn fx:id="currTodaCol" prefWidth="55" text="TODA" />
-                <TableColumn fx:id="currLdaCol" prefWidth="61.0" text="LDA" />
+                <TableColumn fx:id="currNameCol" prefWidth="64" text="Runway"/>
+                <TableColumn fx:id="currAsdaCol" prefWidth="64" text="ASDA" />
+                <TableColumn fx:id="currToraCol" prefWidth="64" text="TORA" />
+                <TableColumn fx:id="currTodaCol" prefWidth="64" text="TODA" />
+                <TableColumn fx:id="currLdaCol" prefWidth="64" text="LDA" />
               </columns>
             </TableView>
           </children>
