@@ -43,7 +43,7 @@ public class Calculator {
             calculateLDALandingTowards(lowerRunway, obstacle,distanceLowerThresh); // check this later
 
             takingOffAway(higherRunway, obstacle,distanceHigherThresh);
-            calculateLDALandingOver(higherRunway, obstacle);
+            calculateLDALandingOver(higherRunway, obstacle, distanceHigherThresh);
         }
         else {
             // Closer to right threshold (ie 27R)
@@ -53,17 +53,17 @@ public class Calculator {
             calculateLDALandingTowards(higherRunway, obstacle, distanceHigherThresh); // check these4
 
             takingOffAway(lowerRunway, obstacle, distanceLowerThresh);
-            calculateLDALandingOver(lowerRunway, obstacle);
+            calculateLDALandingOver(lowerRunway, obstacle, distanceLowerThresh);
         }
 
     }
 
-    public int calculateLDALandingOver(LogicalRunway sideRunway, Obstacle obstacle) {
+    public int calculateLDALandingOver(LogicalRunway sideRunway, Obstacle obstacle, int distanceFromThresh) {
         System.out.println("Calculating LDA over obstacle for runway: " + sideRunway.getName());
         int originalLDA = sideRunway.getLda();
         int slopeRequirmentHeight = obstacle.getHeight() * SLOPE_RATIO;
         int slopeRequiremntOrRESA = Math.max(slopeRequirmentHeight, RESA);
-        int newLDA = originalLDA - slopeRequiremntOrRESA - STRIP_END;
+        int newLDA = originalLDA - distanceFromThresh-  slopeRequiremntOrRESA - STRIP_END;
         // For Logging/Steps
         // Formula = newLDA = OriginalLDA - (Possibly ObstacleDistance)  - max(Height*50, RESA) - Strip End
         sideRunway.setCurrLda(newLDA);
