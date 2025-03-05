@@ -74,16 +74,16 @@
         </VBox>
 
         <!-- Runway view VBox -->
-        <VBox alignment="CENTER" prefWidth="900" HBox.hgrow="SOMETIMES">
+        <VBox alignment="CENTER" prefWidth="1000" HBox.hgrow="SOMETIMES">
           <children>
-            <ScrollPane VBox.vgrow="ALWAYS">
+            <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
               <content>
-                <VBox prefHeight="1084.0" prefWidth="2018.0">
+                <VBox alignment="CENTER" >
                   <children>
-                    <HBox alignment="CENTER" prefHeight="1080.0" prefWidth="2018.0" HBox.hgrow="ALWAYS">
-                      <VBox alignment="CENTER" prefHeight="1080.0" prefWidth="2023.0">
+                    <HBox alignment="CENTER"  HBox.hgrow="ALWAYS" prefWidth="1000">
+                      <VBox alignment="CENTER" >
                         <children>
-                          <VBox fx:id="runwayContainer" />
+                          <VBox fx:id="runwayContainer" alignment="CENTER" prefHeight="825.0" prefWidth="1000" />
                         </children>
                       </VBox>
                     </HBox>
@@ -95,7 +95,7 @@
         </VBox>
 
         <!-- Runway details VBox -->
-        <VBox alignment="TOP_CENTER" prefHeight="575.0" prefWidth="320" HBox.hgrow="NEVER">
+        <VBox alignment="TOP_CENTER" prefHeight="575.0" prefWidth="500" HBox.hgrow="NEVER">
           <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Details" />
 
           <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Original Values" />
