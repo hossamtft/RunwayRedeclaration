@@ -30,7 +30,4 @@ public class Obstacle {
     return distHigherThreshold;
   }
 
-  public void setDistHigherThreshold(int distHigherThreshold) {
-    this.distHigherThreshold = distHigherThreshold;
-  }
 }
