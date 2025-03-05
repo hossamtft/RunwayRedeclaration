@@ -46,13 +46,15 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 
-<VBox prefHeight="1000" prefWidth="1250" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.BorderPane?>
+<VBox prefHeight="1080" prefWidth="2560" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
   <children>
 
-    <HBox prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+    <HBox VBox.vgrow="ALWAYS">
       <children>
         <!-- Dropdown selection VBox -->
-        <VBox prefHeight="-1.0" HBox.hgrow="NEVER" prefWidth="200">
+        <VBox HBox.hgrow="NEVER" prefWidth="200">
           <children>
             <AnchorPane>
               <children>
@@ -75,15 +77,21 @@
         </VBox>
 
         <!-- Runway view VBox -->
-        <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="570">
+        <VBox alignment="CENTER" HBox.hgrow="SOMETIMES" prefWidth="900">
           <children>
             <ScrollPane VBox.vgrow="ALWAYS">
               <content>
-                <AnchorPane id="Content" prefHeight="545.0" prefWidth="430.0">
+                <VBox prefHeight="1000" prefWidth="570">
                   <children>
-                    <Label layoutX="14.0" layoutY="14.0" text="Runway" />
+                    <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                      <VBox alignment="CENTER" prefWidth="400" prefHeight="800">
+                        <children>
+                          <VBox fx:id="runwayContainer" />
+                        </children>
+                      </VBox>
+                    </HBox>
                   </children>
-                </AnchorPane>
+                </VBox>
               </content>
             </ScrollPane>
           </children>
@@ -91,31 +99,30 @@
 
         <!-- Runway details VBox -->
         <VBox HBox.hgrow="NEVER" prefWidth="320">
-          <children>
-            <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Details" />
+          <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;"
+            text="Details"/>
 
-            <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Original Values" />
-            <TableView fx:id="originalTableView" prefHeight="100" prefWidth="320">
-              <columns>
-                <TableColumn fx:id="nameCol" prefWidth="64" text="Runway"/>
-                <TableColumn fx:id="asdaCol" prefWidth="64" text="ASDA" />
-                <TableColumn fx:id="toraCol" prefWidth="64" text="TORA" />
-                <TableColumn fx:id="todaCol" prefWidth="64" text="TODA" />
-                <TableColumn fx:id="ldaCol" prefWidth="64" text="LDA" />
-              </columns>
-            </TableView>
+          <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Original Values"/>
+          <TableView fx:id="originalTableView" prefHeight="100" prefWidth="320">
+            <columns>
+              <TableColumn fx:id="nameCol" prefWidth="64" text="Runway"/>
+              <TableColumn fx:id="asdaCol" prefWidth="64" text="ASDA"/>
+              <TableColumn fx:id="toraCol" prefWidth="64" text="TORA"/>
+              <TableColumn fx:id="todaCol" prefWidth="64" text="TODA"/>
+              <TableColumn fx:id="ldaCol" prefWidth="64" text="LDA"/>
+            </columns>
+          </TableView>
 
-            <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Current Values" />
-            <TableView fx:id="currentTableView" prefHeight="100" prefWidth="320">
-              <columns>
-                <TableColumn fx:id="currNameCol" prefWidth="64" text="Runway"/>
-                <TableColumn fx:id="currAsdaCol" prefWidth="64" text="ASDA" />
-                <TableColumn fx:id="currToraCol" prefWidth="64" text="TORA" />
-                <TableColumn fx:id="currTodaCol" prefWidth="64" text="TODA" />
-                <TableColumn fx:id="currLdaCol" prefWidth="64" text="LDA" />
-              </columns>
-            </TableView>
-          </children>
+          <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Current Values"/>
+          <TableView fx:id="currentTableView" prefHeight="100" prefWidth="320">
+            <columns>
+              <TableColumn fx:id="currNameCol" prefWidth="64" text="Runway"/>
+              <TableColumn fx:id="currAsdaCol" prefWidth="64" text="ASDA"/>
+              <TableColumn fx:id="currToraCol" prefWidth="64" text="TORA"/>
+              <TableColumn fx:id="currTodaCol" prefWidth="64" text="TODA"/>
+              <TableColumn fx:id="currLdaCol" prefWidth="64" text="LDA"/>
+            </columns>
+          </TableView>
         </VBox>
       </children>
     </HBox>
