@@ -5,41 +5,32 @@ package uk.ac.soton.group2seg.model;
  */
 public class Obstacle {
   private int height;
-  private int width;
-  private int distLeftThreshold;
-  private int distRightThreshold;
+  private int distLowerThreshold;
+  private int distHigherThreshold;
   private int centreOffset;
 
-  public Obstacle(){
+  public Obstacle(){}
 
-  }
-
-  public Obstacle(int height, int width, int distLeftThreshold, int centreOffset) {
+  public Obstacle(int height, int width, int distLowerThreshold, int distHigherThreshold, int centreOffset) {
     this.height = height;
-    this.width = width;
-    this.distLeftThreshold = distLeftThreshold;
+    this.distLowerThreshold = distLowerThreshold;
+    this.distHigherThreshold = distHigherThreshold;
     this.centreOffset = centreOffset;
   }
   public int getHeight() {
     return height;
   }
-  public void setHeight(int height) {
-    this.height = height;
-  }
-  public int getWidth() {
-    return width;
-  }
-  public void setWidth(int width) {
-    this.width = width;
-  }
-  public int getDistLeftThreshold() {
-    return distLeftThreshold;
+  public int getDistLowerThreshold() {
+    return distLowerThreshold;
   }
   public int getCentreOffset() {
     return centreOffset;
   }
-  public int getDistRightThreshold() {
-    return distRightThreshold;
+  public int getDistHigherThreshold() {
+    return distHigherThreshold;
   }
 
+  public void setDistHigherThreshold(int distHigherThreshold) {
+    this.distHigherThreshold = distHigherThreshold;
+  }
 }
