@@ -28,7 +28,7 @@ public class Calculator {
         this.higherRunway = runway.getHigherRunway();
     }
 
-    public void obstaclePosition(Obstacle obstacle) {
+    public void redeclareRunway(Obstacle obstacle) {
         int distanceLowerThresh = obstacle.getDistLowerThreshold(); // left thresh
         int distanceHigherThresh = obstacle.getDistHigherThreshold(); // right thresh
         if (distanceLowerThresh > distanceHigherThresh) {
@@ -39,7 +39,7 @@ public class Calculator {
             calculateLDALandingTowards(lowerRunway, obstacle,distanceLowerThresh); // check this later
 
             takingOffAway(higherRunway, obstacle,distanceHigherThresh);
-            calculateLDALandingOver(higherRunway, obstacle,distanceHigherThresh);
+            calculateLDALandingOver(higherRunway, obstacle);
         }
         else {
             // Closer to right threshold (ie 27R)
@@ -49,12 +49,12 @@ public class Calculator {
             calculateLDALandingTowards(higherRunway, obstacle, distanceHigherThresh); // check these4
 
             takingOffAway(lowerRunway, obstacle, distanceLowerThresh);
-            calculateLDALandingOver(lowerRunway, obstacle, distanceHigherThresh);
+            calculateLDALandingOver(lowerRunway, obstacle);
         }
 
     }
 
-    public int calculateLDALandingOver(LogicalRunway sideRunway, Obstacle obstacle, int distanceFromThreshold) {
+    public int calculateLDALandingOver(LogicalRunway sideRunway, Obstacle obstacle) {
         int originalLDA = sideRunway.getLda();
         int slopeRequirmentHeight = obstacle.getHeight() * SLOPE_RATIO;
         int slopeRequiremntOrRESA = Math.max(slopeRequirmentHeight, RESA);
