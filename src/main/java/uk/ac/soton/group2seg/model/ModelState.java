@@ -3,9 +3,12 @@ package uk.ac.soton.group2seg.model;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.ac.soton.group2seg.model.utility.JaxbUtility;
 
 public class ModelState {
+  private final Logger logger = LogManager.getLogger(this.getClass());
   private HashMap<String,String> airportList;
   private Airport currentAirport;
   private Runway currentRunway;
@@ -63,4 +66,6 @@ public class ModelState {
     return 3500;
   }
 
+  public void addObstacle(Obstacle obstacle) {
+  }
 }
