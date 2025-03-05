@@ -4,14 +4,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.ModelState;
+import uk.ac.soton.group2seg.view.RunwayVisual;
 
 /**
  * The main controller for the application
@@ -66,6 +69,9 @@ public class MainController {
   @FXML
   public ComboBox<String> runwayListCombo;
 
+  @FXML
+  public VBox runwayContainer;
+
   private ModelState modelState;
   private Calculator calculator;
 
@@ -112,6 +118,15 @@ public class MainController {
 
     this.calculator = new Calculator(modelState.getCurrentRunway());
     initialiseTables();
+
+    initialiseRunwayView();
+  }
+
+  private void initialiseRunwayView() {
+    RunwayVisual runwayVisual = new RunwayVisual(3500);
+    runwayContainer.getChildren().clear();
+    runwayContainer.setAlignment(Pos.CENTER);
+    runwayContainer.getChildren().add(runwayVisual);
   }
 
   private void initialiseTables() {

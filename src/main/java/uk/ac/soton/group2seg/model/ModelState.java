@@ -58,31 +58,9 @@ public class ModelState {
     return currentRunway;
   }
 
-  public void getRunwayDetails() {
-    currentRunway = currentAirport.getCurrentRunway();
-    LogicalRunway lowerRunway = currentRunway.getLowerRunway();
-    LogicalRunway higherRunway = currentRunway.getHigherRunway();
-    // Lower Runway Original Values
-    int lowerRunwayOrgASDA = lowerRunway.getAsda();
-    int lowerRunwayOrgTODA = lowerRunway.getToda();
-    int lowerRunwayOrgTORA = lowerRunway.getTora();
-    int lowerRunwayOrgLDA = lowerRunway.getLda();
-    // Lower Runway Current Values
-    int lowerRunwayCurASDA = lowerRunway.getCurrAsda();
-    int lowerRunwayCurTODA = lowerRunway.getToda();
-    int lowerRunwayCurTORA = lowerRunway.getTora();
-    int lowerRunwayCurLDA = lowerRunway.getLda();
 
-    //Higher Runway Original Values
-    int higherRunwayOrgASDA = higherRunway.getAsda();
-    int higherRunwayOrgTODA = higherRunway.getToda();
-    int higherRunwayOrgTORA = higherRunway.getTora();
-    int higherRunwayOrgLDA = higherRunway.getLda();
-    //Higher Runway Current Values
-    int higherRunwayCurASDA = higherRunway.getCurrAsda();
-    int higherRunwayCurTODA = higherRunway.getToda();
-    int higherRunwayCurTORA = higherRunway.getTora();
-
+  public int getRunwayLength() {
+    return 3500;
   }
 
 }
