@@ -1,6 +1,8 @@
 package uk.ac.soton.group2seg.controller;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.Obstacle;
 import uk.ac.soton.group2seg.model.Runway;
@@ -9,6 +11,7 @@ import uk.ac.soton.group2seg.model.Runway;
  * @author louistownsend
  */
 public class Calculator {
+    private final Logger logger = LogManager.getLogger(this.getClass());
     // Runway Calculation is done on
     private Runway runway;
     private LogicalRunway lowerRunway;
@@ -29,6 +32,7 @@ public class Calculator {
     }
 
     public void redeclareRunway(Obstacle obstacle) {
+        System.out.println("New obstacle added");
         int distanceLowerThresh = obstacle.getDistLowerThreshold(); // left thresh
         int distanceHigherThresh = obstacle.getDistHigherThreshold(); // right thresh
         if (distanceLowerThresh > distanceHigherThresh) {
@@ -55,24 +59,29 @@ public class Calculator {
     }
 
     public int calculateLDALandingOver(LogicalRunway sideRunway, Obstacle obstacle) {
+        System.out.println("Calculating LDA over obstacle for runway: " + sideRunway.getName());
         int originalLDA = sideRunway.getLda();
         int slopeRequirmentHeight = obstacle.getHeight() * SLOPE_RATIO;
         int slopeRequiremntOrRESA = Math.max(slopeRequirmentHeight, RESA);
         int newLDA = originalLDA - slopeRequiremntOrRESA - STRIP_END;
         // For Logging/Steps
         // Formula = newLDA = OriginalLDA - (Possibly ObstacleDistance)  - max(Height*50, RESA) - Strip End
+        sideRunway.setCurrLda(newLDA);
         return newLDA;
     }
 
     public int calculateLDALandingTowards(LogicalRunway sideRunway, Obstacle obstacle, int distanceFromThreshold) {
+        System.out.println("Calculating LDA towards obstacle for runway: " + sideRunway.getName());
         int newLDA = distanceFromThreshold - RESA - STRIP_END;
 
         //For Logging/ Steps
         // Formula = newLDA = distance from displaced threshold - RESA - Strip End
+        sideRunway.setCurrLda(newLDA);
         return newLDA;
     }
 
     public int takingOffTowards(LogicalRunway sideRunway, Obstacle obstacle,int distanceFromThreshold) {
+        System.out.println("Calculating TORA towards obstacle for runway: " + sideRunway.getName());
         int slopeRequirementHeight = obstacle.getHeight() * SLOPE_RATIO;
         int slopeRequirementOrRESA = Math.max(slopeRequirementHeight, RESA);
         int newTora = distanceFromThreshold + sideRunway.getDispThreshold() - slopeRequirementOrRESA - STRIP_END;
@@ -90,6 +99,7 @@ public class Calculator {
     }
 
     public int takingOffAway(LogicalRunway sideRunway, Obstacle obstacle,int distanceFromThreshold) {
+        System.out.println("Calculating TORA away from obstacle for runway: " + sideRunway.getName());
         //For Logging/Steps
         //Formula:
         // newTora = originalTora - ObstacleDistance - BlastProtection

@@ -1,9 +1,13 @@
 package uk.ac.soton.group2seg.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @author louistownsend
  */
 public class Obstacle {
+  private final Logger logger = LogManager.getLogger(this.getClass());
   private int height;
   private int distLowerThreshold;
   private int distHigherThreshold;
@@ -11,7 +15,7 @@ public class Obstacle {
 
   public Obstacle(){}
 
-  public Obstacle(int height, int width, int distLowerThreshold, int distHigherThreshold, int centreOffset) {
+  public Obstacle(int height, int distLowerThreshold, int distHigherThreshold, int centreOffset) {
     this.height = height;
     this.distLowerThreshold = distLowerThreshold;
     this.distHigherThreshold = distHigherThreshold;
