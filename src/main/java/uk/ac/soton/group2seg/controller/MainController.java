@@ -170,6 +170,8 @@ public class MainController {
   public void updateTables() {
     // call method when calculations are done.
     currentTableView.getItems().clear();
+    originalTableView.getItems().clear();
+    originalTableView.setItems(FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways()));
     currentTableView.setItems(FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways()));
   }
 
