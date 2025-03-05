@@ -45,13 +45,14 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
-<VBox prefHeight="750" prefWidth="1000" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
+
+<VBox prefHeight="1000" prefWidth="1250" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
   <children>
 
     <HBox prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
         <!-- Dropdown selection VBox -->
-        <VBox prefHeight="-1.0" HBox.hgrow="SOMETIMES" prefWidth="200">
+        <VBox prefHeight="-1.0" HBox.hgrow="NEVER" prefWidth="200">
           <children>
             <AnchorPane>
               <children>
@@ -89,17 +90,17 @@
         </VBox>
 
         <!-- Runway details VBox -->
-        <VBox HBox.hgrow="SOMETIMES" prefWidth="240">
+        <VBox HBox.hgrow="NEVER" prefWidth="300">
           <children>
             <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Details" />
 
-            <TableView fx:id="originalTableView" prefHeight="100" prefWidth="230">
+            <TableView fx:id="originalTableView" prefHeight="100" prefWidth="300">
               <columns>
                 <TableColumn fx:id="nameCol" prefWidth="55" text="Runway"/>
                 <TableColumn fx:id="asdaCol" prefWidth="55" text="ASDA" />
                 <TableColumn fx:id="toraCol" prefWidth="55" text="TORA" />
                 <TableColumn fx:id="todaCol" prefWidth="55" text="TODA" />
-                <TableColumn fx:id="ldaCol" prefWidth="61.0" text="LDA" />
+                <TableColumn fx:id="ldaCol" prefWidth="55" text="LDA" />
               </columns>
             </TableView>
 
