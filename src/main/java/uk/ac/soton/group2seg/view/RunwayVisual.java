@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 
 
 /**
@@ -38,9 +39,17 @@ public class RunwayVisual extends Pane {
     centreLine.setStroke(Color.WHITE);
     centreLine.setStrokeWidth(2);
 
-    this.getChildren().addAll(runway, centreLine);
+    Line distanceLine = new Line(0, width + 20, runwayLength, width + 20);  // Position the line below the rectangle
+    distanceLine.setStroke(Color.BLACK);  // Set the color of the line
+    distanceLine.setStrokeWidth(2);  // Make the line a bit thicker for visibility
 
-    // Set preferred size to accommodate the runway
-    this.setPrefSize(runwayLength + 20, width + 20); // Add some padding
+    Text runwayLengthText = new Text(runwayLength / 2 - 30, width + 40, lengthMetres + "m");
+    runwayLengthText.setFill(Color.BLACK);  // Set the color of the text
+    runwayLengthText.setStyle("-fx-font-size: 20px;");  // Increase the font size for visibility
+
+    this.getChildren().addAll(runway, distanceLine, centreLine, runwayLengthText);
+    this.setPrefSize(runwayLength + 20, width + 60);
+
   }
+
 }

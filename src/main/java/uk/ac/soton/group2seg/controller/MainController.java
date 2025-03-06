@@ -143,7 +143,9 @@ public class MainController {
     RunwayVisual runwayVisual = new RunwayVisual(3500);
     runwayContainer.getChildren().clear();
     runwayContainer.setAlignment(Pos.CENTER);
+    runwayContainer.setPrefSize(3500 + 20, 100);  // Adjust height as needed for the line and text
     runwayContainer.getChildren().add(runwayVisual);
+
   }
 
   private void initialiseTables() {
