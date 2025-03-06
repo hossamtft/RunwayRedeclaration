@@ -13,7 +13,7 @@ import java.util.List;
  * @author louistownsend
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Runway extends LogicalRunway {
+public class Runway {
 
     @XmlElement(name = "runwayName")
     private String name;
