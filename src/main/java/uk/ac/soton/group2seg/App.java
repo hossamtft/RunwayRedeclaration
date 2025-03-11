@@ -15,7 +15,7 @@ public class App extends Application {
             Parent root = loader.load();
 
             primaryStage.setTitle("Runway Redeclaration Tool");
-            primaryStage.setScene(new Scene(root, 1300, 800));
+            primaryStage.setScene(new Scene(root, 1350, 800));
             primaryStage.show();
         }
 
