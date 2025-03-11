@@ -85,6 +85,12 @@ public class MainController {
   @FXML
   public Button addObstButton;
 
+  @FXML
+  private VBox tabPaneContainer;
+
+  @FXML
+  private Button toggleTabPaneButton;
+
   private ModelState modelState;
   private Calculator calculator;
 
@@ -216,5 +222,16 @@ public class MainController {
     calculator.redeclareRunway(obstacle);
 
     updateTables();
+  }
+
+  public void toggleTabPaneVisibility() {
+    boolean isVisible = tabPaneContainer.isVisible();
+    tabPaneContainer.setVisible(!isVisible);
+    tabPaneContainer.setManaged(!isVisible);
+    if (isVisible) {
+      toggleTabPaneButton.setText("Show Calculation Breakdown");
+    } else {
+      toggleTabPaneButton.setText("Hide Calculation Breakdown");
+    }
   }
 }
