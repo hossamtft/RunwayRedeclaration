@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss} %-5p %c{1} - %msg%n"/>
+        </Console>
+
+        <!-- Rolling File Appender with Unique File Name -->
+        <RollingFile name="RollingFile"
+                     fileName="logs/app-${date:yyyy-MM-dd-HH-mm-ss}.log"
+                     filePattern="logs/app-%d{yyyy-MM-dd-HH-mm-ss}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1} - %msg%n"/>
+            <Policies>
+                <OnStartupTriggeringPolicy/> <!-- Create a new file on application startup -->
+                <SizeBasedTriggeringPolicy size="10MB"/> <!-- Rotate when file reaches 10MB -->
+            </Policies>
+            <DefaultRolloverStrategy max="10"/> <!-- Keep up to 10 archived logs -->
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
