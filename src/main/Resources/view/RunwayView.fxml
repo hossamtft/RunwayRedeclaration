@@ -44,6 +44,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
 
 <VBox prefHeight="1080" prefWidth="2560" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
   <children>
@@ -93,8 +96,6 @@
             </ScrollPane>
           </children>
         </VBox>
-
-        <!-- Runway details VBox -->
         <VBox alignment="TOP_CENTER" prefHeight="575.0" prefWidth="500" HBox.hgrow="NEVER">
           <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Details" />
 
@@ -119,7 +120,47 @@
               <TableColumn fx:id="currLdaCol" prefWidth="64" text="LDA" />
             </columns>
           </TableView>
+
+          <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+            <Button fx:id="toggleTabPaneButton" text="Show Calculation Breakdown" onAction="#toggleTabPaneVisibility"/>
+          </HBox>
+
+          <VBox fx:id="tabPaneContainer" visible="false" managed="false">
+            <TabPane prefWidth="320" prefHeight="200">
+              <tabs>
+                <Tab text="ASDA" closable="false">
+                  <content>
+                    <VBox>
+                      <TextArea fx:id="asdaTextArea" prefHeight="150" prefWidth="300" editable="false"/>
+                    </VBox>
+                  </content>
+                </Tab>
+                <Tab text="TORA" closable="false">
+                  <content>
+                    <VBox>
+                      <TextArea fx:id="toraTextArea" prefHeight="150" prefWidth="300" editable="false"/>
+                    </VBox>
+                  </content>
+                </Tab>
+                <Tab text="TODA" closable="false">
+                  <content>
+                    <VBox>
+                      <TextArea fx:id="todaTextArea" prefHeight="150" prefWidth="300" editable="false"/>
+                    </VBox>
+                  </content>
+                </Tab>
+                <Tab text="LDA" closable="false">
+                  <content>
+                    <VBox>
+                      <TextArea fx:id="ldaTextArea" prefHeight="150" prefWidth="300" editable="false"/>
+                    </VBox>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+          </VBox>
         </VBox>
+
       </children>
     </HBox>
       <VBox alignment="CENTER" prefHeight="236.0" prefWidth="2560.0">
