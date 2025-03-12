@@ -11,11 +11,11 @@ import javafx.scene.Parent;
 public class App extends Application {
         @Override
         public void start(Stage primaryStage) throws Exception {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RunwayView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoginView.fxml"));
             Parent root = loader.load();
 
             primaryStage.setTitle("Runway Redeclaration Tool");
-            primaryStage.setScene(new Scene(root, 1350, 800));
+            primaryStage.setScene(new Scene(root, 600, 450));
             primaryStage.show();
         }
 
