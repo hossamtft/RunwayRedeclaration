@@ -109,14 +109,13 @@ public class MainController {
    * */
   public void handleAirportSelection() {
     String selectedAirport = airportListCombo.getValue();
-    logger.info("Selected airport");
 
     if(selectedAirport == null) {
-      System.out.println("No airport selected");
+      logger.debug("No selected airport");
       return;
     }
 
-    System.out.println("Loading airport: " + selectedAirport);
+    logger.info("Loading airport: " + selectedAirport);
     modelState.loadAirport(selectedAirport);
 
     runwayListCombo.getItems().addAll(FXCollections.observableArrayList(modelState.getRunways()));
@@ -129,12 +128,12 @@ public class MainController {
     String selectedRunway = runwayListCombo.getValue();
 
     if (selectedRunway == null) {
-      System.out.println("No runway selected");
+      logger.debug("No selected runway");
       return;
     }
 
     modelState.selectRunway(selectedRunway);
-    System.out.println("Selected: " + selectedRunway);
+    logger.info("Loading runway: " + selectedRunway);
 
     this.calculator = new Calculator(modelState.getCurrentRunway());
 
@@ -142,6 +141,7 @@ public class MainController {
 
     initialiseTables();
     initialiseRunwayView();
+
   }
 
   private void initialiseRunwayView() {
@@ -217,11 +217,11 @@ public class MainController {
   }
 
   public void addObstacle(Obstacle obstacle) {
-    System.out.println("Adding obstacle");
-    logger.log(Level.DEBUG, "Adding obstacle");
+    logger.debug("Adding obstacle: " + obstacle);
     calculator.redeclareRunway(obstacle);
 
     updateTables();
+
   }
 
   public void toggleTabPaneVisibility() {
