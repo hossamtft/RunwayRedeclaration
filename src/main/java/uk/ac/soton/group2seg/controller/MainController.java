@@ -8,11 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -91,6 +87,18 @@ public class MainController {
   @FXML
   private Button toggleTabPaneButton;
 
+  @FXML
+  private TextArea asdaTextArea;
+
+  @FXML
+  private TextArea toraTextArea;
+
+  @FXML
+  private TextArea todaTextArea;
+
+  @FXML
+  private TextArea ldaTextArea;
+
   private ModelState modelState;
   private Calculator calculator;
 
@@ -136,7 +144,10 @@ public class MainController {
     logger.info("Loading runway: " + selectedRunway);
 
     this.calculator = new Calculator(modelState.getCurrentRunway());
-
+    ldaTextArea.textProperty().bind(calculator.getLdaBreakdown());
+    toraTextArea.textProperty().bind(calculator.getToraBreakdown());
+    todaTextArea.textProperty().bind(calculator.getTodaBreakdown());
+    asdaTextArea.textProperty().bind(calculator.getAsdaBreakdown());
     addObstButton.setVisible(true);
 
     initialiseTables();
