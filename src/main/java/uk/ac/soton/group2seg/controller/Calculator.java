@@ -112,9 +112,9 @@ public class Calculator {
 
         toraBreakdown.set("Runway: " + sideRunway.getName() + "\n" + "Calculating for Take Off Towards Obstalce\n" +"NewTORA = Distance From Threshold + Displaced Threshold - MAX(Slope*Height, RESA) - Strip End\n" +
                 newTora + " = " + distanceFromThreshold + " + " + sideRunway.getDispThreshold() + " - " + slopeRequirementOrRESA + " - " + STRIP_END + "\n");
-        asdaBreakdown.set("Runway: " + sideRunway.getName() + "\n" +
+        asdaBreakdown.set("Runway: " + sideRunway.getName() + "\n" +  "Calculating for Take Off Towards Obstalce\n" +
                 "ASDA is equal to TORA: " + newTora + "\n");
-        todaBreakdown.set("Runway: " + sideRunway.getName() + "\n" +
+        todaBreakdown.set("Runway: " + sideRunway.getName() + "\n" + "Calculating for Take Off Towards Obstalce\n" +
                 "TODA is equal to TORA: " + newTora + "\n");
 
         logger.debug("TORA Calculation Details - Distance: {}, Displaced Threshold: {}, Slope/RESA: {}, Strip End: {}, Result: {}",
@@ -145,11 +145,11 @@ public class Calculator {
                 "NewTORA = Original TORA - Distance From Threshold - Blast Protection\n" +
                 newTora + " = " + sideRunway.getTora() + " - " + distanceFromThreshold + " - " + BLAST_PROTECTION + "\n");
 
-        asdaBreakdown.set(asdaBreakdown.get() + "\n" + "Runway: " + sideRunway.getName() + "\n" +
+        asdaBreakdown.set(asdaBreakdown.get() + "\n" + "Runway: " + sideRunway.getName() + "\n" + "Calculating For Takeoff Away From Obstacle\n" +
                 "NewASDA = Original ASDA - Distance From Threshold - Blast Protection\n" +
                 newAsda + " = " + sideRunway.getAsda() + " - " + distanceFromThreshold + " - " + BLAST_PROTECTION + "\n");
 
-        todaBreakdown.set(todaBreakdown.get() + "\n"+ "Runway: " + sideRunway.getName() + "\n" +
+        todaBreakdown.set(todaBreakdown.get() + "\n"+ "Runway: " + sideRunway.getName() + "\n" + "Calculating For Takeoff Away From Obstacle\n" +
                 "NewTODA = Original TODA - Distance From Threshold - Blast Protection\n" +
                 newToda + " = " + sideRunway.getToda() + " - " + distanceFromThreshold + " - " + BLAST_PROTECTION + "\n" );
 
