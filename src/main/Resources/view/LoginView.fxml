@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.LoginController">
+   <children>
+      <VBox layoutX="1.0" layoutY="13.0" prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="300.0" spacing="50.0">
+               <children>
+                  <Label fx:id="toolTitle" alignment="CENTER" prefHeight="39.0" prefWidth="437.0" text="RunwayRedeclarationTool">
+                     <font>
+                        <Font size="32.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="quitButton" alignment="CENTER" mnemonicParsing="false" prefHeight="43.0" prefWidth="88.0" text="Quit" textFill="#d40a0a">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Button>
+               </children>
+               <padding>
+                  <Insets left="50.0" right="10.0" />
+               </padding>
+            </HBox>
+            <VBox prefHeight="300.0" prefWidth="100.0" spacing="20.0">
+               <children>
+                  <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" prefHeight="54.0" prefWidth="138.0" text="Login">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="registerButton" mnemonicParsing="false" onAction="#loadRegistrationForm" prefHeight="54.0" prefWidth="138.0" text="Register">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="guestButton" alignment="CENTER" mnemonicParsing="false" prefHeight="54.0" prefWidth="138.0" text="Continue as Guest">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets left="215.0" top="30.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets top="30.0" />
+               </VBox.margin>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
