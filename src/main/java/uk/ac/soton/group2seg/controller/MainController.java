@@ -8,11 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -91,6 +87,18 @@ public class MainController {
   @FXML
   private Button toggleTabPaneButton;
 
+  @FXML
+  private TextArea asdaTextArea;
+
+  @FXML
+  private TextArea toraTextArea;
+
+  @FXML
+  private TextArea todaTextArea;
+
+  @FXML
+  private TextArea ldaTextArea;
+
   private ModelState modelState;
   private Calculator calculator;
 
@@ -109,14 +117,13 @@ public class MainController {
    * */
   public void handleAirportSelection() {
     String selectedAirport = airportListCombo.getValue();
-    logger.info("Selected airport");
 
     if(selectedAirport == null) {
-      System.out.println("No airport selected");
+      logger.debug("No selected airport");
       return;
     }
 
-    System.out.println("Loading airport: " + selectedAirport);
+    logger.info("Loading airport: " + selectedAirport);
     modelState.loadAirport(selectedAirport);
 
     runwayListCombo.getItems().addAll(FXCollections.observableArrayList(modelState.getRunways()));
@@ -129,19 +136,23 @@ public class MainController {
     String selectedRunway = runwayListCombo.getValue();
 
     if (selectedRunway == null) {
-      System.out.println("No runway selected");
+      logger.debug("No selected runway");
       return;
     }
 
     modelState.selectRunway(selectedRunway);
-    System.out.println("Selected: " + selectedRunway);
+    logger.info("Loading runway: " + selectedRunway);
 
     this.calculator = new Calculator(modelState.getCurrentRunway());
-
+    ldaTextArea.textProperty().bind(calculator.getLdaBreakdown());
+    toraTextArea.textProperty().bind(calculator.getToraBreakdown());
+    todaTextArea.textProperty().bind(calculator.getTodaBreakdown());
+    asdaTextArea.textProperty().bind(calculator.getAsdaBreakdown());
     addObstButton.setVisible(true);
 
     initialiseTables();
     initialiseRunwayView();
+
   }
 
   private void initialiseRunwayView() {
@@ -217,11 +228,11 @@ public class MainController {
   }
 
   public void addObstacle(Obstacle obstacle) {
-    System.out.println("Adding obstacle");
-    logger.log(Level.DEBUG, "Adding obstacle");
+    logger.debug("Adding obstacle: " + obstacle);
     calculator.redeclareRunway(obstacle);
 
     updateTables();
+
   }
 
   public void toggleTabPaneVisibility() {
