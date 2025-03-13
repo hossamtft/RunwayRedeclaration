@@ -17,7 +17,6 @@ public class ModelState {
  */
   public ModelState (){
     airportList = JaxbUtility.parseAirports();
-
   }
 
   /**
@@ -66,6 +65,4 @@ public class ModelState {
     return 3500;
   }
 
-  public void addObstacle(Obstacle obstacle) {
-  }
 }
