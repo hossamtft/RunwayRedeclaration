@@ -109,4 +109,72 @@ public class JaxbUtility {
     }
   }
 
+  @XmlRootElement(name = "obstacleList")
+  @XmlAccessorType(XmlAccessType.FIELD)
+  public static class ObstacleListXML {
+
+    @XmlElement(name = "obstacle")
+    private List<ObstacleXml> obstacles;
+
+    public List<ObstacleXml> getObstacles() {
+      return obstacles;
+    }
+
+    public void setObstacles(List<ObstacleXml> obstacles) {
+      this.obstacles = obstacles;
+    }
+  }
+  @XmlAccessorType(XmlAccessType.FIELD)
+  public static class ObstacleXml {
+
+    @XmlElement(name = "name")
+    private String name;
+
+    @XmlElement(name = "height")
+    private int height;
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public int getHeight() {
+      return height;
+    }
+
+    public void setHeight(int height) {
+      this.height = height;
+    }
+  }
+
+  public static HashMap<String, String> parseObstacles() {
+    File xmlFile = new File("src/main/Resources/view/ObstacleList.xml"); // Ensure correct path
+
+    HashMap<String, String> obstacleMap = new HashMap<>();
+
+    try {
+      JAXBContext jaxbContext = JAXBContext.newInstance(ObstacleListXML.class);
+      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+      ObstacleListXML obstacleListXML = (ObstacleListXML) unmarshaller.unmarshal(xmlFile);
+
+      for (ObstacleXml obstacleXml : obstacleListXML.getObstacles()) {
+        obstacleMap.put(obstacleXml.getName(), String.valueOf(obstacleXml.getHeight()));
+      }
+
+      return obstacleMap;
+
+    } catch (JAXBException e) {
+      e.printStackTrace();
+      System.err.println(e.getMessage());
+    }
+
+    return null;
+  }
+
+
+
 }
