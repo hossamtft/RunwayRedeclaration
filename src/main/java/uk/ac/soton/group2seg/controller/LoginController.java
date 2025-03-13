@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.group2seg.BCrypt.BCrypt;
 
 import java.io.IOException;
 import java.sql.*;
@@ -56,7 +57,7 @@ public class LoginController {
     passwordField.setPromptText("Enter password");
 
     ComboBox<String> roleDropdown = new ComboBox<>();
-    roleDropdown.getItems().addAll("ATC", "Ground Crew", "Regulator");
+    roleDropdown.getItems().addAll("Admin", "ATC", "Ground Crew", "Regulator");
     roleDropdown.setPromptText("Select role");
 
     TextField airportIDField = new TextField();
@@ -77,17 +78,17 @@ public class LoginController {
       String role = roleDropdown.getValue();
       String airportID = airportIDField.getText();
 
-      logger.info("User registered - Username: {}, Role: {}, Airport ID: {}", username, role, airportID);
-
       if (validateInputs(username, password, role, airportID)) {
         try (Connection connection = connectToDatabase()) {
+          String hashedPassword = hashPassword(password);
           String query = "INSERT INTO Users (Username, Password, Role, AirportID) VALUES (?, ?, ?, ?)";
           PreparedStatement preparedStatement = connection.prepareStatement(query);
           preparedStatement.setString(1, username);
-          preparedStatement.setString(2, password);
+          preparedStatement.setString(2, hashedPassword);
           preparedStatement.setString(3, role);
           preparedStatement.setString(4, airportID);
-
+          registerStage.close();
+          logger.info("User registered - Username: {}, Role: {}, Airport ID: {}", username, role, airportID);
           int rowsAffected = preparedStatement.executeUpdate();
           if (rowsAffected > 0) {
             logger.info("User successfully registered!");
@@ -100,7 +101,7 @@ public class LoginController {
         }
       }
 
-      registerStage.close();
+
     });
 
     // Layout for the popup
@@ -247,18 +248,20 @@ public class LoginController {
 
   private boolean authenticateUser(String username, String password) {
     try (Connection connection = connectToDatabase()) {
-      String query = "SELECT * FROM Users WHERE Username = ? AND Password = ?";
+      String query = "SELECT Password FROM Users WHERE Username = ?";
       PreparedStatement preparedStatement = connection.prepareStatement(query);
       preparedStatement.setString(1, username);
-      preparedStatement.setString(2, password);
 
       ResultSet resultSet = preparedStatement.executeQuery();
-      return resultSet.next(); // Returns true if there's a matching user
+      if (resultSet.next()) {
+        String hashedPassword = resultSet.getString("Password");
+        return checkPassword(password, hashedPassword);
+      }
     } catch (SQLException e) {
       logger.error("Database error during authentication: " + e.getMessage());
       e.printStackTrace();
-      return false;
     }
+    return false;
   }
 
   private void proceedAsGuest() {
@@ -285,5 +288,13 @@ public class LoginController {
       logger.error("Failed to load RunwayView.fxml: " + e.getMessage());
       e.printStackTrace();
     }
+  }
+
+  private String hashPassword(String password) {
+    return BCrypt.hashpw(password, BCrypt.gensalt());
+  }
+
+  private boolean checkPassword(String password, String hashedPassword) {
+    return BCrypt.checkpw(password, hashedPassword);
   }
 }
