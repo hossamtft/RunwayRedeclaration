@@ -165,7 +165,8 @@
     </HBox>
       <VBox alignment="CENTER" prefHeight="236.0" prefWidth="2560.0">
          <children>
-    <Button fx:id="addObstButton" mnemonicParsing="false" onAction="#loadObstacleForm" prefHeight="25.0" prefWidth="194.0" text="Add obstacle" />
+           <Button fx:id="addObstButton" mnemonicParsing="false" onAction="#loadObstacleForm" prefHeight="25.0" prefWidth="194.0" text="Add obstacle" />
+           <Button fx:id="addPreDefObstButton" mnemonicParsing="false" onAction="#loadPredefinedObstacleForm" prefHeight="25.0" prefWidth="194.0" text="Add Predefined obstacle" />
          </children>
       </VBox>
     </children>

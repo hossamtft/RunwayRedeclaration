@@ -1,6 +1,8 @@
 package uk.ac.soton.group2seg.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,6 +21,8 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.ModelState;
 import uk.ac.soton.group2seg.model.Obstacle;
+import uk.ac.soton.group2seg.model.Runway;
+import uk.ac.soton.group2seg.model.utility.JaxbUtility;
 import uk.ac.soton.group2seg.view.RunwayVisual;
 
 /**
@@ -102,24 +106,27 @@ public class MainController {
   private ModelState modelState;
   private Calculator calculator;
 
-  /**
-   * Initialise the application
-   * */
+  private HashMap<String, String> obstacleList;
+  private Obstacle currentObstacle;
+
+
+  private RunwayVisual runwayVisual; // Reference to RunwayVisual
+
   @FXML
   public void initialize() {
     modelState = new ModelState();
     airportListCombo.getItems().addAll(FXCollections.observableArrayList(modelState.getAirportList().keySet()));
   }
 
-
-  /**
-   * Handle button press for airport loading
-   * */
   public void handleAirportSelection() {
     String selectedAirport = airportListCombo.getValue();
+    logger.info("Selected airport");
 
     if(selectedAirport == null) {
       logger.debug("No selected airport");
+    }
+    if (selectedAirport == null) {
+      System.out.println("No airport selected");
       return;
     }
 
@@ -132,7 +139,7 @@ public class MainController {
     runwayLoadButton.setVisible(true);
   }
 
-  public void handleRunwaySelection() {
+  public void handleRunwaySelection(){
     String selectedRunway = runwayListCombo.getValue();
 
     if (selectedRunway == null) {
@@ -157,7 +164,18 @@ public class MainController {
 
   private void initialiseRunwayView() {
     logger.info("Initialising runway view");
-    RunwayVisual runwayVisual = new RunwayVisual(3500);
+
+    // Ensure we have a valid current runway
+    Runway currentRunway = modelState.getCurrentRunway();
+    if (currentRunway == null) {
+      System.out.println("No current runway selected.");
+      return;
+    }
+
+    // Instantiate the RunwayVisual and store it
+    runwayVisual = new RunwayVisual(currentRunway);
+
+    // Clear any previous visualizations and add the new one
     runwayContainer.getChildren().clear();
     runwayContainer.setAlignment(Pos.CENTER);
     runwayContainer.setPrefSize(3500 + 20, 100);  // Adjust height as needed for the line and text
@@ -178,8 +196,7 @@ public class MainController {
     currTodaCol.setCellValueFactory(new PropertyValueFactory<>("currToda"));
     currLdaCol.setCellValueFactory(new PropertyValueFactory<>("currLda"));
 
-    ObservableList<LogicalRunway> runwayData = FXCollections.observableArrayList(modelState.getCurrentRunway()
-        .getLogicalRunways());
+    ObservableList<LogicalRunway> runwayData = FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways());
 
     originalTableView.setItems(runwayData);
     currentTableView.setItems(runwayData);
@@ -187,11 +204,14 @@ public class MainController {
   }
 
   public void updateTables() {
-    // call method when calculations are done.
+    // Update the tables after recalculating the runway with the obstacle
     currentTableView.getItems().clear();
     originalTableView.getItems().clear();
     originalTableView.setItems(FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways()));
     currentTableView.setItems(FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways()));
+    runwayVisual.updateRunway();
+    runwayContainer.getChildren().clear();
+    runwayContainer.getChildren().add(runwayVisual);
   }
 
   public void loadObstacleForm() {
@@ -227,8 +247,36 @@ public class MainController {
 
   }
 
+  public void loadPredefinedObstacleForm() {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PredefinedObstacleList.fxml"));
+      Parent root = loader.load();
+
+      // Get the controller
+      PredefinedObstacleController controller = loader.getController();
+      controller.setMainController(this);
+
+      // Create and show the stage
+      Stage dialogStage = new Stage();
+      dialogStage.setTitle("Select Predefined Obstacle");
+      dialogStage.initModality(Modality.WINDOW_MODAL);
+      dialogStage.initOwner(addObstButton.getScene().getWindow());
+      dialogStage.setScene(new Scene(root));
+
+      controller.setDialogStage(dialogStage);
+      dialogStage.showAndWait();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+
   public void addObstacle(Obstacle obstacle) {
     logger.debug("Adding obstacle: " + obstacle);
+    System.out.println("Adding obstacle");
+    logger.log(Level.DEBUG, "Adding obstacle");
+
+    // Recalculate the runway after the obstacle is added
     calculator.redeclareRunway(obstacle);
 
     updateTables();
