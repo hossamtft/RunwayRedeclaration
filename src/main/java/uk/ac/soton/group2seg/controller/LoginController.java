@@ -132,12 +132,12 @@ public class LoginController {
   }
 
   private boolean validateInputs(String username, String password, String role, String airportID) {
-    if (username.length() < 6) {
-      showError("Username must be at least 6 characters long.");
+    if (username.length() < 6 || !usernameUnique(username)) {
+      showError("Username must be unique and at least 6 characters long.");
       return false;
     }
 
-    if (password.length() < 8 || !password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*") || !password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+    if (password.length() < 8 || !password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*") || !password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*(),.?\":{}|<>_-].*")) {
       showError("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one symbol.");
       return false;
     }
@@ -147,8 +147,8 @@ public class LoginController {
       return false;
     }
 
-    if (airportID.isEmpty()) {
-      showError("Airport ID cannot be empty.");
+    if (airportID.isEmpty() || !validAirport(airportID)) {
+      showError("Provide a valid UK Aiport ID!");
       return false;
     }
 
@@ -164,6 +164,47 @@ public class LoginController {
     alert.setWidth(400);
     alert.setHeight(200);
     alert.showAndWait();
+  }
+
+
+  private boolean usernameUnique(String username) {
+    String nameQuery = "SELECT COUNT(*) FROM Users WHERE Username = ?";
+
+    try (Connection connection = connectToDatabase();
+        PreparedStatement preparedStatement = connection.prepareStatement(nameQuery)) {
+
+      preparedStatement.setString(1, username);
+      ResultSet resultSet = preparedStatement.executeQuery();
+
+      if (resultSet.next()) {
+        return resultSet.getInt(1) == 0;
+      }
+    } catch (SQLException e) {
+      logger.error("DB error encountered when validating username uniqueness: " + e.getMessage());
+      e.printStackTrace();
+    }
+
+    return false;
+  }
+
+
+  private boolean validAirport(String airportID){
+    String airportQuery = "SELECT COUNT(*) FROM Airports WHERE AirportID = ?";
+
+    try(Connection connection = connectToDatabase();
+      PreparedStatement preparedStatement = connection.prepareStatement(airportQuery)){
+
+      preparedStatement.setString(1, airportID);
+      ResultSet resultSet = preparedStatement.executeQuery();
+
+      if (resultSet.next()){
+          return resultSet.getInt(1 ) != 0;
+      }
+    } catch (SQLException e){
+      logger.error("DB error encountered when checking airport existence: " + e.getMessage());
+    }
+
+      return false;
   }
 
 
