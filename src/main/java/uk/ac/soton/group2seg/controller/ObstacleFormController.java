@@ -1,6 +1,7 @@
 package uk.ac.soton.group2seg.controller;
 
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import javafx.fxml.FXML;
@@ -88,7 +89,13 @@ public class ObstacleFormController {
     if (errorMessage.isEmpty()) {
       return true;
     } else {
-      System.err.println(errorMessage);
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setTitle("Input Validation Error");
+      alert.setHeaderText(null);
+      alert.setContentText(errorMessage);
+      alert.setWidth(400);
+      alert.setHeight(200);
+      alert.showAndWait();
       return false;
     }
   }
