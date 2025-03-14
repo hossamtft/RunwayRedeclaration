@@ -1,0 +1,87 @@
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #f5f5f5, #e9ecef);
+}
+
+.vbox, .grid-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 10px;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 8, 0, 2, 2);
+}
+
+.label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #333;
+    -fx-font-weight: normal;
+}
+
+.text-field, .password-field {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
+    -fx-padding: 6px;
+    -fx-font-size: 13px;
+    -fx-pref-height: 30px;
+    -fx-pref-width: 180px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #4d6478;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 120, 215, 0.15), 6, 0, 0, 0);
+}
+
+.combo-box {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
+    -fx-padding: 4px;
+    -fx-font-size: 13px;
+    -fx-pref-height: 30px;
+    -fx-pref-width: 180px;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 4px;
+    -fx-font-size: 13px;
+}
+
+.combo-box-popup .list-view {
+    -fx-pref-width: 180px;
+}
+
+.combo-box:focused {
+    -fx-border-color: #4d6478;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 120, 215, 0.15), 6, 0, 0, 0);
+}
+
+.button {
+    -fx-background-color: #4d6478;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: normal;
+    -fx-padding: 6px 12px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-min-width: 100px;
+    -fx-min-height: 32px;
+    -fx-transition: 0.2s;
+}
+
+.button:hover {
+    -fx-background-color: #005a9e;
+}
+
+.button:pressed {
+    -fx-background-color: #004080;
+}
+
+.hbox {
+    -fx-alignment: center;
+    -fx-spacing: 8px;
+}
+

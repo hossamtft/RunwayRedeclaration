@@ -124,6 +124,7 @@ public class LoginController {
 
     Scene scene = new Scene(vbox);
     registerStage.setScene(scene);
+    scene.getStylesheets().add(getClass().getResource("/css/form.css").toExternalForm());
     registerStage.showAndWait();
   }
 
@@ -284,6 +285,7 @@ public class LoginController {
 
     Scene scene = new Scene(vbox);
     loginStage.setScene(scene);
+    scene.getStylesheets().add(getClass().getResource("/css/form.css").toExternalForm());
     loginStage.showAndWait();
   }
 
