@@ -77,7 +77,13 @@ public class PredefinedObstacleController {
         String heightText = formHeight.getText();
 
         if (selectedObstacle == null || heightText.isEmpty() || distLText.isEmpty() || distRText.isEmpty() || distCentText.isEmpty()) {
-            System.err.println("Please fill in all fields.");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Input Validation Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Fill in all fields");
+            alert.setWidth(400);
+            alert.setHeight(200);
+            alert.showAndWait();
             return;
         }
 
