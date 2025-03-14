@@ -151,7 +151,7 @@ public class JaxbUtility {
   }
 
   public static HashMap<String, String> parseObstacles() {
-    File xmlFile = new File("src/main/Resources/view/ObstacleList.xml"); // Ensure correct path
+    File xmlFile = new File("src/main/Resources/obstacleList.xml"); // Ensure correct path
 
     HashMap<String, String> obstacleMap = new HashMap<>();
 
