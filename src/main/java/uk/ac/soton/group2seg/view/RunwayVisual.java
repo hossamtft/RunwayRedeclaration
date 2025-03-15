@@ -47,29 +47,29 @@ public class RunwayVisual extends Pane {
     centreLine.setStroke(Color.WHITE);
     centreLine.setStrokeWidth(2);
 
-    // Create the TORA line (dashed and in red color)
-    Line toraLine = new Line(0, width + 40, runwayLength, width + 40);
-    toraLine.getStrokeDashArray().addAll(15.0, 10.0);
-    toraLine.setStroke(Color.RED);
-    toraLine.setStrokeWidth(2);
-
-    // Create text to display TORA length
-    Text toraLengthText = new Text(runwayLength / 2 - 30, width + 60, toraLength + "m TORA");
-    toraLengthText.setFill(Color.RED);
-    toraLengthText.setStyle("-fx-font-size: 20px;");
-
-    // Create a distance line below the runway
-    Line distanceLine = new Line(0, width + 20, runwayLength, width + 20);
-    distanceLine.setStroke(Color.BLACK);
-    distanceLine.setStrokeWidth(2);
-
-    // Create text for runway length
-    Text runwayLengthText = new Text(runwayLength / 2 - 30, width + 40, toraLength + "m length");
-    runwayLengthText.setFill(Color.BLACK);
-    runwayLengthText.setStyle("-fx-font-size: 20px;");
+//    // Create the TORA line (dashed and in red color)
+//    Line toraLine = new Line(0, width + 40, runwayLength, width + 40);
+//    toraLine.getStrokeDashArray().addAll(15.0, 10.0);
+//    toraLine.setStroke(Color.RED);
+//    toraLine.setStrokeWidth(2);
+//
+//    // Create text to display TORA length
+//    Text toraLengthText = new Text(runwayLength / 2 - 30, width + 60, toraLength + "m TORA");
+//    toraLengthText.setFill(Color.RED);
+//    toraLengthText.setStyle("-fx-font-size: 20px;");
+//
+//    // Create a distance line below the runway
+//    Line distanceLine = new Line(0, width + 20, runwayLength, width + 20);
+//    distanceLine.setStroke(Color.BLACK);
+//    distanceLine.setStrokeWidth(2);
+//
+//    // Create text for runway length
+//    Text runwayLengthText = new Text(runwayLength / 2 - 30, width + 40, toraLength + "m length");
+//    runwayLengthText.setFill(Color.BLACK);
+//    runwayLengthText.setStyle("-fx-font-size: 20px;");
 
     // Add all elements to the pane
-    this.getChildren().addAll(runway, distanceLine, centreLine, toraLine, runwayLengthText, toraLengthText);
+    this.getChildren().addAll(runway,  centreLine);
 
     // Set the preferred size of the pane to fit the elements
     this.setPrefSize(runwayLength + 20, width + 80); // Adding some extra space for lines and text

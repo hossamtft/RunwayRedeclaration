@@ -1,173 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
-  All rights reserved. Use is subject to license terms.
-
-  This file is available and licensed under the following license:
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions
-  are met:
-
-  - Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in
-    the documentation and/or other materials provided with the distribution.
-  - Neither the name of Oracle Corporation nor the names of its
-    contributors may be used to endorse or promote products derived
-    from this software without specific prior written permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
--->
-
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
 
-<VBox prefHeight="1080" prefWidth="2560" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
-  <children>
+<VBox prefHeight="1080" prefWidth="1920" minWidth="1500" minHeight="800" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
+    <children>
 
-    <HBox VBox.vgrow="ALWAYS">
-      <children>
-        <!-- Dropdown selection VBox -->
-        <VBox prefWidth="200" HBox.hgrow="NEVER">
-          <children>
-            <AnchorPane prefHeight="1091.0" prefWidth="209.0">
-              <children>
-                <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Airport options" textAlignment="CENTER" wrapText="false">
-                  <font>
-                    <Font size="18.0" fx:id="x1" />
-                  </font>
-                  <textFill>
-                    <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
-                  </textFill>
-                </Label>
-                <ButtonBar layoutX="9.0" layoutY="460.0" prefHeight="40.0" prefWidth="200.0" />
-                <ComboBox fx:id="airportListCombo" layoutX="21.0" layoutY="58.0" maxWidth="300" prefWidth="120.0" />
-                <Button layoutX="160.0" layoutY="58.0" mnemonicParsing="false" onAction="#handleAirportSelection" text="Load" />
-                <ComboBox fx:id="runwayListCombo" layoutX="21.0" layoutY="100" maxWidth="300.0" prefWidth="120.0" visible="false" />
-                <Button fx:id="runwayLoadButton" layoutX="160.0" layoutY="100" mnemonicParsing="false" onAction="#handleRunwaySelection" text="Load" visible="false" />
-              </children>
-            </AnchorPane>
-          </children>
-        </VBox>
-
-        <!-- Runway view VBox -->
-        <VBox alignment="CENTER" prefWidth="1000" HBox.hgrow="SOMETIMES">
-          <children>
-            <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-              <content>
-                <VBox alignment="CENTER" >
-                  <children>
-                    <HBox alignment="CENTER"  HBox.hgrow="ALWAYS" prefWidth="1000">
-                      <VBox alignment="CENTER" >
-                        <children>
-                          <VBox fx:id="runwayContainer" alignment="CENTER" prefHeight="825.0" prefWidth="1000" />
-                        </children>
-                      </VBox>
-                    </HBox>
-                  </children>
+        <SplitPane dividerPositions="0.15, 0.78" VBox.vgrow="ALWAYS">
+            <items>
+                <!-- Dropdown selection VBox -->
+                <VBox prefWidth="260" SplitPane.resizableWithParent="false">
+                    <children>
+                        <AnchorPane prefHeight="1091.0" prefWidth="209.0">
+                            <children>
+                                <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" style="&#10;" text="Airport options" textAlignment="CENTER" wrapText="false">
+                                    <font>
+                                        <Font size="18.0" fx:id="x1" />
+                                    </font>
+                                    <textFill>
+                                        <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
+                                    </textFill>
+                                </Label>
+                                <ButtonBar layoutX="9.0" layoutY="460.0" prefHeight="40.0" prefWidth="200.0" />
+                                <ComboBox fx:id="airportListCombo" layoutX="21.0" layoutY="58.0" maxWidth="300" prefWidth="120.0" />
+                                <Button layoutX="160.0" layoutY="58.0" mnemonicParsing="false" onAction="#handleAirportSelection" text="Load" />
+                                <ComboBox fx:id="runwayListCombo" layoutX="21.0" layoutY="100" maxWidth="300.0" prefWidth="120.0" visible="false" />
+                                <Button fx:id="runwayLoadButton" layoutX="160.0" layoutY="100" mnemonicParsing="false" onAction="#handleRunwaySelection" text="Load" visible="false" />
+                            <Button fx:id="addPreDefObstButton" layoutX="38.0" layoutY="934.0" mnemonicParsing="false" onAction="#loadPredefinedObstacleForm" prefHeight="25.0" prefWidth="194.0" text="Add Predefined obstacle" />
+                            <Button fx:id="addObstButton" layoutX="38.0" layoutY="897.0" mnemonicParsing="false" onAction="#loadObstacleForm" prefHeight="25.0" prefWidth="194.0" text="Add obstacle" />
+                            </children>
+                        </AnchorPane>
+                    </children>
                 </VBox>
-              </content>
-            </ScrollPane>
-          </children>
-        </VBox>
-        <VBox alignment="TOP_CENTER" prefHeight="575.0" prefWidth="500" HBox.hgrow="NEVER">
-          <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Details" />
 
-          <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Original Values" />
-          <TableView fx:id="originalTableView" prefHeight="100" prefWidth="320">
-            <columns>
-              <TableColumn fx:id="nameCol" prefWidth="64" text="Runway" />
-              <TableColumn fx:id="asdaCol" prefWidth="64" text="ASDA" />
-              <TableColumn fx:id="toraCol" prefWidth="64" text="TORA" />
-              <TableColumn fx:id="todaCol" prefWidth="64" text="TODA" />
-              <TableColumn fx:id="ldaCol" prefWidth="64" text="LDA" />
-            </columns>
-          </TableView>
+                <!-- Center region: Runway view -->
+                <AnchorPane SplitPane.resizableWithParent="true" minWidth="800" minHeight="500">
+                    <fx:include source="topDownView.fxml" />
+<!--                    <children>-->
+<!--                        <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" prefWidth="900" style="&#45;&#45;border-color: blue">-->
+<!--                            <children>-->
+<!--                                <HBox alignment="CENTER" HBox.hgrow="ALWAYS" style="&#45;&#45;border-color: pink">-->
+<!--                                    <VBox alignment="CENTER" prefWidth="400" prefHeight="800" style="&#45;&#45;border-color: green">-->
+<!--                                        <children>-->
+<!--                                            <VBox fx:id="runwayContainer" source="topDownView.fxml"/>-->
+<!--                                        </children>-->
+<!--                                    </VBox>-->
+<!--                                </HBox>-->
+<!--                            </children>-->
+<!--                        </VBox>-->
+<!--                    </children>-->
+                </AnchorPane>
 
-          <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Current Values" />
-          <TableView fx:id="currentTableView" prefHeight="100" prefWidth="320">
-            <columns>
-              <TableColumn fx:id="currNameCol" prefWidth="64" text="Runway" />
-              <TableColumn fx:id="currAsdaCol" prefWidth="64" text="ASDA" />
-              <TableColumn fx:id="currToraCol" prefWidth="64" text="TORA" />
-              <TableColumn fx:id="currTodaCol" prefWidth="64" text="TODA" />
-              <TableColumn fx:id="currLdaCol" prefWidth="64" text="LDA" />
-            </columns>
-          </TableView>
+                <!-- Right region: Details -->
+                <VBox alignment="TOP_CENTER" prefHeight="575.0" prefWidth="325" minWidth="100" SplitPane.resizableWithParent="false">
+                    <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Details" />
 
-          <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-            <Button fx:id="toggleTabPaneButton" text="Show Calculation Breakdown" onAction="#toggleTabPaneVisibility"/>
-          </HBox>
+                    <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Original Values" />
+                    <TableView fx:id="originalTableView" prefHeight="100" prefWidth="320">
+                        <columns>
+                            <TableColumn fx:id="nameCol" prefWidth="64" text="Runway" />
+                            <TableColumn fx:id="asdaCol" prefWidth="64" text="ASDA" />
+                            <TableColumn fx:id="toraCol" prefWidth="64" text="TORA" />
+                            <TableColumn fx:id="todaCol" prefWidth="64" text="TODA" />
+                            <TableColumn fx:id="ldaCol" prefWidth="64" text="LDA" />
+                        </columns>
+                    </TableView>
 
-          <VBox fx:id="tabPaneContainer" visible="false" managed="false">
-            <TabPane prefWidth="320" prefHeight="200">
-              <tabs>
-                <Tab text="ASDA" closable="false">
-                  <content>
-                    <VBox>
-                      <TextArea fx:id="asdaTextArea" prefHeight="150" prefWidth="300" editable="false"/>
+                    <Label alignment="CENTER" style="-fx-font-weight: bold;" text="Current Values" />
+                    <TableView fx:id="currentTableView" prefHeight="100" prefWidth="320">
+                        <columns>
+                            <TableColumn fx:id="currNameCol" prefWidth="64" text="Runway" />
+                            <TableColumn fx:id="currAsdaCol" prefWidth="64" text="ASDA" />
+                            <TableColumn fx:id="currToraCol" prefWidth="64" text="TORA" />
+                            <TableColumn fx:id="currTodaCol" prefWidth="64" text="TODA" />
+                            <TableColumn fx:id="currLdaCol" prefWidth="64" text="LDA" />
+                        </columns>
+                    </TableView>
+
+                    <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                        <Button fx:id="toggleTabPaneButton" onAction="#toggleTabPaneVisibility" text="Show Calculation Breakdown" />
+                    </HBox>
+
+                    <VBox fx:id="tabPaneContainer" managed="false" visible="false">
+                        <TabPane prefHeight="200" prefWidth="320">
+                            <tabs>
+                                <Tab closable="false" text="ASDA">
+                                    <content>
+                                        <VBox>
+                                            <TextArea fx:id="asdaTextArea" editable="false" prefHeight="150" prefWidth="300" />
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                                <Tab closable="false" text="TORA">
+                                    <content>
+                                        <VBox>
+                                            <TextArea fx:id="toraTextArea" editable="false" prefHeight="150" prefWidth="300" />
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                                <Tab closable="false" text="TODA">
+                                    <content>
+                                        <VBox>
+                                            <TextArea fx:id="todaTextArea" editable="false" prefHeight="150" prefWidth="300" />
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                                <Tab closable="false" text="LDA">
+                                    <content>
+                                        <VBox>
+                                            <TextArea fx:id="ldaTextArea" editable="false" prefHeight="150" prefWidth="300" />
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                            </tabs>
+                        </TabPane>
                     </VBox>
-                  </content>
-                </Tab>
-                <Tab text="TORA" closable="false">
-                  <content>
-                    <VBox>
-                      <TextArea fx:id="toraTextArea" prefHeight="150" prefWidth="300" editable="false"/>
-                    </VBox>
-                  </content>
-                </Tab>
-                <Tab text="TODA" closable="false">
-                  <content>
-                    <VBox>
-                      <TextArea fx:id="todaTextArea" prefHeight="150" prefWidth="300" editable="false"/>
-                    </VBox>
-                  </content>
-                </Tab>
-                <Tab text="LDA" closable="false">
-                  <content>
-                    <VBox>
-                      <TextArea fx:id="ldaTextArea" prefHeight="150" prefWidth="300" editable="false"/>
-                    </VBox>
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
-          </VBox>
-        </VBox>
-
-      </children>
-    </HBox>
-      <VBox alignment="CENTER" prefHeight="236.0" prefWidth="2560.0">
-         <children>
-           <Button fx:id="addObstButton" mnemonicParsing="false" onAction="#loadObstacleForm" prefHeight="25.0" prefWidth="194.0" text="Add obstacle" />
-           <Button fx:id="addPreDefObstButton" mnemonicParsing="false" onAction="#loadPredefinedObstacleForm" prefHeight="25.0" prefWidth="194.0" text="Add Predefined obstacle" />
-         </children>
-      </VBox>
+                </VBox>
+            </items>
+        </SplitPane>
     </children>
 </VBox>
