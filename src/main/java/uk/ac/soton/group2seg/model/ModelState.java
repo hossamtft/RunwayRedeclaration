@@ -12,11 +12,14 @@ public class ModelState {
   private HashMap<String,String> airportList;
   private Airport currentAirport;
   private Runway currentRunway;
+  private Obstacle obstacle;
+
 /**
  * Initialise the model
  */
   public ModelState (){
     airportList = JaxbUtility.parseAirports();
+    this.obstacle = null;
   }
 
   /**
@@ -70,6 +73,14 @@ public class ModelState {
 
   public int getRunwayLength() {
     return currentRunway.getRunwayLength();
+  }
+
+  public void setObstacle(Obstacle obstacle) {
+    this.obstacle = obstacle;
+  }
+
+  public Obstacle getObstacle(){
+    return obstacle;
   }
 
 }

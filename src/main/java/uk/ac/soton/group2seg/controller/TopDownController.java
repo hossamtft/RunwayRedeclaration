@@ -1,6 +1,7 @@
 package uk.ac.soton.group2seg.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
@@ -11,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.ModelState;
+import uk.ac.soton.group2seg.model.Obstacle;
 import uk.ac.soton.group2seg.model.Runway;
 
 public class TopDownController {
@@ -23,6 +25,7 @@ public class TopDownController {
     private final double RUNWAY_LENGTH = 900;
     private final double RUNWAY_WIDTH = 100.0;
 
+    private Pane linePane;
     private Pane runwayPane;
     private ModelState modelState;
     private Runway currentRunway = null;
@@ -31,6 +34,7 @@ public class TopDownController {
 
     public TopDownController() {
        runwayPane = new Pane();
+       linePane = new Pane();
        instance = this;
     }
 
@@ -45,8 +49,8 @@ public class TopDownController {
         AnchorPane.setLeftAnchor(topDownView, 0d);
         AnchorPane.setRightAnchor(topDownView, 0d);
 
-        topDownView.setStyle("-fx-background-color: lightgrey");
-        topDownView.getChildren().add(runwayPane);
+        topDownView.setStyle("-fx-background-color: green");
+        topDownView.getChildren().addAll(runwayPane, linePane);
 
         // Setup listeners for resize events
         topDownView.widthProperty().addListener((obs, oldVal, newVal) -> {
@@ -72,6 +76,7 @@ public class TopDownController {
     }
 
     private void updateView() {
+        linePane.getChildren().clear();
         runwayPane.getChildren().clear();
 
         if (!initialSetupComplete && (topDownView.getWidth() <= 0 || topDownView.getHeight() <= 0)) {
@@ -95,11 +100,55 @@ public class TopDownController {
         runwayPane.setLayoutX(centerX);
         runwayPane.setLayoutY(centerY);
 
+        linePane.setLayoutX(centerX);
+        linePane.setLayoutY(centerY);
+
         drawClearedAndGraded();
 
 
     }
 
+    private void drawEmptyRunway() {
+        // Fixed size runway - won't change dimensions when container resizes
+        Rectangle strip = new Rectangle(RUNWAY_LENGTH, RUNWAY_WIDTH);
+        strip.setFill(Color.DARKGREY);
+        strip.setStroke(Color.BLACK);
+
+        Line centreLine = new Line(0, RUNWAY_WIDTH/2, RUNWAY_LENGTH, RUNWAY_WIDTH/2);
+        centreLine.getStrokeDashArray().addAll(15.0, 10.0);
+        centreLine.setStroke(Color.WHITE);
+        centreLine.setStrokeWidth(5);
+
+        runwayPane.getChildren().addAll(strip, centreLine);
+    }
+
+    /**
+     * Render the runway strip
+     * */
+    private void drawRunway() {
+        scale = RUNWAY_LENGTH/ currentRunway.getRunwayLength();
+
+        Rectangle strip = new Rectangle(RUNWAY_LENGTH, RUNWAY_WIDTH);
+        strip.setFill(Color.DARKGREY);
+        strip.setStroke(Color.BLACK);
+
+        Line centreLine = new Line(0, RUNWAY_WIDTH/2, RUNWAY_LENGTH, RUNWAY_WIDTH/2);
+        centreLine.getStrokeDashArray().addAll(15.0, 10.0);
+        centreLine.setStroke(Color.WHITE);
+        centreLine.setStrokeWidth(5);
+
+        //TODO: drawThresholds();
+
+        runwayPane.getChildren().addAll(strip, centreLine);
+
+        if(modelState.getCurrentRunway() != null) {
+            drawLines();
+        }
+    }
+
+    /**
+     * Render the cleared and graded area around the runway strip
+     * */
     private void drawClearedAndGraded() {
         double runwayCenterX = RUNWAY_LENGTH / 2;
         double runwayCenterY = RUNWAY_WIDTH / 2;
@@ -127,55 +176,311 @@ public class TopDownController {
         runwayPane.getChildren().add(0, clearedAndGraded);
     }
 
-    private void drawRunway() {
-        scale = RUNWAY_LENGTH/ currentRunway.getRunwayLength();
+    private void drawLines() {
+        LogicalRunway lowerRunway = modelState.getCurrentRunway().getLowerRunway();
+        LogicalRunway higherRunway = modelState.getCurrentRunway().getHigherRunway();
 
-        Rectangle strip = new Rectangle(RUNWAY_LENGTH, RUNWAY_WIDTH);
-        strip.setFill(Color.DARKGREY);
-        strip.setStroke(Color.BLACK);
-
-        Line centreLine = new Line(0, RUNWAY_WIDTH/2, RUNWAY_LENGTH, RUNWAY_WIDTH/2);
-        centreLine.getStrokeDashArray().addAll(15.0, 10.0);
-        centreLine.setStroke(Color.WHITE);
-        centreLine.setStrokeWidth(5);
-
-        runwayPane.getChildren().addAll(strip, centreLine);
-
-        drawLeftLines();
+        drawLineSet(-1, lowerRunway);
+        drawLineSet(1, higherRunway);
     }
 
-    private void drawLeftLines() {
-        LogicalRunway logicalRunway = currentRunway.getLowerRunway();
-        double scaledTora = logicalRunway.getCurrTora() * scale;
-        double scaledToda = logicalRunway.getCurrToda() * scale;
-        double scaledLda = logicalRunway.getCurrLda() * scale;
-        double scaledAsda = logicalRunway.getCurrAsda() * scale;
+    private void drawObstacleLines() {
 
-        Line toraLine = new Line(0d, RUNWAY_WIDTH - 200, scaledTora, RUNWAY_WIDTH - 200);
-        toraLine.setStroke(Color.BLACK);
-        toraLine.setStrokeWidth(2);
-
-        Line toraThresh1 = new Line(0d, 0d, 0d, RUNWAY_WIDTH-200);
-        toraThresh1.getStrokeDashArray().addAll(10.0,5.0);
-        toraThresh1.setFill(Color.BLACK);
-        Line toraThresh2 = new Line(scaledTora, 0d, scaledTora, RUNWAY_WIDTH-200);
-        toraThresh2.getStrokeDashArray().addAll(10.0,5.0);
-        toraThresh2.setFill(Color.BLACK);
-
-        runwayPane.getChildren().addAll(toraLine, toraThresh1, toraThresh2);
     }
 
-    private void drawEmptyRunway() {
-        // Fixed size runway - won't change dimensions when container resizes
-        Rectangle strip = new Rectangle(RUNWAY_LENGTH, RUNWAY_WIDTH);
-        strip.setFill(Color.DARKGREY);
-        strip.setStroke(Color.BLACK);
+    /**
+     * Draw lines using officially declared runway distances
+     * @param i Flag denoting which logical runway (-1 = lower bearing runway i.e. 04, 09L etc.)
+     * @param logicalRunway The logical runway
+     */
+    private void drawLineSet(int i, LogicalRunway logicalRunway) {
+        int tora = logicalRunway.getTora();
+        int toda = logicalRunway.getToda();
+        int lda = logicalRunway.getLda();
+        int asda = logicalRunway.getAsda();
 
-        Line centreLine = new Line(0, RUNWAY_WIDTH/2, RUNWAY_LENGTH, RUNWAY_WIDTH/2);
-        centreLine.getStrokeDashArray().addAll(15.0, 10.0);
-        centreLine.setStroke(Color.WHITE);
-        centreLine.setStrokeWidth(5);
+        double scaledTora = tora * scale;
+        double scaledToda = toda * scale;
+        double scaledLda = lda * scale;
+        double scaledAsda = asda * scale;
+        double threshold = (tora - lda) * scale;
 
-        runwayPane.getChildren().addAll(strip, centreLine);
+        logger.info(String.format("Runway: %s"
+            + "\nThreshold calculation = (%d - %d) * %f = %f",logicalRunway.getName(), tora, lda, scale, threshold));
+
+        double baseY = RUNWAY_WIDTH + (i * 200);
+        double spacing = i * 40; // Ensures at least 30px space between lines
+
+        // Define colors for each line type
+        Color toraColor = Color.RED;
+        Color todaColor = Color.PINK;
+        Color ldaColor = Color.BLACK;
+        Color asdaColor = Color.ORANGE;
+
+
+        // LDA Line
+        drawLineSpec("LDA", i, threshold, scaledLda, baseY, lda, ldaColor);
+
+        // TORA Line
+        drawSingleLine("TORA", i, scaledTora, baseY + spacing, tora, toraColor);
+
+        // TODA Line
+        drawSingleLine("TODA", i, scaledToda, baseY + 2* spacing, toda, todaColor);
+
+        // ASDA Line
+        drawSingleLine("ASDA", i, scaledAsda, baseY + 3 * spacing, asda, asdaColor);
     }
+
+
+    public void addObstacle(Obstacle obstacle){
+        linePane.getChildren().clear();
+
+        renderObstacle(obstacle);
+
+        LogicalRunway lowerRunway = modelState.getCurrentRunway().getLowerRunway();
+        LogicalRunway higherRunway = modelState.getCurrentRunway().getHigherRunway();
+        if(obstacle.getIsCloserLower()) {
+            //If the obstacle is closer to threshold with lower bearing
+            //Integer is a flag to denote line root
+            takeoffLinesAway(1, higherRunway);
+            ldaOver(1, higherRunway);
+
+            takeoffLinesTowards(-1, lowerRunway);
+            ldaTowards(-1, lowerRunway);
+
+        }else{
+            takeoffLinesAway(-1, lowerRunway);
+            ldaOver(-1, lowerRunway);
+
+            takeoffLinesTowards(1, higherRunway);
+            ldaTowards(1, higherRunway);
+        }
+
+    }
+
+    private void ldaTowards(int i, LogicalRunway logicalRunway) {
+        int tora = logicalRunway.getTora();
+        int lda = logicalRunway.getLda();
+        int currLda = logicalRunway.getCurrLda();
+
+        double scaledLda = currLda * scale;
+        double threshold = (tora - lda) *scale;
+
+        double startX;
+        double endX;
+
+        if(i == -1) {
+            startX = threshold;
+            endX = scaledLda + threshold;
+        }else {
+            startX = RUNWAY_LENGTH - threshold;
+            endX = RUNWAY_LENGTH - scaledLda - threshold;
+        }
+        logger.info(String.format("Threshold: %f \nEndX: %f", startX, endX));
+
+        Color color = Color.BLACK;
+
+        double yPos = RUNWAY_WIDTH + (i * 200);
+
+        // Main line
+        Line line = new Line(startX, yPos, endX, yPos);
+        line.setStroke(color);
+        line.setStrokeWidth(2);
+
+        // Label
+        Label lineLabel = new Label(String.format("LDA: %d m", currLda));
+        lineLabel.setTextFill(color); // Set label color to match the line
+        lineLabel.setLayoutX((endX));
+        lineLabel.setLayoutY(yPos - 20); // Place label slightly below the line
+
+        // Dashed threshold markers
+        Line thresholdStart = new Line(startX, 0d, startX, yPos);
+        thresholdStart.getStrokeDashArray().addAll(10.0, 5.0);
+        thresholdStart.setStroke(color);
+
+        Line thresholdEnd = new Line(endX, 0d, endX, yPos);
+        thresholdEnd.getStrokeDashArray().addAll(10.0, 5.0);
+        thresholdEnd.setStroke(color);
+
+        // Add all elements to the pane
+        runwayPane.getChildren().addAll(line, thresholdStart, thresholdEnd, lineLabel);
+    }
+
+    private void takeoffLinesTowards(int i, LogicalRunway logicalRunway) {
+        int tora = logicalRunway.getCurrTora();
+        double scaledTora = tora * scale;
+
+        Color toraColor = Color.RED;
+        Color todaColor = Color.PINK;
+        Color asdaColor = Color.ORANGE;
+
+        double baseY = RUNWAY_WIDTH + (i * 200);
+        double spacing = i * 40; // Ensures at least 30px space between lines
+
+        // TORA Line
+        drawSingleLine("TORA", i, scaledTora, baseY + spacing, tora, toraColor);
+
+        // TODA Line
+        drawSingleLine("TODA", i, scaledTora, baseY + 2* spacing, tora, todaColor);
+
+        // ASDA Line
+        drawSingleLine("ASDA", i, scaledTora, baseY + 3 * spacing, tora, asdaColor);
+    }
+
+    private void ldaOver(int i, LogicalRunway logicalRunway) {
+
+    }
+
+    private void takeoffLinesAway(int i, LogicalRunway logicalRunway) {
+        int tora = logicalRunway.getCurrTora();
+        double scaledTora = tora * scale;
+
+        double startX;
+        double endX;
+        if(i == -1) {
+            logger.info("USING -1 FLAG");
+            startX = RUNWAY_LENGTH - scaledTora;
+            endX = RUNWAY_LENGTH;
+        }else {
+            logger.info("USING +1 FLAG");
+            startX = scaledTora;
+            endX = 0;
+        }
+
+        logger.info(String.format("Runway: %s \n"
+            + "TORA: %d \n"
+            + "StartX: %f \n EndX: %f", logicalRunway.getName(), tora, startX, endX));
+
+        Color toraColor = Color.RED;
+        Color todaColor = Color.PINK;
+        Color asdaColor = Color.ORANGE;
+
+        double baseY = RUNWAY_WIDTH + (i * 200);
+        double spacing = i * 40; // Ensures at least 30px space between lines
+
+        // TORA Line
+        drawExactLine("TORA", i, startX, endX, baseY + spacing, tora,toraColor);
+
+        // TORA Line
+        drawExactLine("TODA", i, startX, endX, baseY + 2 * spacing, tora,todaColor);
+
+        // TORA Line
+        drawExactLine("ASDA", i, startX, endX, baseY + 3 * spacing, tora,asdaColor);
+
+    }
+
+    private void renderObstacle(Obstacle obstacle) {
+        Rectangle obstacleShape = new Rectangle(15.0, 15.0, Color.RED);
+        double verticalScale = RUNWAY_WIDTH / 30;
+
+        double x = obstacle.getDistLowerThreshold() * scale;
+        double y = (RUNWAY_WIDTH / 2) + obstacle.getCentreOffset() * verticalScale;
+
+        obstacleShape.setX(x);
+        obstacleShape.setY(y);
+
+        linePane.getChildren().add(obstacleShape);
+    }
+
+    /**
+     * Helper method to draw a single runway parameter line with labels and dashed threshold markers.
+     */
+    private void drawSingleLine(String label, int i, double length, double yPos, int value, Color color) {
+        double startX;
+        double endX;
+
+        if(i == -1) {
+            startX = 0;
+            endX = length;
+        }else{
+            startX = RUNWAY_LENGTH;
+            endX = RUNWAY_LENGTH - length;
+        }
+
+        // Main line
+        Line line = new Line(startX, yPos, endX, yPos);
+        line.setStroke(color);
+        line.setStrokeWidth(2);
+
+        // Label
+        Label lineLabel = new Label(String.format("%s: %d", label, value));
+        lineLabel.setTextFill(color); // Set label color to match the line
+        lineLabel.setLayoutX((endX));
+        lineLabel.setLayoutY(yPos - 20); // Place label slightly below the line
+
+        // Dashed threshold markers
+        Line thresholdStart = new Line(startX, 0d, startX, yPos);
+        thresholdStart.getStrokeDashArray().addAll(10.0, 5.0);
+        thresholdStart.setStroke(color);
+
+        Line thresholdEnd = new Line(endX, 0d, endX, yPos);
+        thresholdEnd.getStrokeDashArray().addAll(10.0, 5.0);
+        thresholdEnd.setStroke(color);
+
+        // Add all elements to the pane
+        linePane.getChildren().addAll(line, thresholdStart, thresholdEnd, lineLabel);
+    }
+
+    private void drawLineSpec(String label, int i, double threshPos, double endPos, double yPos, int value, Color color) {
+        double startX;
+        double endX;
+
+        if(i == -1) {
+            startX = threshPos;
+            endX = endPos + threshPos ;
+        } else{
+            startX = RUNWAY_LENGTH - threshPos;
+            endX = RUNWAY_LENGTH - endPos - threshPos;
+        }
+        logger.info(String.format("Threshold: %f \nEndX: %f", startX, endX));
+
+        // Main line
+        Line line = new Line(startX, yPos, endX, yPos);
+        line.setStroke(color);
+        line.setStrokeWidth(2);
+
+        // Label
+        Label lineLabel = new Label(String.format("%s: %d", label, value));
+        lineLabel.setTextFill(color); // Set label color to match the line
+        lineLabel.setLayoutX((endX));
+        lineLabel.setLayoutY(yPos - 20); // Place label slightly below the line
+
+        // Dashed threshold markers
+        Line thresholdStart = new Line(startX, 0d, startX, yPos);
+        thresholdStart.getStrokeDashArray().addAll(10.0, 5.0);
+        thresholdStart.setStroke(color);
+
+        Line thresholdEnd = new Line(endX, 0d, endX, yPos);
+        thresholdEnd.getStrokeDashArray().addAll(10.0, 5.0);
+        thresholdEnd.setStroke(color);
+
+        // Add all elements to the pane
+        linePane.getChildren().addAll(line, thresholdStart, thresholdEnd, lineLabel);
+    }
+
+    private void drawExactLine(String label, int i, double startX, double endX, double yPos, int value, Color color){
+        // Main line
+        Line line = new Line(startX, yPos, endX, yPos);
+        line.setStroke(color);
+        line.setStrokeWidth(2);
+
+        // Label
+        Label lineLabel = new Label(String.format("%s: %d", label, value));
+        lineLabel.setTextFill(color); // Set label color to match the line
+        lineLabel.setLayoutX((endX));
+        lineLabel.setLayoutY(yPos - 20); // Place label slightly below the line
+
+        // Dashed threshold markers
+        Line thresholdStart = new Line(startX, 0d, startX, yPos);
+        thresholdStart.getStrokeDashArray().addAll(10.0, 5.0);
+        thresholdStart.setStroke(color);
+
+        Line thresholdEnd = new Line(endX, 0d, endX, yPos);
+        thresholdEnd.getStrokeDashArray().addAll(10.0, 5.0);
+        thresholdEnd.setStroke(color);
+
+        // Add all elements to the pane
+        linePane.getChildren().addAll(line, thresholdStart, thresholdEnd, lineLabel);
+    }
+
 }

@@ -191,11 +191,6 @@ public class MainController {
 
     }
 
-    private void drawRunway() {
-        topDownController.updateRunway();
-
-    }
-
     private void initialiseTables() {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         asdaCol.setCellValueFactory(new PropertyValueFactory<>("asda"));
@@ -225,8 +220,6 @@ public class MainController {
             FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways()));
         currentTableView.setItems(
             FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways()));
-
-        drawRunway();
 
     }
 
@@ -293,11 +286,18 @@ public class MainController {
         System.out.println("Adding obstacle");
         logger.log(Level.DEBUG, "Adding obstacle");
 
+        modelState.setObstacle(obstacle);
+
         // Recalculate the runway after the obstacle is added
         calculator.redeclareRunway(obstacle);
+        topDownController.addObstacle(obstacle);
 
         updateTables();
 
+    }
+
+    private void drawRunway() {
+        topDownController.updateRunway();
     }
 
     public void toggleTabPaneVisibility() {
