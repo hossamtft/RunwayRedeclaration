@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <airportList>
-  <airport>
-    <id>EGLL</id>
-    <name>London Heathrow</name>
-  </airport>
-  <airport>
-    <id>EGKK</id>
-    <name>London Gatwick</name>
-  </airport>
+    <airport>
+        <id>EGLL</id>
+        <name>London Heathrow</name>
+    </airport>
+    <airport>
+        <id>EGKK</id>
+        <name>London Gatwick</name>
+    </airport>
 </airportList>

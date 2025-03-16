@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="root" spacing="5" style="-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 10;"
+      xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="uk.ac.soton.group2seg.controller.RunwayInputController">
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Runway:" style="-fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS" />
+
+        <Button fx:id="removeButton" text="Remove"
+                style="-fx-base: #f44336;" visible="false"
+                onAction="#handleRemove"/>
+    </HBox>
+
+    <TitledPane text="First Logical Runway" expanded="true">
+        <GridPane hgap="10" vgap="5">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="80"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="80"/>
+                <ColumnConstraints hgrow="NEVER" minWidth="80"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="80"/>
+            </columnConstraints>
+
+            <Label text="Designation:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="designation1Field" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="TORA:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="tora1Field" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="TODA:" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+            <TextField fx:id="toda1Field" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+            <Label text="ASDA:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="asda1Field" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="LDA:" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+            <TextField fx:id="lda1Field" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+        </GridPane>
+    </TitledPane>
+
+    <TitledPane text="Second Logical Runway" expanded="true">
+        <GridPane hgap="10" vgap="5">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="80"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="80"/>
+                <ColumnConstraints hgrow="NEVER" minWidth="80"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="80"/>
+            </columnConstraints>
+
+            <Label text="Designation:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="designation2Field" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="TORA:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="tora2Field" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="TODA:" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+            <TextField fx:id="toda2Field" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+            <Label text="ASDA:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="asda2Field" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="LDA:" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+            <TextField fx:id="lda2Field" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+        </GridPane>
+    </TitledPane>
+</VBox>

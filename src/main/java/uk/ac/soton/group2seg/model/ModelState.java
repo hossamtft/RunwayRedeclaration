@@ -40,6 +40,9 @@ public class ModelState {
     currentAirport.initialise();
   }
 
+  public void updateAirportList(){
+    airportList = JaxbUtility.parseAirports();
+  }
   /**
    * Get runway names
    */
