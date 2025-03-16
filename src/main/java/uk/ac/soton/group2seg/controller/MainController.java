@@ -116,6 +116,7 @@ public class MainController {
         logger.info("Loading airport: " + selectedAirport);
         modelState.loadAirport(selectedAirport);
 
+        runwayListCombo.getItems().clear();
         runwayListCombo.getItems()
             .addAll(FXCollections.observableArrayList(modelState.getRunways()));
         runwayListCombo.setVisible(true);
