@@ -41,7 +41,7 @@ public class ObstacleFormController {
       logger.info("Generating obstacle");
       int distL = Integer.parseInt(formDistL.getText());
       int distR = Integer.parseInt(formDistR.getText());
-      int distCent = Integer.parseInt(formDistCent.getText());
+      int distCent = (-1)*Integer.parseInt(formDistCent.getText());
       int height = Integer.parseInt(formHeight.getText());
 
       Obstacle obstacle = new Obstacle(height, distL, distR, distCent);

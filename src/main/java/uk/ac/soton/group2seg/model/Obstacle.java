@@ -13,6 +13,7 @@ public class Obstacle {
     private int distLowerThreshold;
     private int distHigherThreshold;
     private int centreOffset;
+    private boolean isCloserLower;
 
     public Obstacle() {
     }
@@ -38,6 +39,14 @@ public class Obstacle {
 
     public int getDistHigherThreshold() {
         return distHigherThreshold;
+    }
+
+    public void setCloserLower(boolean isCloser) {
+        this.isCloserLower = isCloser;
+    }
+
+    public boolean getIsCloserLower(){
+        return isCloserLower;
     }
 
 }

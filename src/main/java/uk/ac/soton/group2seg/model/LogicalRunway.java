@@ -28,16 +28,11 @@ public class LogicalRunway {
     @XmlElement(name = "lda")
     private int lda;
 
-    @XmlTransient
-    private int currAsda;
-    @XmlTransient
-    private int currToda;
-    @XmlTransient
-    private int currTora;
-    @XmlTransient
-    private int currLda;
-    @XmlTransient
-    private Obstacle obstacle;
+    @XmlTransient private int currAsda;
+    @XmlTransient private int currToda;
+    @XmlTransient private int currTora;
+    @XmlTransient private int currLda;
+    @XmlTransient private Obstacle obstacle;
 
 
     /**
