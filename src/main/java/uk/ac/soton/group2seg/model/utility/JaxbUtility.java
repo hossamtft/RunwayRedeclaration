@@ -1,18 +1,21 @@
 package uk.ac.soton.group2seg.model.utility;
 
-
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import uk.ac.soton.group2seg.model.Airport;
@@ -25,7 +28,7 @@ public class JaxbUtility {
    * */
   public static Airport loadAirport(String xmlFileName) {
     try{
-      Path xmlPath = Path.of("src/main/resources/" + xmlFileName);
+      Path xmlPath = Path.of("src/main/Resources/" + xmlFileName);
       JAXBContext context = JAXBContext.newInstance(Airport.class);
       Unmarshaller unmarshaller = context.createUnmarshaller();
 
@@ -68,9 +71,85 @@ public class JaxbUtility {
     return null;
   }
 
+  /**
+   * Adds a new airport to the system
+   * 1. Saves the airport as an XML file
+   * 2. Updates the airport list XML file
+   *
+   * @param airport The airport to add
+   * @return true if the airport was added successfully, false otherwise
+   */
+  public boolean addAirport(Airport airport) throws JAXBException, IOException {
+    // 1. Save the airport as an XML file
+    String airportFileName = airport.getId() + ".xml";
+    saveAirportToXml(airport, airportFileName);
+
+    // 2. Update the airport list XML file
+    updateAirportListXml(airport);
+
+    return true;
+  }
+
+  /**
+   * Saves an airport to an XML file
+   *
+   * @param airport The airport to save
+   * @param fileName The file name to save to
+   */
+  private void saveAirportToXml(Airport airport, String fileName) throws JAXBException, IOException {
+    Path xmlPath = Path.of("src/main/Resources/" + fileName);
+    JAXBContext context = JAXBContext.newInstance(Airport.class);
+    Marshaller marshaller = context.createMarshaller();
+    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+    try (Writer writer = new FileWriter(xmlPath.toFile())) {
+      marshaller.marshal(airport, writer);
+    }
+  }
+
+  private void updateAirportListXml(Airport airport) throws JAXBException, IOException {
+    File xmlFile = new File("src/main/Resources/airportList.xml");
+
+    JAXBContext jaxbContext = JAXBContext.newInstance(AirportListXML.class);
+    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+    AirportListXML airportListXML;
+
+    if (xmlFile.exists()) {
+      airportListXML = (AirportListXML) unmarshaller.unmarshal(xmlFile);
+    } else {
+      // Create a new airport list if the file doesn't exist
+      airportListXML = new AirportListXML();
+      airportListXML.setAirports(new ArrayList<>());
+    }
+
+    // Check if the airport already exists in the list
+    boolean airportExists = false;
+    for (AirportXml existingAirport : airportListXML.getAirports()) {
+      if (existingAirport.getId().equals(airport.getId())) {
+        // Update the existing airport name if needed
+        existingAirport.setName(airport.getName());
+        airportExists = true;
+        break;
+      }
+    }
+
+    // Add the airport if it doesn't exist
+    if (!airportExists) {
+      AirportXml newAirportXml = new AirportXml();
+      newAirportXml.setId(airport.getId());
+      newAirportXml.setName(airport.getName());
+      airportListXML.getAirports().add(newAirportXml);
+    }
+
+    // Save the updated airport list
+    Marshaller marshaller = jaxbContext.createMarshaller();
+    marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    marshaller.marshal(airportListXML, xmlFile);
+  }
+
   @XmlRootElement(name = "airportList")
   @XmlAccessorType(XmlAccessType.FIELD)
-  private static class AirportListXML {
+  public static class AirportListXML {
 
     @XmlElement(name = "airport")
     private List<AirportXml> airports;
@@ -85,18 +164,18 @@ public class JaxbUtility {
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private static class AirportXml {
+  public static class AirportXml {
     @XmlElement(name = "id")
     private String id;
 
     @XmlElement(name = "name")
     private String name;
 
-    private String getId() {
+    public String getId() {
       return id;
     }
 
-    private void setId(String id) {
+    public void setId(String id) {
       this.id = id;
     }
 
@@ -124,6 +203,7 @@ public class JaxbUtility {
       this.obstacles = obstacles;
     }
   }
+
   @XmlAccessorType(XmlAccessType.FIELD)
   public static class ObstacleXml {
 
@@ -151,7 +231,7 @@ public class JaxbUtility {
   }
 
   public static HashMap<String, String> parseObstacles() {
-    File xmlFile = new File("src/main/Resources/obstacleList.xml"); // Ensure correct path
+    File xmlFile = new File("src/main/resources/" + "obstacleList.xml"); // Ensure correct path
 
     HashMap<String, String> obstacleMap = new HashMap<>();
 
@@ -174,7 +254,4 @@ public class JaxbUtility {
 
     return null;
   }
-
-
-
 }
