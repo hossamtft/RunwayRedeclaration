@@ -134,6 +134,9 @@ public class Airport {
         this.runways = runways;
     }
 
+    public ArrayList<Runway> getRunwayList() {
+        return runways;
+    }
     public Runway getCurrentRunway() {
         return currentRunway;
     }

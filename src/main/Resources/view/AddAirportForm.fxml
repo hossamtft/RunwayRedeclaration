@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import java.lang.String?>
+
+<VBox spacing="10"       prefWidth="600" prefHeight="600"
+      style="-fx-background-color: #f0f0f0; -fx-padding: 15;"
+      xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="uk.ac.soton.group2seg.controller.AddAirportFormController">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <Label text="Add New Airport" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+
+    <Separator/>
+
+    <!-- Airport Details Section -->
+    <Label text="Airport Details" style="-fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Airport ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="airportIdField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Airport Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="airportNameField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <Separator/>
+
+    <!-- Runway Details Section -->
+    <Label text="Runway Details" style="-fx-font-weight: bold;"/>
+    <Label text="Add at least one runway for this airport:" style="-fx-font-style: italic;"/>
+
+    <!-- ScrollPane to make runway forms scrollable -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;" prefWidth="570">
+        <VBox fx:id="runwaysContainer" spacing="10">
+            <!-- First runway form loaded directly -->
+            <fx:include source="RunwayInputForm.fxml" fx:id="runway1"/>
+            <!-- Additional runway forms will be added dynamically -->
+        </VBox>
+    </ScrollPane>
+
+    <Button text="+ Add Another Runway" onAction="#addRunwayForm" style="-fx-base: #4CAF50;"/>
+
+    <Separator/>
+
+    <!-- Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#handleCancel"/>
+        <Button text="Save Airport" onAction="#handleSave" style="-fx-base: #4CAF50;"/>
+    </HBox>
+
+</VBox>

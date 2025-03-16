@@ -95,11 +95,20 @@ public class MainController {
     public void initialize() {
         topDownController = TopDownController.getInstance();
         modelState = new ModelState();
-        airportListCombo.getItems()
-            .addAll(FXCollections.observableArrayList(modelState.getAirportList().keySet()));
+        updateAirportList();
         topDownController.setModelState(modelState);
     }
 
+    private void updateAirportList() {
+        if (airportListCombo.getItems() == null) {
+            airportListCombo.setItems(FXCollections.observableArrayList());
+        } else {
+            airportListCombo.getItems().clear();
+        }
+        airportListCombo.getItems()
+                .addAll(FXCollections.observableArrayList(modelState.getAirportList().keySet()));
+        airportListCombo.getItems().add("Add New Airport");
+    }
 
     /**
      * Handle button press for airport loading
@@ -112,15 +121,51 @@ public class MainController {
             logger.debug("No selected airport");
             return;
         }
+        if (selectedAirport.equals("Add New Airport")) {
+          airportListCombo.setItems(null);
+          openAddAirportForm();
+          return;
+        }
 
         logger.info("Loading airport: " + selectedAirport);
         modelState.loadAirport(selectedAirport);
 
+        runwayListCombo.getItems().clear();
         runwayListCombo.getItems()
             .addAll(FXCollections.observableArrayList(modelState.getRunways()));
         runwayListCombo.setVisible(true);
 
         runwayLoadButton.setVisible(true);
+    }
+
+    private void openAddAirportForm(){
+      try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AddAirportForm.fxml"));
+        Parent root = loader.load();
+
+        AddAirportFormController controller = loader.getController();
+
+        // Set up a callback when the airport is successfully added
+        controller.setOnAirportAddedCallback(airport -> {
+          // Refresh the airport list in the combo box
+            modelState.updateAirportList();
+            updateAirportList();
+        });
+
+        Stage stage = new Stage();
+        stage.setTitle("Add New Airport");
+        stage.setScene(new Scene(root));
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+
+      } catch (IOException e) {
+        logger.error("Error loading add airport form", e);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Could not open the add airport form");
+        alert.setContentText("An error occurred while trying to open the add airport form: " + e.getMessage());
+        alert.showAndWait();
+      }
     }
 
     public void handleRunwaySelection() {
