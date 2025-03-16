@@ -48,22 +48,29 @@ public class Calculator {
         toraBreakdown.set("");
         todaBreakdown.set("");
         if (distanceLowerThresh > distanceHigherThresh) {
-            // Closer to left threshold (ie 09L)
-            // Would be going away/over for higher runway ( TORA TODA ASDA ) , and towards obstacle for lower runway ( LDA )
+            // Further from lower threshold (ie 09L)
+            // Taking off away/landing over for higher runway ( TORA TODA ASDA )
+            // Taking off/landing towards obstacle for lower runway ( LDA )
             logger.debug("Obstacle closer to lower runway ({}). Processing lower for takeoff towards and higher for landing over.", lowerRunway.getName());
             takingOffTowards(lowerRunway, obstacle, distanceLowerThresh);
             calculateLDALandingTowards(lowerRunway, obstacle,distanceLowerThresh);
             takingOffAway(higherRunway, obstacle,distanceHigherThresh);
             calculateLDALandingOver(higherRunway, obstacle, distanceHigherThresh);
+
+            //Flag for graphics calculations
+            obstacle.setCloserLower(true);
         }
         else {
-            // Closer to right threshold (ie 27R)
+            // Closer to lower threshold (ie 09L)
             // Would be going towards obstacle for higher runway ( LDA )  and away/over from obstacle for lower runway ( TORA TODA ASDA )
             logger.debug("Obstacle closer to higher runway ({}). Processing higher for takeoff towards and lower for landing over.", higherRunway.getName());
             takingOffTowards(higherRunway, obstacle, distanceHigherThresh);
             calculateLDALandingTowards(higherRunway, obstacle, distanceHigherThresh);
             takingOffAway(lowerRunway, obstacle, distanceLowerThresh);
             calculateLDALandingOver(lowerRunway, obstacle, distanceLowerThresh);
+
+            //Flag for graphics calculations
+            obstacle.setCloserLower(false);
         }
     }
 
@@ -136,6 +143,8 @@ public class Calculator {
 
     public int takingOffAway(LogicalRunway sideRunway, Obstacle obstacle, int distanceFromThreshold) {
         logger.info("Calculating TORA away from obstacle for runway: {}", sideRunway.getName());
+        //TODO factor in displaced thresholds to the calculations.
+        //Distance from threshold + displaced threshold is the distance from the actual runway end
 
         // Calculation formulas:
         // newTora = originalTora - distanceFromThreshold - BLAST_PROTECTION
