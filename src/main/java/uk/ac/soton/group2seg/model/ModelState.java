@@ -61,8 +61,12 @@ public class ModelState {
   }
 
 
+  public Airport getCurrentAirport() {
+    return currentAirport;
+  }
+
   public int getRunwayLength() {
-    return 3500;
+    return currentRunway.getRunwayLength();
   }
 
 }
