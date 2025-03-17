@@ -1,40 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.PredefinedObstacleController">
-    <children>
-        <Label layoutX="29.0" layoutY="26.0" text="Select Predefined Obstacle">
+<VBox spacing="15" style="-fx-background-color: #f5f5f5; -fx-padding: 20;"
+      maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="400.0" prefWidth="360.0"
+      xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="uk.ac.soton.group2seg.controller.PredefinedObstacleController">
+
+    <HBox alignment="CENTER">
+        <Label text="Select Predefined Obstacle" style="-fx-font-weight: bold;">
             <font>
                 <Font size="18.0" />
             </font>
         </Label>
+    </HBox>
 
-        <!-- Dropdown for obstacle selection -->
-        <Label layoutX="29.0" layoutY="80.0" text="Obstacle Name:" />
-        <ComboBox fx:id="obstacleComboBox" layoutX="150.0" layoutY="76.0" prefWidth="120.0" onAction="#handleObstacleSelection"/>
+    <Separator/>
 
-        <!-- Input fields for threshold values -->
-        <Label layoutX="29.0" layoutY="130.0" text="Dist. to Threshold 01-18:" />
-        <TextField fx:id="formDistL" layoutX="200.0" layoutY="126.0" prefWidth="65.0"/>
+    <GridPane hgap="15" vgap="15">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
 
-        <Label layoutX="29.0" layoutY="160.0" text="Dist. to Threshold 19-36:" />
-        <TextField fx:id="formDistR" layoutX="200.0" layoutY="156.0" prefWidth="65.0"/>
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="160"/>
+            <ColumnConstraints hgrow="SOMETIMES"/>
+        </columnConstraints>
 
-        <Label layoutX="29.0" layoutY="190.0" text="Dist. to Centreline:" />
-        <TextField fx:id="formDistCent" layoutX="200.0" layoutY="186.0" prefWidth="65.0"/>
+        <Label text="Obstacle Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="obstacleComboBox" prefWidth="150" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                  onAction="#handleObstacleSelection"/>
 
-        <!-- Predefined height field (non-editable) -->
-        <Label layoutX="29.0" layoutY="220.0" text="Obstacle Height:" />
-        <TextField fx:id="formHeight" layoutX="200.0" layoutY="216.0" prefWidth="65.0" editable="false"/>
+        <Label text="Obstacle Height:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="formHeight" prefWidth="150" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                   editable="false" style="-fx-background-color: #f0f0f0;"/>
 
-        <!-- Buttons -->
-        <Button fx:id="loadButton" layoutX="192.0" layoutY="280.0" text="Load" onAction="#handleLoadObstacle"/>
-        <Button fx:id="cancelButton" layoutX="29.0" layoutY="280.0" text="Cancel" onAction="#closeMenu"/>
-    </children>
-</Pane>
+        <Label text="Dist. to Threshold 01-18:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="formDistL" prefWidth="150" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Dist. to Threshold 19-36:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="formDistR" prefWidth="150" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Dist. to Centreline:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="formDistCent" prefWidth="150" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button fx:id="cancelButton" text="Cancel" onAction="#closeMenu" prefWidth="90"/>
+        <Button fx:id="loadButton" text="Load Obstacle" onAction="#handleLoadObstacle" prefWidth="120"/>
+    </HBox>
+</VBox>
