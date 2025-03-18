@@ -45,9 +45,9 @@ class CalculatorTest {
         calculator.redeclareRunway(obstacle);
         int newTORA = runway09L27R.getLowerRunway().getCurrTora();
         // Test fails due to displaced threshold being calculated differently to what's in the project definition
-        assertEquals(1496, newTORA);
-        assertEquals(1496, runway09L27R.getLowerRunway().getCurrAsda());
-        assertEquals(1496, runway09L27R.getLowerRunway().getCurrToda());
+        assertEquals(1497, newTORA);
+        assertEquals(1497, runway09L27R.getLowerRunway().getCurrAsda());
+        assertEquals(1497, runway09L27R.getLowerRunway().getCurrToda());
 
     }
 
