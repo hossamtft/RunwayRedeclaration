@@ -97,6 +97,12 @@ public class MainController {
         modelState = new ModelState();
         updateAirportList();
         topDownController.setModelState(modelState);
+
+
+        asdaTextArea.setText("No calculation has been performed yet.\nPlease select an airport, runway, and add an obstacle to see ASDA calculation breakdown.");
+        toraTextArea.setText("No calculation has been performed yet.\nPlease select an airport, runway, and add an obstacle to see TORA calculation breakdown.");
+        todaTextArea.setText("No calculation has been performed yet.\nPlease select an airport, runway, and add an obstacle to see TODA calculation breakdown.");
+        ldaTextArea.setText("No calculation has been performed yet.\nPlease select an airport, runway, and add an obstacle to see LDA calculation breakdown.");
     }
 
     private void updateAirportList() {

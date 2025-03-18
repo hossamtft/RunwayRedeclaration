@@ -25,10 +25,10 @@ public class Calculator {
     private final int BLAST_PROTECTION = 300;
     private final int SLOPE_RATIO = 50; // 1:50
 
-    private StringProperty asdaBreakdown = new SimpleStringProperty("");
-    private StringProperty toraBreakdown = new SimpleStringProperty("");
-    private StringProperty todaBreakdown = new SimpleStringProperty("");
-    private StringProperty ldaBreakdown = new SimpleStringProperty("");
+    private StringProperty asdaBreakdown = new SimpleStringProperty("No calculation has been performed yet.\nPlease add an obstacle to see ASDA calculation breakdown.");
+    private StringProperty toraBreakdown = new SimpleStringProperty("No calculation has been performed yet.\nPlease add an obstacle to see TORA calculation breakdown.");
+    private StringProperty todaBreakdown = new SimpleStringProperty("No calculation has been performed yet.\nPlease add an obstacle to see TODA calculation breakdown.");
+    private StringProperty ldaBreakdown = new SimpleStringProperty("No calculation has been performed yet.\nPlease add an obstacle to see LDA calculation breakdown.");
 
 
 
@@ -83,9 +83,9 @@ public class Calculator {
         String calculationBreakdown = "Runway: " + sideRunway.getName() + "\n" +
                 "Calculating For Landing Over Obstacle\n" +
                 "NewLDA = Original LDA - Distance From Threshold - MAX(Slope * Height, RESA) - Strip End\n" +
-                newLDA + " = " + originalLDA + " - " + distanceFromThresh + " - " + slopeRequirementOrRESA + " - " + STRIP_END + "\n";
+                newLDA + "m = " + originalLDA + "m - " + distanceFromThresh + "m - " + slopeRequirementOrRESA + "m - " + STRIP_END + "m\n";
 
-        ldaBreakdown.set(ldaBreakdown + calculationBreakdown);
+        ldaBreakdown.set(ldaBreakdown.get() + calculationBreakdown);
         calculationLogger.info(calculationBreakdown);
 
         sideRunway.setCurrLda(newLDA);
@@ -102,7 +102,7 @@ public class Calculator {
         String calculationBreakdown = "Runway: " + sideRunway.getName() + "\n" +
                 "Calculating For Landing Towards Obstacle\n" +
                 "NewLDA = Distance From Threshold - RESA - Strip End\n" +
-                newLDA + " = " + distanceFromThreshold + " - " + RESA + " - " + STRIP_END + "\n";
+                newLDA + "m = " + distanceFromThreshold + "m - " + RESA + "m - " + STRIP_END + "m\n";
         ldaBreakdown.set(calculationBreakdown);
         calculationLogger.info(calculationBreakdown);
 
@@ -116,16 +116,21 @@ public class Calculator {
         int slopeRequirementOrRESA = Math.max(slopeRequirementHeight, RESA);
         int newTora = distanceFromThreshold + sideRunway.getDispThreshold() - slopeRequirementOrRESA - STRIP_END;
 
-        String toraBreakdownString = "Runway: " + sideRunway.getName() + "\n" + "Calculating for Take Off Towards Obstalce\n" +"NewTORA = Distance From Threshold + Displaced Threshold - MAX(Slope*Height, RESA) - Strip End\n" +
-                newTora + " = " + distanceFromThreshold + " + " + sideRunway.getDispThreshold() + " - " + slopeRequirementOrRESA + " - " + STRIP_END + "\n";
+        String toraBreakdownString = "Runway: " + sideRunway.getName() + "\n" +
+                "Calculating for Take Off Towards Obstacle\n" +
+                "NewTORA = Distance From Threshold + Displaced Threshold - MAX(Slope*Height, RESA) - Strip End\n" +
+                newTora + "m = " + distanceFromThreshold + "m + " + sideRunway.getDispThreshold() + "m - " +
+                slopeRequirementOrRESA + "m - " + STRIP_END + "m\n";
         toraBreakdown.set(toraBreakdownString);
 
-        String asdaBreakdownString = "Runway: " + sideRunway.getName() + "\n" +  "Calculating for Take Off Towards Obstalce\n" +
-                "ASDA is equal to TORA: " + newTora + "\n";
+        String asdaBreakdownString = "Runway: " + sideRunway.getName() + "\n" +
+                "Calculating for Take Off Towards Obstacle\n" +
+                "ASDA is equal to TORA: " + newTora + "m\n";
         asdaBreakdown.set(asdaBreakdownString);
 
-        String todaBreakdownString = "Runway: " + sideRunway.getName() + "\n" + "Calculating for Take Off Towards Obstalce\n" +
-                "TODA is equal to TORA: " + newTora + "\n";
+        String todaBreakdownString = "Runway: " + sideRunway.getName() + "\n" +
+                "Calculating for Take Off Towards Obstacle\n" +
+                "TODA is equal to TORA: " + newTora + "m\n";
         todaBreakdown.set(todaBreakdownString);
 
         calculationLogger.info(toraBreakdownString);
@@ -158,20 +163,20 @@ public class Calculator {
         String toraBreakdownString = "Runway: " + sideRunway.getName() + "\n" +
                 "Calculating For Takeoff Away From Obstacle\n" +
                 "NewTORA = Original TORA - Distance From Threshold - Blast Protection\n" +
-                newTora + " = " + sideRunway.getTora() + " - " + distanceFromThreshold + " - " + BLAST_PROTECTION + "\n";
+                newTora + "m = " + sideRunway.getTora() + "m - " + distanceFromThreshold + "m - " + BLAST_PROTECTION + "m\n";
         toraBreakdown.set(toraBreakdown.get() + toraBreakdownString);
 
         String asdaBreakdownString = "Runway: " + sideRunway.getName() + "\n" +
                 "Calculating For Takeoff Away From Obstacle\n" +
                 "NewASDA = Original ASDA - Distance From Threshold - Blast Protection\n" +
-                newAsda + " = " + sideRunway.getAsda() + " - " + distanceFromThreshold + " - " + BLAST_PROTECTION + "\n";
-        asdaBreakdown.set(asdaBreakdown.get() +asdaBreakdownString);
+                newAsda + "m = " + sideRunway.getAsda() + "m - " + distanceFromThreshold + "m - " + BLAST_PROTECTION + "m\n";
+        asdaBreakdown.set(asdaBreakdown.get() + asdaBreakdownString);
 
         String todaBreakdownString = "Runway: " + sideRunway.getName() + "\n" +
                 "Calculating For Takeoff Away From Obstacle\n" +
                 "NewTODA = Original TODA - Distance From Threshold - Blast Protection\n" +
-                newToda + " = " + sideRunway.getToda() + " - " + distanceFromThreshold + " - " + BLAST_PROTECTION + "\n";
-        todaBreakdown.set(todaBreakdown.get() +todaBreakdownString);
+                newToda + "m = " + sideRunway.getToda() + "m - " + distanceFromThreshold + "m - " + BLAST_PROTECTION + "m\n";
+        todaBreakdown.set(todaBreakdown.get() + todaBreakdownString);
 
         // Log the breakdown of calculations
         calculationLogger.info(toraBreakdownString);
