@@ -128,7 +128,6 @@ public class MainController {
             return;
         }
         if (selectedAirport.equals("Add New Airport")) {
-          airportListCombo.setItems(null);
           openAddAirportForm();
           return;
         }
