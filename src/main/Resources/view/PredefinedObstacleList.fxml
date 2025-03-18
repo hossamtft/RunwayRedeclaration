@@ -8,7 +8,7 @@
 <?import java.lang.String?>
 <VBox spacing="15" style="-fx-background-color: #f5f5f5; -fx-padding: 20;"
       maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-      prefHeight="400.0" prefWidth="360.0"
+      prefHeight="400.0" prefWidth="400.0"
       xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="uk.ac.soton.group2seg.controller.PredefinedObstacleController">
 
@@ -29,25 +29,31 @@
 
         <columnConstraints>
             <ColumnConstraints hgrow="NEVER" minWidth="160"/>
-            <ColumnConstraints hgrow="SOMETIMES"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="120"/>
+            <ColumnConstraints hgrow="NEVER" minWidth="20"/>
         </columnConstraints>
 
         <Label text="Obstacle Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <ComboBox fx:id="obstacleComboBox" prefWidth="150" GridPane.rowIndex="0" GridPane.columnIndex="1"
                   onAction="#handleObstacleSelection"/>
+        <Label text="" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
 
         <Label text="Obstacle Height:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="formHeight" prefWidth="150" GridPane.rowIndex="1" GridPane.columnIndex="1"
                    editable="false" style="-fx-background-color: #f0f0f0;"/>
+        <Label text="m" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
 
         <Label text="Dist. to Threshold 01-18:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <TextField fx:id="formDistL" prefWidth="150" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="m" GridPane.rowIndex="2" GridPane.columnIndex="2" />
 
         <Label text="Dist. to Threshold 19-36:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
         <TextField fx:id="formDistR" prefWidth="150" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label text="m" GridPane.rowIndex="3" GridPane.columnIndex="2" />
 
         <Label text="Dist. to Centreline:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
         <TextField fx:id="formDistCent" prefWidth="150" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <Label text="m" GridPane.rowIndex="4" GridPane.columnIndex="2" />
     </GridPane>
 
     <Region VBox.vgrow="ALWAYS"/>
