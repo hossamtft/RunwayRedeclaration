@@ -22,8 +22,8 @@ public class TopDownController {
 
     @FXML public AnchorPane topDownView;
 
-    private final double RUNWAY_LENGTH = 900;
-    private final double RUNWAY_WIDTH = 100.0;
+    private final double RUNWAY_LENGTH = 600;
+    private final double RUNWAY_WIDTH = 66.0;
 
     private Pane linePane;
     private Pane runwayPane;
@@ -82,16 +82,8 @@ public class TopDownController {
         if (!initialSetupComplete && (topDownView.getWidth() <= 0 || topDownView.getHeight() <= 0)) {
             return; // Skip if dimensions aren't positive during initialization
         }
-        if(currentRunway == null) {
-            drawEmptyRunway();
-        }else{
-            logger.info("Drawing runway: " + currentRunway.getName());
-            drawRunway();
-        }
 
-        logger.info("Positioning runway - width: " + topDownView.getWidth() +
-            ", height: " + topDownView.getHeight());
-
+        drawRunway();
         // Center runway in the AnchorPane
         double centerX = Math.max(0, (topDownView.getWidth() - RUNWAY_LENGTH) / 2);
         double centerY = Math.max(0, (topDownView.getHeight() - RUNWAY_WIDTH) / 2);
@@ -108,25 +100,16 @@ public class TopDownController {
 
     }
 
-    private void drawEmptyRunway() {
-        // Fixed size runway - won't change dimensions when container resizes
-        Rectangle strip = new Rectangle(RUNWAY_LENGTH, RUNWAY_WIDTH);
-        strip.setFill(Color.DARKGREY);
-        strip.setStroke(Color.BLACK);
-
-        Line centreLine = new Line(0, RUNWAY_WIDTH/2, RUNWAY_LENGTH, RUNWAY_WIDTH/2);
-        centreLine.getStrokeDashArray().addAll(15.0, 10.0);
-        centreLine.setStroke(Color.WHITE);
-        centreLine.setStrokeWidth(5);
-
-        runwayPane.getChildren().addAll(strip, centreLine);
-    }
-
     /**
      * Render the runway strip
      * */
     private void drawRunway() {
-        scale = RUNWAY_LENGTH/ currentRunway.getRunwayLength();
+        try{
+            scale = RUNWAY_LENGTH/ currentRunway.getRunwayLength();
+            drawLines();
+        }catch (Exception e) {
+            logger.info("No runway selected yet");
+        }
 
         Rectangle strip = new Rectangle(RUNWAY_LENGTH, RUNWAY_WIDTH);
         strip.setFill(Color.DARKGREY);
@@ -140,10 +123,6 @@ public class TopDownController {
         //TODO: drawThresholds();
 
         runwayPane.getChildren().addAll(strip, centreLine);
-
-        if(modelState.getCurrentRunway() != null) {
-            drawLines();
-        }
     }
 
     /**
@@ -153,20 +132,24 @@ public class TopDownController {
         double runwayCenterX = RUNWAY_LENGTH / 2;
         double runwayCenterY = RUNWAY_WIDTH / 2;
 
-        // Define points relative to the runway center
+        // Calculate proportions based on original dimensions
+        double lengthRatio = RUNWAY_LENGTH / 900.0;
+        double widthRatio = RUNWAY_WIDTH / 100.0;
+
+        // Define points relative to the runway center using proportions
         double[] points = {
-            runwayCenterX - 560, runwayCenterY + 100,
-            runwayCenterX - 350, runwayCenterY + 100,
-            runwayCenterX - 300, runwayCenterY + 130,
-            runwayCenterX + 300, runwayCenterY + 130,
-            runwayCenterX + 350, runwayCenterY + 100,
-            runwayCenterX + 560, runwayCenterY + 100,
-            runwayCenterX + 560, runwayCenterY - 100,
-            runwayCenterX + 350, runwayCenterY - 100,
-            runwayCenterX + 300, runwayCenterY - 130,
-            runwayCenterX - 300, runwayCenterY - 130,
-            runwayCenterX - 350, runwayCenterY - 100,
-            runwayCenterX - 560, runwayCenterY - 100
+            runwayCenterX - (560 * lengthRatio), runwayCenterY + (100 * widthRatio),
+            runwayCenterX - (350 * lengthRatio), runwayCenterY + (100 * widthRatio),
+            runwayCenterX - (300 * lengthRatio), runwayCenterY + (130 * widthRatio),
+            runwayCenterX + (300 * lengthRatio), runwayCenterY + (130 * widthRatio),
+            runwayCenterX + (350 * lengthRatio), runwayCenterY + (100 * widthRatio),
+            runwayCenterX + (560 * lengthRatio), runwayCenterY + (100 * widthRatio),
+            runwayCenterX + (560 * lengthRatio), runwayCenterY - (100 * widthRatio),
+            runwayCenterX + (350 * lengthRatio), runwayCenterY - (100 * widthRatio),
+            runwayCenterX + (300 * lengthRatio), runwayCenterY - (130 * widthRatio),
+            runwayCenterX - (300 * lengthRatio), runwayCenterY - (130 * widthRatio),
+            runwayCenterX - (350 * lengthRatio), runwayCenterY - (100 * widthRatio),
+            runwayCenterX - (560 * lengthRatio), runwayCenterY - (100 * widthRatio)
         };
         Polygon clearedAndGraded = new Polygon(points);
         clearedAndGraded.setFill(Color.BLUE);
@@ -180,13 +163,14 @@ public class TopDownController {
         LogicalRunway lowerRunway = modelState.getCurrentRunway().getLowerRunway();
         LogicalRunway higherRunway = modelState.getCurrentRunway().getHigherRunway();
 
-        drawLineSet(-1, lowerRunway);
-        drawLineSet(1, higherRunway);
+        if(modelState.getObstacle() != null) {
+            addObstacle(modelState.getObstacle());
+        }else{
+            drawLineSet(-1, lowerRunway);
+            drawLineSet(1, higherRunway);
+        }
     }
 
-    private void drawObstacleLines() {
-
-    }
 
     /**
      * Draw lines using officially declared runway distances
@@ -234,11 +218,12 @@ public class TopDownController {
 
     public void addObstacle(Obstacle obstacle){
         linePane.getChildren().clear();
-
-        renderObstacle(obstacle);
-
         LogicalRunway lowerRunway = modelState.getCurrentRunway().getLowerRunway();
         LogicalRunway higherRunway = modelState.getCurrentRunway().getHigherRunway();
+
+        //Pass lower runway to method to render obstacle
+        renderObstacle(obstacle, lowerRunway);
+
         if(obstacle.getIsCloserLower()) {
             //If the obstacle is closer to threshold with lower bearing
             //Integer is a flag to denote line root
@@ -328,9 +313,29 @@ public class TopDownController {
     }
 
     private void ldaOver(int i, LogicalRunway logicalRunway) {
+        int lda = logicalRunway.getCurrLda();
+        double scaledLda = lda * scale;
+
+        double startX;
+        double endX;
+
+        if(i == -1) {
+            logger.info("USING -1 FLAG");
+            startX = RUNWAY_LENGTH - scaledLda;
+            endX = RUNWAY_LENGTH;
+        }else {
+            logger.info("USING +1 FLAG");
+            startX = scaledLda;
+            endX = 0;
+        }
+
+        double baseY = RUNWAY_WIDTH + (i * 200);
+
+        drawExactLine("LDA", i, startX, endX, baseY, lda, Color.BLACK);
 
     }
 
+    //TODO: Use separate TORA, TODA & ASDA values :(.
     private void takeoffLinesAway(int i, LogicalRunway logicalRunway) {
         int tora = logicalRunway.getCurrTora();
         double scaledTora = tora * scale;
@@ -369,11 +374,12 @@ public class TopDownController {
 
     }
 
-    private void renderObstacle(Obstacle obstacle) {
+    private void renderObstacle(Obstacle obstacle, LogicalRunway logicalRunway) {
         Rectangle obstacleShape = new Rectangle(15.0, 15.0, Color.RED);
         double verticalScale = RUNWAY_WIDTH / 30;
+        int displacedThreshold = logicalRunway.getDispThreshold();
 
-        double x = obstacle.getDistLowerThreshold() * scale;
+        double x = (obstacle.getDistLowerThreshold() + displacedThreshold) * scale;
         double y = (RUNWAY_WIDTH / 2) + obstacle.getCentreOffset() * verticalScale;
 
         obstacleShape.setX(x);
