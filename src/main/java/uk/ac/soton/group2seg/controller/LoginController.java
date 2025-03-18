@@ -132,7 +132,7 @@ public class LoginController {
     submitButton.setDisable(username.getText().isEmpty() || password.getText().isEmpty() || role.getValue() == null || airportID.getText().isEmpty());
   }
 
-  private boolean validateInputs(String username, String password, String role, String airportID) {
+  public boolean validateInputs(String username, String password, String role, String airportID) {
     if (username.length() < 6 || !usernameUnique(username)) {
       showError("Username must be unique and at least 6 characters long.");
       return false;
@@ -156,19 +156,19 @@ public class LoginController {
     return true;
   }
 
-
-  private void showError(String message) {
-    Alert alert = new Alert(Alert.AlertType.ERROR);
-    alert.setTitle("Input Validation Error");
-    alert.setHeaderText(null);
-    alert.setContentText(message);
-    alert.setWidth(400);
-    alert.setHeight(200);
-    alert.showAndWait();
+  public void showError(String message) {
+    Platform.runLater(() -> {
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setHeaderText(null);
+      alert.setContentText(message);
+      alert.showAndWait();
+    });
   }
 
 
-  private boolean usernameUnique(String username) {
+
+  public boolean usernameUnique(String username) {
     String nameQuery = "SELECT COUNT(*) FROM Users WHERE Username = ?";
 
     try (Connection connection = connectToDatabase();
@@ -189,7 +189,7 @@ public class LoginController {
   }
 
 
-  private boolean validAirport(String airportID){
+  public boolean validAirport(String airportID){
     String airportQuery = "SELECT COUNT(*) FROM Airports WHERE AirportID = ?";
 
     try(Connection connection = connectToDatabase();
@@ -333,11 +333,11 @@ public class LoginController {
     }
   }
 
-  private String hashPassword(String password) {
+  public String hashPassword(String password) {
     return BCrypt.hashpw(password, BCrypt.gensalt());
   }
 
-  private boolean checkPassword(String password, String hashedPassword) {
+  public boolean checkPassword(String password, String hashedPassword) {
     return BCrypt.checkpw(password, hashedPassword);
   }
 }
