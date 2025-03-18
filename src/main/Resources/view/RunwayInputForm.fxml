@@ -21,24 +21,31 @@
             <columnConstraints>
                 <ColumnConstraints hgrow="NEVER" minWidth="80"/>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="80"/>
+                <ColumnConstraints hgrow="NEVER" minWidth="20"/>
                 <ColumnConstraints hgrow="NEVER" minWidth="80"/>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="80"/>
+                <ColumnConstraints hgrow="NEVER" minWidth="20"/>
             </columnConstraints>
 
             <Label text="Designation:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
             <TextField fx:id="designation1Field" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
 
             <Label text="TORA:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
             <TextField fx:id="tora1Field" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="m" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
 
-            <Label text="TODA:" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
-            <TextField fx:id="toda1Field" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+            <Label text="TODA:" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+            <TextField fx:id="toda1Field" GridPane.rowIndex="1" GridPane.columnIndex="4"/>
+            <Label text="m" GridPane.rowIndex="1" GridPane.columnIndex="5"/>
 
             <Label text="ASDA:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
             <TextField fx:id="asda1Field" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="m" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
 
-            <Label text="LDA:" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
-            <TextField fx:id="lda1Field" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+            <Label text="LDA:" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+            <TextField fx:id="lda1Field" GridPane.rowIndex="2" GridPane.columnIndex="4"/>
+            <Label text="m" GridPane.rowIndex="2" GridPane.columnIndex="5"/>
         </GridPane>
     </TitledPane>
 
@@ -47,24 +54,31 @@
             <columnConstraints>
                 <ColumnConstraints hgrow="NEVER" minWidth="80"/>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="80"/>
+                <ColumnConstraints hgrow="NEVER" minWidth="20"/>
                 <ColumnConstraints hgrow="NEVER" minWidth="80"/>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="80"/>
+                <ColumnConstraints hgrow="NEVER" minWidth="20"/>
             </columnConstraints>
 
             <Label text="Designation:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
             <TextField fx:id="designation2Field" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
 
             <Label text="TORA:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
             <TextField fx:id="tora2Field" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="m" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
 
-            <Label text="TODA:" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
-            <TextField fx:id="toda2Field" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+            <Label text="TODA:" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+            <TextField fx:id="toda2Field" GridPane.rowIndex="1" GridPane.columnIndex="4"/>
+            <Label text="m" GridPane.rowIndex="1" GridPane.columnIndex="5"/>
 
             <Label text="ASDA:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
             <TextField fx:id="asda2Field" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="m" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
 
-            <Label text="LDA:" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
-            <TextField fx:id="lda2Field" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+            <Label text="LDA:" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+            <TextField fx:id="lda2Field" GridPane.rowIndex="2" GridPane.columnIndex="4"/>
+            <Label text="m" GridPane.rowIndex="2" GridPane.columnIndex="5"/>
         </GridPane>
     </TitledPane>
 </VBox>
