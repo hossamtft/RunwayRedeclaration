@@ -14,6 +14,7 @@ import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.ModelState;
 import uk.ac.soton.group2seg.model.Obstacle;
 import uk.ac.soton.group2seg.model.Runway;
+import uk.ac.soton.group2seg.view.Arrow;
 
 public class TopDownController {
     private static TopDownController instance = new TopDownController();
@@ -22,8 +23,13 @@ public class TopDownController {
 
     @FXML public AnchorPane topDownView;
 
-    private final double RUNWAY_LENGTH = 600;
+    private final double RUNWAY_LENGTH = 650;
     private final double RUNWAY_WIDTH = 66.0;
+
+    private Color toraColor = Color.RED;
+    private Color todaColor = Color.YELLOW;
+    private Color ldaColor = Color.WHITE;
+    private Color asdaColor = Color.CYAN;
 
     private Pane linePane;
     private Pane runwayPane;
@@ -49,7 +55,7 @@ public class TopDownController {
         AnchorPane.setLeftAnchor(topDownView, 0d);
         AnchorPane.setRightAnchor(topDownView, 0d);
 
-        topDownView.setStyle("-fx-background-color: green");
+        topDownView.setStyle("-fx-background-color: rgb(7, 51, 19)");
         topDownView.getChildren().addAll(runwayPane, linePane);
 
         // Setup listeners for resize events
@@ -89,11 +95,13 @@ public class TopDownController {
         double centerY = Math.max(0, (topDownView.getHeight() - RUNWAY_WIDTH) / 2);
 
 
+        runwayPane.getChildren().addAll(linePane);
+
         runwayPane.setLayoutX(centerX);
         runwayPane.setLayoutY(centerY);
 
-        linePane.setLayoutX(centerX);
-        linePane.setLayoutY(centerY);
+//        linePane.setLayoutX(centerX);
+//        linePane.setLayoutY(centerY);
 
         drawClearedAndGraded();
 
@@ -104,25 +112,56 @@ public class TopDownController {
      * Render the runway strip
      * */
     private void drawRunway() {
+        Rectangle strip = new Rectangle(RUNWAY_LENGTH, RUNWAY_WIDTH);
+        strip.setFill(Color.DARKGREY);
+        strip.setStroke(Color.WHITE);
+        strip.setStrokeWidth(2);
+
+        Line centreLine = new Line(75, RUNWAY_WIDTH/2, RUNWAY_LENGTH - 75, RUNWAY_WIDTH/2);
+        centreLine.getStrokeDashArray().addAll(15.0, 10.0);
+        centreLine.setStroke(Color.WHITE);
+        centreLine.setStrokeWidth(5);
+
+        runwayPane.getChildren().addAll(strip, centreLine);
+
         try{
             scale = RUNWAY_LENGTH/ currentRunway.getRunwayLength();
+            drawDesignators();
             drawLines();
         }catch (Exception e) {
             logger.info("No runway selected yet");
         }
 
-        Rectangle strip = new Rectangle(RUNWAY_LENGTH, RUNWAY_WIDTH);
-        strip.setFill(Color.DARKGREY);
-        strip.setStroke(Color.BLACK);
-
-        Line centreLine = new Line(0, RUNWAY_WIDTH/2, RUNWAY_LENGTH, RUNWAY_WIDTH/2);
-        centreLine.getStrokeDashArray().addAll(15.0, 10.0);
-        centreLine.setStroke(Color.WHITE);
-        centreLine.setStrokeWidth(5);
-
         //TODO: drawThresholds();
+    }
 
-        runwayPane.getChildren().addAll(strip, centreLine);
+    private void drawDesignators() {
+        String lowerRunway = currentRunway.getLowerRunway().getName();
+        String lowerText = lowerRunway.replaceAll("([0-9]+)([A-Z]?)", "$1\n$2").trim();
+        Arrow leftArrow = new Arrow(-60,-50,-10,-50);
+        leftArrow.setFill(Color.WHITE);
+        leftArrow.setStrokeWidth(2.5);
+
+        String higherRunway = currentRunway.getHigherRunway().getName();
+        String higherText = higherRunway.replaceAll("([0-9]+)([A-Z]?)", "$1\n$2").trim();
+        Arrow rightArrow = new Arrow(RUNWAY_LENGTH + 60,110,RUNWAY_LENGTH + 10,110);
+        rightArrow.setFill(Color.WHITE);
+        rightArrow.setStrokeWidth(2.5);
+
+        //Label for lower runway designator
+        Label lowerLabel = new Label(lowerText);
+        lowerLabel.setLayoutX(25);
+        lowerLabel.setLayoutY(0);
+        lowerLabel.setRotate(90);
+        lowerLabel.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 24px; -fx-font-weight: bold; -fx-alignment: center; -fx-text-alignment: center; -fx-text-fill: white");
+
+        Label higherLabel = new Label(higherText);
+        higherLabel.setLayoutX(RUNWAY_LENGTH-50);
+        higherLabel.setLayoutY(0);
+        higherLabel.setRotate(270);
+        higherLabel.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 24px; -fx-font-weight: bold; -fx-alignment: center; -fx-text-alignment: center; -fx-text-fill: white");
+
+        runwayPane.getChildren().addAll(lowerLabel, leftArrow, rightArrow, higherLabel);
     }
 
     /**
@@ -152,7 +191,7 @@ public class TopDownController {
             runwayCenterX - (560 * lengthRatio), runwayCenterY - (100 * widthRatio)
         };
         Polygon clearedAndGraded = new Polygon(points);
-        clearedAndGraded.setFill(Color.BLUE);
+        clearedAndGraded.setFill(Color.rgb(58, 30, 179));
 
         logger.info(String.format("Centered on (%f, %f)", runwayCenterX, runwayCenterY) + "\nPoints are: " + clearedAndGraded.getPoints().toString());
 
@@ -160,6 +199,7 @@ public class TopDownController {
     }
 
     private void drawLines() {
+        linePane.getChildren().clear();
         LogicalRunway lowerRunway = modelState.getCurrentRunway().getLowerRunway();
         LogicalRunway higherRunway = modelState.getCurrentRunway().getHigherRunway();
 
@@ -195,13 +235,6 @@ public class TopDownController {
         double baseY = RUNWAY_WIDTH + (i * 200);
         double spacing = i * 40; // Ensures at least 30px space between lines
 
-        // Define colors for each line type
-        Color toraColor = Color.RED;
-        Color todaColor = Color.PINK;
-        Color ldaColor = Color.BLACK;
-        Color asdaColor = Color.ORANGE;
-
-
         // LDA Line
         drawLineSpec("LDA", i, threshold, scaledLda, baseY, lda, ldaColor);
 
@@ -214,7 +247,6 @@ public class TopDownController {
         // ASDA Line
         drawSingleLine("ASDA", i, scaledAsda, baseY + 3 * spacing, asda, asdaColor);
     }
-
 
     public void addObstacle(Obstacle obstacle){
         linePane.getChildren().clear();
@@ -263,41 +295,36 @@ public class TopDownController {
         }
         logger.info(String.format("Threshold: %f \nEndX: %f", startX, endX));
 
-        Color color = Color.BLACK;
-
         double yPos = RUNWAY_WIDTH + (i * 200);
 
         // Main line
         Line line = new Line(startX, yPos, endX, yPos);
-        line.setStroke(color);
+        line.setStroke(ldaColor);
         line.setStrokeWidth(2);
 
         // Label
         Label lineLabel = new Label(String.format("LDA: %d m", currLda));
-        lineLabel.setTextFill(color); // Set label color to match the line
+        lineLabel.setStyle("-fx-font-size: 16");
+        lineLabel.setTextFill(ldaColor); // Set label color to match the line
         lineLabel.setLayoutX((endX));
         lineLabel.setLayoutY(yPos - 20); // Place label slightly below the line
 
         // Dashed threshold markers
         Line thresholdStart = new Line(startX, 0d, startX, yPos);
         thresholdStart.getStrokeDashArray().addAll(10.0, 5.0);
-        thresholdStart.setStroke(color);
+        thresholdStart.setStroke(ldaColor);
 
         Line thresholdEnd = new Line(endX, 0d, endX, yPos);
         thresholdEnd.getStrokeDashArray().addAll(10.0, 5.0);
-        thresholdEnd.setStroke(color);
+        thresholdEnd.setStroke(ldaColor);
 
         // Add all elements to the pane
-        runwayPane.getChildren().addAll(line, thresholdStart, thresholdEnd, lineLabel);
+        linePane.getChildren().addAll(line, thresholdStart, thresholdEnd, lineLabel);
     }
 
     private void takeoffLinesTowards(int i, LogicalRunway logicalRunway) {
         int tora = logicalRunway.getCurrTora();
         double scaledTora = tora * scale;
-
-        Color toraColor = Color.RED;
-        Color todaColor = Color.PINK;
-        Color asdaColor = Color.ORANGE;
 
         double baseY = RUNWAY_WIDTH + (i * 200);
         double spacing = i * 40; // Ensures at least 30px space between lines
@@ -331,14 +358,19 @@ public class TopDownController {
 
         double baseY = RUNWAY_WIDTH + (i * 200);
 
-        drawExactLine("LDA", i, startX, endX, baseY, lda, Color.BLACK);
+        drawExactLine("LDA", i, startX, endX, baseY, lda, ldaColor);
 
     }
 
     //TODO: Use separate TORA, TODA & ASDA values :(.
     private void takeoffLinesAway(int i, LogicalRunway logicalRunway) {
         int tora = logicalRunway.getCurrTora();
+        int toda = logicalRunway.getCurrToda();
+        int asda = logicalRunway.getCurrAsda();
+
         double scaledTora = tora * scale;
+        double scaledToda = toda * scale;
+        double scaledAsda = asda * scale;
 
         double startX;
         double endX;
@@ -356,11 +388,8 @@ public class TopDownController {
             + "TORA: %d \n"
             + "StartX: %f \n EndX: %f", logicalRunway.getName(), tora, startX, endX));
 
-        Color toraColor = Color.RED;
-        Color todaColor = Color.PINK;
-        Color asdaColor = Color.ORANGE;
 
-        double baseY = RUNWAY_WIDTH + (i * 200);
+        double baseY = i*RUNWAY_WIDTH + (i * 200);
         double spacing = i * 40; // Ensures at least 30px space between lines
 
         // TORA Line
@@ -380,7 +409,7 @@ public class TopDownController {
         int displacedThreshold = logicalRunway.getDispThreshold();
 
         double x = (obstacle.getDistLowerThreshold() + displacedThreshold) * scale;
-        double y = (RUNWAY_WIDTH / 2) + obstacle.getCentreOffset() * verticalScale;
+        double y = (RUNWAY_WIDTH / 2) - 7.5 + (obstacle.getCentreOffset() * verticalScale);
 
         obstacleShape.setX(x);
         obstacleShape.setY(y);
@@ -410,6 +439,7 @@ public class TopDownController {
 
         // Label
         Label lineLabel = new Label(String.format("%s: %d", label, value));
+        lineLabel.setStyle("-fx-font-size: 16");
         lineLabel.setTextFill(color); // Set label color to match the line
         lineLabel.setLayoutX((endX));
         lineLabel.setLayoutY(yPos - 20); // Place label slightly below the line
@@ -447,6 +477,7 @@ public class TopDownController {
 
         // Label
         Label lineLabel = new Label(String.format("%s: %d", label, value));
+        lineLabel.setStyle("-fx-font-size: 16");
         lineLabel.setTextFill(color); // Set label color to match the line
         lineLabel.setLayoutX((endX));
         lineLabel.setLayoutY(yPos - 20); // Place label slightly below the line
@@ -472,6 +503,7 @@ public class TopDownController {
 
         // Label
         Label lineLabel = new Label(String.format("%s: %d", label, value));
+        lineLabel.setStyle("-fx-font-size: 16");
         lineLabel.setTextFill(color); // Set label color to match the line
         lineLabel.setLayoutX((endX));
         lineLabel.setLayoutY(yPos - 20); // Place label slightly below the line

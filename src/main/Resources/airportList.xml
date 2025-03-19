@@ -8,4 +8,8 @@
         <id>EGKK</id>
         <name>London Gatwick</name>
     </airport>
+    <airport>
+        <id>EGLC</id>
+        <name>London City</name>
+    </airport>
 </airportList>
