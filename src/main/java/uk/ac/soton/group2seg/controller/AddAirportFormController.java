@@ -154,7 +154,6 @@ public class AddAirportFormController {
 
                 }
 
-                // Example: Using JaxbUtility - adjust based on your actual implementation
                 JaxbUtility jaxbUtility = new JaxbUtility();
                 jaxbUtility.addAirport(airport);
             } catch (Exception e) {
