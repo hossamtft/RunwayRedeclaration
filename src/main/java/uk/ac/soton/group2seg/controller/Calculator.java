@@ -155,9 +155,9 @@ public class Calculator {
         // newTora = originalTora - distanceFromThreshold - BLAST_PROTECTION
         // newAsda = originalAsda - distanceFromThreshold - BLAST_PROTECTION
         // newToda = originalToda - distanceFromThreshold - BLAST_PROTECTION
-        int newTora = sideRunway.getTora() - distanceFromThreshold - BLAST_PROTECTION;
-        int newAsda = sideRunway.getAsda() - distanceFromThreshold - BLAST_PROTECTION;
-        int newToda = sideRunway.getToda() - distanceFromThreshold - BLAST_PROTECTION;
+        int newTora = sideRunway.getTora() - distanceFromThreshold - sideRunway.getDispThreshold() - BLAST_PROTECTION;
+        int newAsda = sideRunway.getAsda() - distanceFromThreshold - sideRunway.getDispThreshold() -  BLAST_PROTECTION;
+        int newToda = sideRunway.getToda() - distanceFromThreshold - sideRunway.getDispThreshold()- BLAST_PROTECTION;
 
         // Logging breakdown for clarity
         String toraBreakdownString = "Runway: " + sideRunway.getName() + "\n" +
