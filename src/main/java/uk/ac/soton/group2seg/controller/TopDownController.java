@@ -389,7 +389,7 @@ public class TopDownController {
             + "StartX: %f \n EndX: %f", logicalRunway.getName(), tora, startX, endX));
 
 
-        double baseY = i*RUNWAY_WIDTH + (i * 200);
+        double baseY = RUNWAY_WIDTH + (i * 200);
         double spacing = i * 40; // Ensures at least 30px space between lines
 
         // TORA Line
