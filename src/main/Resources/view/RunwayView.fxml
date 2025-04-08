@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
 
-<VBox prefHeight="1080" prefWidth="1920" minWidth="1500" minHeight="800" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
     <children>
         <SplitPane dividerPositions="0.165, 0.78" VBox.vgrow="ALWAYS">
             <items>
