@@ -3,6 +3,7 @@ package uk.ac.soton.group2seg.controller;
 import java.io.IOException;
 import java.util.HashMap;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -76,6 +77,7 @@ public class MainController {
     private TextArea todaTextArea;
     @FXML
     private TextArea ldaTextArea;
+    @FXML private SplitPane splitPane;
 
     private TopDownController topDownController;
     private SideViewController sideViewController;
@@ -97,6 +99,14 @@ public class MainController {
         updateAirportList();
         topDownController.setModelState(modelState);
         sideViewController.setModelState(modelState);
+
+
+        // Disable mouse events on the divider node
+        Platform.runLater(() -> {
+            splitPane.lookupAll(".split-pane-divider").forEach(div -> {
+                div.setMouseTransparent(true); // makes it non-interactive
+            });
+        });
 
 
         asdaTextArea.setText("No calculation has been performed yet.\nPlease select an airport, runway, and add an obstacle to see ASDA calculation breakdown.");
