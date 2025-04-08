@@ -317,16 +317,15 @@ public class LoginController {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RunwayView.fxml"));
       Parent root = loader.load();
 
-      Stage mainStage = new Stage();
-      Scene scene = new Scene(root, 1350, 800); // Set dimensions
+      Stage mainStage = (Stage) loginButton.getScene().getWindow();
+      Scene scene = new Scene(root, 1920, 1080); // Set dimensions
       mainStage.setScene(scene);
       mainStage.setTitle("Runway View");
 
       mainStage.centerOnScreen();
-      mainStage.show();
+      mainStage.setResizable(false);
 
-      Stage loginStage = (Stage) loginButton.getScene().getWindow();
-      loginStage.close();
+
     } catch (IOException e) {
       logger.error("Failed to load RunwayView.fxml: " + e.getMessage());
       e.printStackTrace();
