@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.ModelState;
 import uk.ac.soton.group2seg.model.Obstacle;
-import uk.ac.soton.group2seg.view.RunwayScreen;
 
 /**
  * The main controller for the application
@@ -79,6 +78,7 @@ public class MainController {
     private TextArea ldaTextArea;
 
     private TopDownController topDownController;
+    private SideViewController sideViewController;
     private ModelState modelState;
     private Calculator calculator;
 
@@ -86,17 +86,17 @@ public class MainController {
     private Obstacle currentObstacle;
 
 
-    private RunwayScreen runwayScreen;
-
     /**
      * Initialise the application
      */
     @FXML
     public void initialize() {
         topDownController = TopDownController.getInstance();
+        sideViewController = SideViewController.getInstance();
         modelState = new ModelState();
         updateAirportList();
         topDownController.setModelState(modelState);
+        sideViewController.setModelState(modelState);
 
 
         asdaTextArea.setText("No calculation has been performed yet.\nPlease select an airport, runway, and add an obstacle to see ASDA calculation breakdown.");
@@ -296,6 +296,7 @@ public class MainController {
         // Recalculate the runway after the obstacle is added
         calculator.redeclareRunway(obstacle);
         topDownController.addObstacle(obstacle);
+        sideViewController.addObstacle(obstacle);
 
         updateTables();
 
@@ -303,6 +304,7 @@ public class MainController {
 
     private void drawRunway() {
         topDownController.updateRunway();
+        sideViewController.updateRunway();
     }
 
     public void toggleTabPaneVisibility() {

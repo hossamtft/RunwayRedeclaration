@@ -91,8 +91,10 @@ public class TopDownController {
 
         drawRunway();
         // Center runway in the AnchorPane
-        double centerX = Math.max(0, (topDownView.getWidth() - RUNWAY_LENGTH) / 2);
-        double centerY = Math.max(0, (topDownView.getHeight() - RUNWAY_WIDTH) / 2);
+        double centerX = 159.5;
+        double centerY = 470.75;
+
+        logger.info("Centered on x = " + centerX + "\n y = " + centerY);
 
 
         runwayPane.getChildren().addAll(linePane);
@@ -100,8 +102,7 @@ public class TopDownController {
         runwayPane.setLayoutX(centerX);
         runwayPane.setLayoutY(centerY);
 
-//        linePane.setLayoutX(centerX);
-//        linePane.setLayoutY(centerY);
+
 
         drawClearedAndGraded();
 
@@ -193,8 +194,6 @@ public class TopDownController {
         Polygon clearedAndGraded = new Polygon(points);
         clearedAndGraded.setFill(Color.rgb(58, 30, 179));
 
-        logger.info(String.format("Centered on (%f, %f)", runwayCenterX, runwayCenterY) + "\nPoints are: " + clearedAndGraded.getPoints().toString());
-
         runwayPane.getChildren().add(0, clearedAndGraded);
     }
 
@@ -254,7 +253,7 @@ public class TopDownController {
         LogicalRunway higherRunway = modelState.getCurrentRunway().getHigherRunway();
 
         //Pass lower runway to method to render obstacle
-        renderObstacle(obstacle, lowerRunway);
+        renderObstacle(obstacle);
 
         if(obstacle.getIsCloserLower()) {
             //If the obstacle is closer to threshold with lower bearing
@@ -273,6 +272,21 @@ public class TopDownController {
             ldaTowards(1, higherRunway);
         }
 
+    }
+
+    private void renderObstacle(Obstacle obstacle) {
+        LogicalRunway logicalRunway = modelState.getCurrentRunway().getLowerRunway();
+        Rectangle obstacleShape = new Rectangle(15.0, 15.0, Color.RED);
+        double verticalScale = RUNWAY_WIDTH / 30;
+        int displacedThreshold = logicalRunway.getDispThreshold();
+
+        double x = (obstacle.getDistLowerThreshold() + displacedThreshold) * scale;
+        double y = (RUNWAY_WIDTH / 2) - 7.5 + (obstacle.getCentreOffset() * verticalScale);
+
+        obstacleShape.setX(x);
+        obstacleShape.setY(y);
+
+        linePane.getChildren().add(obstacleShape);
     }
 
     private void ldaTowards(int i, LogicalRunway logicalRunway) {
@@ -393,28 +407,14 @@ public class TopDownController {
         double spacing = i * 40; // Ensures at least 30px space between lines
 
         // TORA Line
-        drawExactLine("TORA", i, startX, endX, baseY + spacing, tora,toraColor);
+        drawExactLine("TORA", i, startX, endX, baseY + spacing, tora, toraColor);
 
         // TORA Line
-        drawExactLine("TODA", i, startX, endX, baseY + 2 * spacing, tora,todaColor);
+        drawExactLine("TODA", i, startX, endX, baseY + 2 * spacing, toda, todaColor);
 
         // TORA Line
-        drawExactLine("ASDA", i, startX, endX, baseY + 3 * spacing, tora,asdaColor);
+        drawExactLine("ASDA", i, startX, endX, baseY + 3 * spacing, asda, asdaColor);
 
-    }
-
-    private void renderObstacle(Obstacle obstacle, LogicalRunway logicalRunway) {
-        Rectangle obstacleShape = new Rectangle(15.0, 15.0, Color.RED);
-        double verticalScale = RUNWAY_WIDTH / 30;
-        int displacedThreshold = logicalRunway.getDispThreshold();
-
-        double x = (obstacle.getDistLowerThreshold() + displacedThreshold) * scale;
-        double y = (RUNWAY_WIDTH / 2) - 7.5 + (obstacle.getCentreOffset() * verticalScale);
-
-        obstacleShape.setX(x);
-        obstacleShape.setY(y);
-
-        linePane.getChildren().add(obstacleShape);
     }
 
     /**
@@ -519,6 +519,10 @@ public class TopDownController {
 
         // Add all elements to the pane
         linePane.getChildren().addAll(line, thresholdStart, thresholdEnd, lineLabel);
+    }
+
+    private double getScaledLen(int distance) {
+        return distance / RUNWAY_LENGTH;
     }
 
 }

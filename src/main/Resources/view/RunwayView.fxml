@@ -52,7 +52,14 @@
 
                 <!-- Center Panel: Runway Visualization -->
                 <AnchorPane SplitPane.resizableWithParent="true" minWidth="800" minHeight="500">
-                    <fx:include source="topDownView.fxml" />
+                    <TabPane AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+                        <Tab text="Top Down View" closable="false">
+                            <fx:include source="topDownView.fxml" />
+                        </Tab>
+                        <Tab text="Side on view" closable="false">
+                            <fx:include source="sideView.fxml" />
+                        </Tab>
+                    </TabPane>
                 </AnchorPane>
 
                 <!-- Right Panel: Details -->
