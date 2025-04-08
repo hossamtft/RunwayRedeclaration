@@ -8,10 +8,10 @@
 
 <VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.MainController">
     <children>
-        <SplitPane dividerPositions="0.165, 0.78" VBox.vgrow="ALWAYS">
+        <SplitPane fx:id="splitPane" dividerPositions="0.165, 0.78" VBox.vgrow="ALWAYS" >
             <items>
                 <!-- Left Panel: Airport Selection -->
-                <VBox prefWidth="270" SplitPane.resizableWithParent="false" style="-fx-background-color: #f5f5f5; -fx-padding: 10;">
+                <VBox prefWidth="100" SplitPane.resizableWithParent="false" style="-fx-background-color: #f5f5f5; -fx-padding: 10;">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>

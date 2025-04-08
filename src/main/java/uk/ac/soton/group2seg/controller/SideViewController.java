@@ -91,9 +91,9 @@ public class SideViewController {
         Rectangle runway = new Rectangle(650, 15);
         runway.setFill(Color.DARKGREY);
 
-        Rectangle ground = new Rectangle(2000, 2000);
+        Rectangle ground = new Rectangle(1000, 600);
         ground.setY(0);
-        ground.setX(-500);
+        ground.setX(-185);
         ground.setFill(Color.DARKGREEN);
 
         viewPane.getChildren().addAll(ground, runway, linePane, obstaclePane);
