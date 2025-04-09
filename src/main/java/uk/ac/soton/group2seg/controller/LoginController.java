@@ -30,8 +30,6 @@ public class LoginController {
   @FXML
   public Button loginButton;
   @FXML
-  public Button registerButton;
-  @FXML
   public Button guestButton;
 
   private static final String DB_URL = "jdbc:sqlite:runwayredeclaration.sqlite";
@@ -44,117 +42,6 @@ public class LoginController {
     }
   }
 
-  @FXML
-  public void loadRegistrationForm() {
-    Stage registerStage = new Stage();
-    registerStage.initModality(Modality.APPLICATION_MODAL);
-    registerStage.setTitle("User Registration");
-
-    TextField usernameField = new TextField();
-    usernameField.setPromptText("Enter username");
-
-    PasswordField passwordField = new PasswordField();
-    passwordField.setPromptText("Enter password");
-
-    ComboBox<String> roleDropdown = new ComboBox<>();
-    roleDropdown.getItems().addAll("Admin", "ATC", "Ground Crew", "Regulator");
-    roleDropdown.setPromptText("Select role");
-
-    TextField airportIDField = new TextField();
-    airportIDField.setPromptText("Enter airport ID");
-
-    Button submitButton = new Button("Submit");
-    submitButton.setDisable(true);
-
-    // Enable submit button when all fields have values
-    usernameField.textProperty().addListener((observable, oldValue, newValue) -> checkFields(usernameField, passwordField, roleDropdown, airportIDField, submitButton));
-    passwordField.textProperty().addListener((observable, oldValue, newValue) -> checkFields(usernameField, passwordField, roleDropdown, airportIDField, submitButton));
-    roleDropdown.valueProperty().addListener((observable, oldValue, newValue) -> checkFields(usernameField, passwordField, roleDropdown, airportIDField, submitButton));
-    airportIDField.textProperty().addListener((observable, oldValue, newValue) -> checkFields(usernameField, passwordField, roleDropdown, airportIDField, submitButton));
-
-    submitButton.setOnAction(event -> {
-      String username = usernameField.getText();
-      String password = passwordField.getText();
-      String role = roleDropdown.getValue();
-      String airportID = airportIDField.getText();
-
-      if (validateInputs(username, password, role, airportID)) {
-        try (Connection connection = connectToDatabase()) {
-          String hashedPassword = hashPassword(password);
-          String query = "INSERT INTO Users (Username, Password, Role, AirportID) VALUES (?, ?, ?, ?)";
-          PreparedStatement preparedStatement = connection.prepareStatement(query);
-          preparedStatement.setString(1, username);
-          preparedStatement.setString(2, hashedPassword);
-          preparedStatement.setString(3, role);
-          preparedStatement.setString(4, airportID);
-          registerStage.close();
-          logger.info("User registered - Username: {}, Role: {}, Airport ID: {}", username, role, airportID);
-          int rowsAffected = preparedStatement.executeUpdate();
-          if (rowsAffected > 0) {
-            logger.info("User successfully registered!");
-          } else {
-            logger.error("Failed to register user.");
-          }
-        } catch (SQLException e) {
-          logger.error("Database error: " + e.getMessage());
-          e.printStackTrace();
-        }
-      }
-
-
-    });
-
-    // Layout for the popup
-    GridPane grid = new GridPane();
-    grid.setPadding(new Insets(20));
-    grid.setVgap(10);
-    grid.setHgap(10);
-    grid.add(new Label("Username:"), 0, 0);
-    grid.add(usernameField, 1, 0);
-    grid.add(new Label("Password:"), 0, 1);
-    grid.add(passwordField, 1, 1);
-    grid.add(new Label("Role in airport:"), 0, 2);
-    grid.add(roleDropdown, 1, 2);
-    grid.add(new Label("Airport ID:"), 0, 3);
-    grid.add(airportIDField, 1, 3);
-
-    HBox buttonBox = new HBox(10, submitButton);
-    VBox vbox = new VBox(10, grid, buttonBox);
-    vbox.setPadding(new Insets(20));
-
-    Scene scene = new Scene(vbox);
-    registerStage.setScene(scene);
-    scene.getStylesheets().add(getClass().getResource("/css/form.css").toExternalForm());
-    registerStage.showAndWait();
-  }
-
-  private void checkFields(TextField username, PasswordField password, ComboBox<String> role, TextField airportID, Button submitButton) {
-    submitButton.setDisable(username.getText().isEmpty() || password.getText().isEmpty() || role.getValue() == null || airportID.getText().isEmpty());
-  }
-
-  public boolean validateInputs(String username, String password, String role, String airportID) {
-    if (username.length() < 6 || !usernameUnique(username)) {
-      showError("Username must be unique and at least 6 characters long.");
-      return false;
-    }
-
-    if (password.length() < 8 || !password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*") || !password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*(),.?\":{}|<>_-].*")) {
-      showError("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one symbol.");
-      return false;
-    }
-
-    if (role == null) {
-      showError("Please select a role.");
-      return false;
-    }
-
-    if (airportID.isEmpty() || !validAirport(airportID)) {
-      showError("Provide a valid UK Aiport ID!");
-      return false;
-    }
-
-    return true;
-  }
 
   public void showError(String message) {
     Platform.runLater(() -> {
@@ -165,7 +52,6 @@ public class LoginController {
       alert.showAndWait();
     });
   }
-
 
 
   public boolean usernameUnique(String username) {
@@ -247,9 +133,9 @@ public class LoginController {
     Button cancelButton = new Button("Cancel");
 
     usernameField.textProperty().addListener((observable, oldValue, newValue) ->
-            loginSubmitButton.setDisable(usernameField.getText().isEmpty() || passwordField.getText().isEmpty()));
+        loginSubmitButton.setDisable(usernameField.getText().isEmpty() || passwordField.getText().isEmpty()));
     passwordField.textProperty().addListener((observable, oldValue, newValue) ->
-            loginSubmitButton.setDisable(usernameField.getText().isEmpty() || passwordField.getText().isEmpty()));
+        loginSubmitButton.setDisable(usernameField.getText().isEmpty() || passwordField.getText().isEmpty()));
 
     loginSubmitButton.setDisable(true);
 
@@ -257,10 +143,11 @@ public class LoginController {
       String username = usernameField.getText();
       String password = passwordField.getText();
 
-      if (authenticateUser(username, password)) {
+      String role = authenticateUser(username, password);
+      if (role != null) {
         logger.info("User successfully logged in: {}", username);
         loginStage.close();
-        openMainApplication(username);
+        openMainApplication(username, role);
       } else {
         logger.info("Login failed for user: {}", username);
         showError("Invalid username or password");
@@ -289,42 +176,48 @@ public class LoginController {
     loginStage.showAndWait();
   }
 
-  private boolean authenticateUser(String username, String password) {
+  private String authenticateUser(String username, String password) {
     try (Connection connection = connectToDatabase()) {
-      String query = "SELECT Password FROM Users WHERE Username = ?";
+      String query = "SELECT Password, Role FROM Users WHERE Username = ?";
       PreparedStatement preparedStatement = connection.prepareStatement(query);
       preparedStatement.setString(1, username);
 
       ResultSet resultSet = preparedStatement.executeQuery();
       if (resultSet.next()) {
         String hashedPassword = resultSet.getString("Password");
-        return checkPassword(password, hashedPassword);
+        String role = resultSet.getString("Role");
+        if (checkPassword(password, hashedPassword)) {
+          return role;
+        }
       }
     } catch (SQLException e) {
       logger.error("Database error during authentication: " + e.getMessage());
       e.printStackTrace();
     }
-    return false;
+    return null; // Return null if authentication fails
   }
 
   private void proceedAsGuest() {
     logger.info("Proceeding as guest user");
-    openMainApplication("guest");
+    openMainApplication("No Username", "guest");
   }
 
-  private void openMainApplication(String username) {
+  private void openMainApplication(String username, String userRole) {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RunwayView.fxml"));
       Parent root = loader.load();
 
+      MainController mainController = loader.getController();
+      mainController.setUserCredentials(username, userRole);
+      mainController.updateAccessAndObstacleButtonsState();
+
+
       Stage mainStage = (Stage) loginButton.getScene().getWindow();
-      Scene scene = new Scene(root, 1920, 1080); // Set dimensions
+      Scene scene = new Scene(root, 1350, 800); // Set dimensions
       mainStage.setScene(scene);
       mainStage.setTitle("Runway View");
 
       mainStage.centerOnScreen();
-      mainStage.setResizable(false);
-
 
     } catch (IOException e) {
       logger.error("Failed to load RunwayView.fxml: " + e.getMessage());

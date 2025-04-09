@@ -11,11 +11,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 8, 0, 2, 2);
 }
 
-.label {
-    -fx-font-size: 13px;
-    -fx-text-fill: #333;
-    -fx-font-weight: normal;
-}
 
 .text-field, .password-field {
     -fx-background-color: #fafafa;
@@ -62,6 +57,20 @@
     -fx-background-color: #4d6478;
     -fx-text-fill: white;
     -fx-font-size: 13px;
+    -fx-font-weight: normal;
+    -fx-padding: 6px 12px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-min-width: 100px;
+    -fx-min-height: 32px;
+    -fx-transition: 0.2s;
+}
+
+.admin-buttons{
+    -fx-background-color: #4d6478;
+    -fx-text-fill: white;
+    -fx-font-size: 26px;
     -fx-font-weight: normal;
     -fx-padding: 6px 12px;
     -fx-border-radius: 6px;
