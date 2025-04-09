@@ -26,24 +26,19 @@
                   <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
                </padding>
             </VBox>
-            <VBox alignment="CENTER" spacing="25.0" VBox.vgrow="ALWAYS">
+            <VBox alignment="CENTER" spacing="50.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" prefHeight="45.0" prefWidth="180.0" style="-fx-background-color: #000000; -fx-text-fill: white;" text="Login">
+                  <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="180.0" style="-fx-background-color: #000000; -fx-text-fill: white;" text="Login">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </Button>
-                  <Button fx:id="registerButton" mnemonicParsing="false" onAction="#loadRegistrationForm" prefHeight="45.0" prefWidth="180.0" style="-fx-background-color: #000000; -fx-text-fill: white;" text="Register">
+                  <Button fx:id="guestButton" alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="180.0" style="-fx-background-color: #000000; -fx-border-color: #cccccc; -fx-border-radius: 3;" text="Continue as Guest" textFill="WHITE">
                      <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="guestButton" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: #f5f5f5; -fx-border-color: #cccccc; -fx-border-radius: 3;" text="Continue as Guest">
-                     <font>
-                        <Font size="12.0" />
+                        <Font size="16.0" />
                      </font>
                      <VBox.margin>
-                        <Insets top="10.0" />
+                        <Insets />
                      </VBox.margin>
                   </Button>
                </children>
