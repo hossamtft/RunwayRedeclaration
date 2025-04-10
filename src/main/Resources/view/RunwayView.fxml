@@ -40,11 +40,15 @@
                         <Region VBox.vgrow="ALWAYS" />
 
                         <!-- Obstacle buttons at bottom -->
-                        <VBox alignment="TOP_CENTER" prefHeight="127.0" prefWidth="165.0" spacing="10">
-                            <Button fx:id="addObstButton" mnemonicParsing="false" onAction="#loadObstacleForm" prefWidth="180" styleClass="action-button" text="Add Obstacle" />
-                            <Button fx:id="addPreDefObstButton" mnemonicParsing="false" onAction="#loadPredefinedObstacleForm" prefWidth="180" styleClass="action-button" text="Add Predefined Obstacle" />
-                     <Label fx:id="disabledMessageLabel" prefHeight="52.0" prefWidth="165.0" text="Please select an airport and runway before adding an obstacle." wrapText="true" />
+                        <VBox spacing="10" alignment="BOTTOM_CENTER">
+                            <Button fx:id="addObstButton" mnemonicParsing="false" onAction="#loadObstacleForm"
+                                    prefWidth="180" text="Add Obstacle" styleClass="action-button"/>
+                            <Button fx:id="addPreDefObstButton" mnemonicParsing="false" onAction="#loadPredefinedObstacleForm"
+                                    prefWidth="180" text="Add Predefined Obstacle" styleClass="action-button"/>
+                            <Label fx:id="disabledMessageLabel" prefHeight="52.0" prefWidth="165.0" text="Please select an airport and runway before adding an obstacle." wrapText="true" />
                         </VBox>
+                        <Button fx:id="exportXmlButton" mnemonicParsing="false" onAction="#handleExportAsXml"
+                          prefWidth="180" text="Export Airport &amp; Obstacles" styleClass="action-button"/>
                     </VBox>
                 </VBox>
 

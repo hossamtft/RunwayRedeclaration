@@ -1,5 +1,6 @@
 package uk.ac.soton.group2seg.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -18,11 +19,26 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.group2seg.model.*;
+
+import java.io.File;
+import javafx.stage.FileChooser;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import uk.ac.soton.group2seg.BCrypt.BCrypt;
 import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.ModelState;
@@ -94,7 +110,8 @@ public class MainController {
     private TextArea todaTextArea;
     @FXML
     private TextArea ldaTextArea;
-    @FXML private SplitPane splitPane;
+    @FXML
+    private SplitPane splitPane;
 
     private TopDownController topDownController;
     private SideViewController sideViewController;
@@ -103,6 +120,8 @@ public class MainController {
 
     private HashMap<String, String> obstacleList;
     private Obstacle currentObstacle;
+
+    private Airport currentAirport;
 
 
     /**
@@ -236,16 +255,17 @@ public class MainController {
 
         logger.info("Loading airport: " + selectedAirport);
         modelState.loadAirport(selectedAirport);
+        this.currentAirport = modelState.getCurrentAirport();
 
         runwayListCombo.getItems().clear();
         runwayListCombo.getItems()
-            .addAll(FXCollections.observableArrayList(modelState.getRunways()));
+                .addAll(FXCollections.observableArrayList(modelState.getRunways()));
         runwayListCombo.setVisible(true);
 
         runwayLoadButton.setVisible(true);
     }
 
-    private void openAddAirportForm(){
+    private void openAddAirportForm() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AddAirportForm.fxml"));
             Parent root = loader.load();
@@ -310,7 +330,7 @@ public class MainController {
         currLdaCol.setCellValueFactory(new PropertyValueFactory<>("currLda"));
 
         ObservableList<LogicalRunway> runwayData = FXCollections.observableArrayList(
-            modelState.getCurrentRunway().getLogicalRunways());
+                modelState.getCurrentRunway().getLogicalRunways());
 
         originalTableView.setItems(runwayData);
         currentTableView.setItems(runwayData);
@@ -322,9 +342,9 @@ public class MainController {
         currentTableView.getItems().clear();
         originalTableView.getItems().clear();
         originalTableView.setItems(
-            FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways()));
+                FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways()));
         currentTableView.setItems(
-            FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways()));
+                FXCollections.observableArrayList(modelState.getCurrentRunway().getLogicalRunways()));
 
     }
 
@@ -364,7 +384,7 @@ public class MainController {
     public void loadPredefinedObstacleForm() {
         try {
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/view/PredefinedObstacleList.fxml"));
+                    getClass().getResource("/view/PredefinedObstacleList.fxml"));
             Parent root = loader.load();
 
             // Get the controller
@@ -574,6 +594,68 @@ public class MainController {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
+    public void setCurrentAirport(Airport airport) {
+        this.currentAirport = airport;
+    }
+
+    @FXML
+    private void handleExportAsXml() {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save XML File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try {
+                exportToXml(file);
+            } catch (Exception e) {
+                e.printStackTrace(); // Or show error dialog
+            }
+        }
+    }
+
+    private void exportToXml(File file) throws Exception {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+        // Root element
+        Document doc = docBuilder.newDocument();
+        Element rootElement = doc.createElement("AirportData");
+        doc.appendChild(rootElement);
+
+        Element airport = doc.createElement("Airport");
+        airport.setAttribute("name", currentAirport.getName());
+        rootElement.appendChild(airport);
+
+        // add selected runway
+        Runway selectedRunway = modelState.getCurrentRunway();
+        Element runway = doc.createElement("Runway");
+        runway.setAttribute("name", selectedRunway.getName());
+        airport.appendChild(runway);
+
+        if (modelState.getObstacle() != null) {
+            Obstacle o = modelState.getObstacle();
+            Element obstacle = doc.createElement("Obstacle");
+            //obstacle.setAttribute("name", o.getName());
+            obstacle.setAttribute("height", String.valueOf(o.getHeight()));
+            // Add more attributes as needed
+            obstacle.setAttribute("distToHigherThreshold", String.valueOf(o.getDistHigherThreshold()));
+            obstacle.setAttribute("distToLowerThreshold", String.valueOf(o.getDistLowerThreshold()));
+            obstacle.setAttribute("distToCentreline", String.valueOf(o.getCentreOffset()));
+            rootElement.appendChild(obstacle);
+        }
+
+// Create the Transformer to write the XML
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+// Write the content to the file
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(file);
+        transformer.transform(source, result);
+    }
 
     @FXML
     public void openAdminDashboard(ActionEvent event) {
@@ -608,3 +690,6 @@ public class MainController {
         dashboardStage.showAndWait();
     }
 }
+
+
+
