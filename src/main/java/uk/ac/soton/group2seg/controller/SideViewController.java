@@ -31,6 +31,7 @@ public class SideViewController {
     private Pane viewPane;
     private Pane obstaclePane;
     private Pane linePane;
+    private Rectangle obstacleShape;
     private ModelState modelState;
     private Runway currentRunway;
     private Obstacle obstacle;
@@ -60,6 +61,8 @@ public class SideViewController {
         AnchorPane.setLeftAnchor(sideView, 0d);
         AnchorPane.setRightAnchor(sideView, 0d);
 
+        sideView.setMaxSize(1000, 1000);
+
         sideView.setStyle("-fx-background-color: skyblue");
 
         sideView.getChildren().addAll(viewPane);
@@ -68,9 +71,11 @@ public class SideViewController {
         viewPane.setLayoutY(470.75);
 
         sideView.widthProperty().addListener((obs, oldVal, newVal) -> {
+            logger.info("Width resize event");
             drawView();
         });
         sideView.heightProperty().addListener((obs, oldVal, newVal) -> {
+            logger.info("Height resize event");
             drawView();
         });
 
@@ -86,14 +91,17 @@ public class SideViewController {
             return;
         }
 
+        logger.info(String.format("SideView height = %.2f \n"
+            + "width = %.2f", sideView.getHeight(), sideView.getWidth()));
+
         logger.info("Drawing runway strip");
 
         Rectangle runway = new Rectangle(650, 15);
         runway.setFill(Color.DARKGREY);
 
-        Rectangle ground = new Rectangle(1000, 600);
+        Rectangle ground = new Rectangle(1200, 1000);
         ground.setY(0);
-        ground.setX(-185);
+        ground.setX(-160);
         ground.setFill(Color.DARKGREEN);
 
         viewPane.getChildren().addAll(ground, runway, linePane, obstaclePane);
@@ -156,7 +164,13 @@ public class SideViewController {
     }
 
     /**
-     * Helper method to draw a single runway parameter line with labels and dashed threshold markers.
+     * Helper method to draw a single runway parameter line with labels and dashed threshold markers
+     * @param label Label for the line
+     * @param i Flag to dictate where line renders. 1 renders below runway strip, -1 renders above
+     * @param length The length of the line to render
+     * @param yPos The y position of the line to render
+     * @param value The distance value to label the line
+     * @param color The colour to render the line
      */
     private void drawSingleLine(String label, int i, double length, double yPos, int value, Color color) {
         double startX;
@@ -272,7 +286,7 @@ public class SideViewController {
         obstaclePane.getChildren().clear();
 
         LogicalRunway logicalRunway = currentRunway.getLowerRunway();
-        Rectangle obstacleShape = new Rectangle(15, obstacle.getHeight(), Color.RED);
+        obstacleShape = new Rectangle(15, obstacle.getHeight(), Color.RED);
         int displacedThreshold = logicalRunway.getDispThreshold();
 
         double x = (obstacle.getDistLowerThreshold() + displacedThreshold) * scale;
@@ -376,6 +390,79 @@ public class SideViewController {
         drawSingleLine("ASDA", i, scaledTora, baseY + 3 * spacing, tora, asdaColor);
     }
 
+    private void takeoffLinesAway(int i, LogicalRunway logicalRunway) {
+        int tora = logicalRunway.getCurrTora();
+        int toda = logicalRunway.getCurrToda();
+        int asda = logicalRunway.getCurrAsda();
+
+        double scaledTora = tora * scale;
+        double scaledToda = toda * scale;
+        double scaledAsda = asda * scale;
+
+        double baseY = RUNWAY_WIDTH + (i * 200);
+        double spacing = i * 40; // Ensures at least 30px space between lines
+
+        if(i == -1) {
+            logger.info("USING -1 FLAG");
+
+            drawExactLine("TORA",
+                i,
+                RUNWAY_LENGTH -scaledTora,
+                RUNWAY_LENGTH,
+                baseY + spacing,
+                tora,
+                toraColor);
+
+            // TORA Line
+            drawExactLine("TODA",
+                i,
+                RUNWAY_LENGTH - scaledToda,
+                RUNWAY_LENGTH,
+                baseY + 2 * spacing,
+                toda,
+                todaColor);
+
+            // TORA Line
+            drawExactLine("ASDA",
+                i,
+                RUNWAY_LENGTH - scaledAsda,
+                RUNWAY_LENGTH,
+                baseY + 3 * spacing,
+                asda,
+                asdaColor);
+        }else {
+            logger.info("USING +1 FLAG");
+
+            drawExactLine("TORA",
+                i,
+                scaledTora,
+                0,
+                baseY + spacing,
+                tora,
+                toraColor);
+
+            // TORA Line
+            drawExactLine("TODA",
+                i,
+                scaledToda,
+                0,
+                baseY + 2 * spacing,
+                toda,
+                todaColor);
+
+            // TORA Line
+            drawExactLine("ASDA",
+                i,
+                scaledAsda,
+                0,
+                baseY + 3 * spacing,
+                asda,
+                asdaColor);
+        }
+
+
+    }
+
     private void ldaOver(int i, LogicalRunway logicalRunway) {
         int lda = logicalRunway.getCurrLda();
         double scaledLda = lda * scale;
@@ -397,46 +484,50 @@ public class SideViewController {
 
         drawExactLine("LDA", i, startX, endX, baseY, lda, ldaColor);
 
+        renderGlideSlope(startX);
+
     }
 
-    //TODO: Use separate TORA, TODA & ASDA values :(.
-    private void takeoffLinesAway(int i, LogicalRunway logicalRunway) {
-        int tora = logicalRunway.getCurrTora();
-        int toda = logicalRunway.getCurrToda();
-        int asda = logicalRunway.getCurrAsda();
-
-        double scaledTora = tora * scale;
-        double scaledToda = toda * scale;
-        double scaledAsda = asda * scale;
-
-        double startX;
+    private void renderGlideSlope(double startX) {
+        int obstacleHeight = obstacle.getHeight();
+        double obstacleShapeX = obstacleShape.getX();
+        double slope;
         double endX;
-        if(i == -1) {
-            logger.info("USING -1 FLAG");
-            startX = RUNWAY_LENGTH - scaledTora;
-            endX = RUNWAY_LENGTH;
-        }else {
-            logger.info("USING +1 FLAG");
-            startX = scaledTora;
-            endX = 0;
+        double endY;
+
+        //Extend the glide slope past the obstacle
+        //Calculate the slope angle and the new end coordinate from obstacle position
+        if(obstacleShapeX > startX) {
+            logger.info("Obstacle on right side of runway");
+            slope = obstacleHeight / (obstacleShapeX - startX) ;
+            endX = Math.min((obstacleShapeX + 100.0), 850);
+            endY = slope * Math.abs(endX - startX);
+        }else{
+            logger.info("Obstacle on left side of runway");
+            slope = obstacleHeight / (startX - obstacleShapeX);
+            endX = Math.min((obstacleShapeX - 100.0), -200);
+            endY = slope * Math.abs(startX - endX);
         }
 
-        logger.info(String.format("Runway: %s \n"
-            + "TORA: %d \n"
-            + "StartX: %f \n EndX: %f", logicalRunway.getName(), tora, startX, endX));
+        logger.info(String.format("Rendering glideslope with: \n "
+                + "Slope = %.2f \n"
+                + "Obstacle height = %d \n"
+                + "startX = %.2f \n"
+                + "endX = %.2f \n"
+                + "endY = %.2f",
+            slope, obstacleHeight, startX, obstacleShapeX, endY));
 
+        //TODO: Change colour of glide slope and increase y coordinate to avoid clipping on obstacle
+        Line glideSlope = new Line(startX, 0, endX, -1 * (endY + 2));
+        glideSlope.setStroke(Color.RED);
+        glideSlope.setStrokeWidth(5);
 
-        double baseY = RUNWAY_WIDTH + (i * 200);
-        double spacing = i * 40; // Ensures at least 30px space between lines
+//        Line glideSlope2 = new Line(obstacleShapeX, -1 * obstacleHeight, endX, -1 * endY );
+//        glideSlope2 .setStroke(Color.BLACK);
+//        glideSlope2.setStrokeWidth(5);
 
-        // TORA Line
-        drawExactLine("TORA", i, startX, endX, baseY + spacing, tora, toraColor);
-
-        // TORA Line
-        drawExactLine("TODA", i, startX, endX, baseY + 2 * spacing, toda, todaColor);
-
-        // TORA Line
-        drawExactLine("ASDA", i, startX, endX, baseY + 3 * spacing, asda, asdaColor);
-
+        linePane.getChildren().addAll(glideSlope);
     }
+
+
 }
