@@ -60,9 +60,11 @@ public class TopDownController {
 
         // Setup listeners for resize events
         topDownView.widthProperty().addListener((obs, oldVal, newVal) -> {
+            logger.info("Width resize event");
             updateView();
         });
         topDownView.heightProperty().addListener((obs, oldVal, newVal) -> {
+            logger.info("Height resize event");
             updateView();
         });
 
@@ -194,7 +196,7 @@ public class TopDownController {
         Polygon clearedAndGraded = new Polygon(points);
         clearedAndGraded.setFill(Color.rgb(58, 30, 179));
 
-        runwayPane.getChildren().add(0, clearedAndGraded);
+        runwayPane.getChildren().addFirst(clearedAndGraded);
     }
 
     private void drawLines() {
@@ -372,11 +374,10 @@ public class TopDownController {
 
         double baseY = RUNWAY_WIDTH + (i * 200);
 
-        drawExactLine("LDA", i, startX, endX, baseY, lda, ldaColor);
+        drawExactLine("LDA", startX, endX, baseY, lda, ldaColor);
 
     }
 
-    //TODO: Use separate TORA, TODA & ASDA values :(.
     private void takeoffLinesAway(int i, LogicalRunway logicalRunway) {
         int tora = logicalRunway.getCurrTora();
         int toda = logicalRunway.getCurrToda();
@@ -386,35 +387,59 @@ public class TopDownController {
         double scaledToda = toda * scale;
         double scaledAsda = asda * scale;
 
-        double startX;
-        double endX;
-        if(i == -1) {
-            logger.info("USING -1 FLAG");
-            startX = RUNWAY_LENGTH - scaledTora;
-            endX = RUNWAY_LENGTH;
-        }else {
-            logger.info("USING +1 FLAG");
-            startX = scaledTora;
-            endX = 0;
-        }
-
-        logger.info(String.format("Runway: %s \n"
-            + "TORA: %d \n"
-            + "StartX: %f \n EndX: %f", logicalRunway.getName(), tora, startX, endX));
-
-
-        double baseY = i*RUNWAY_WIDTH + (i * 200);
+        double baseY = RUNWAY_WIDTH + (i * 200);
         double spacing = i * 40; // Ensures at least 30px space between lines
 
-        // TORA Line
-        drawExactLine("TORA", i, startX, endX, baseY + spacing, tora, toraColor);
+        if(i == -1) {
+            logger.info("USING -1 FLAG");
+            drawExactLine("TORA",
+                RUNWAY_LENGTH -scaledTora,
+                RUNWAY_LENGTH,
+                baseY + spacing,
+                tora,
+                toraColor);
 
-        // TORA Line
-        drawExactLine("TODA", i, startX, endX, baseY + 2 * spacing, toda, todaColor);
+            // TORA Line
+            drawExactLine("TODA",
+                RUNWAY_LENGTH - scaledToda,
+                RUNWAY_LENGTH,
+                baseY + 2 * spacing,
+                toda,
+                todaColor);
 
-        // TORA Line
-        drawExactLine("ASDA", i, startX, endX, baseY + 3 * spacing, asda, asdaColor);
+            // TORA Line
+            drawExactLine("ASDA",
+                RUNWAY_LENGTH - scaledAsda,
+                RUNWAY_LENGTH,
+                baseY + 3 * spacing,
+                asda,
+                asdaColor);
+        }else {
+            logger.info("USING +1 FLAG");
 
+            drawExactLine("TORA",
+                scaledTora,
+                0,
+                baseY + spacing,
+                tora,
+                toraColor);
+
+            // TORA Line
+            drawExactLine("TODA",
+                scaledToda,
+                0,
+                baseY + 2 * spacing,
+                toda,
+                todaColor);
+
+            // TORA Line
+            drawExactLine("ASDA",
+                scaledAsda,
+                0,
+                baseY + 3 * spacing,
+                asda,
+                asdaColor);
+        }
     }
 
     /**
@@ -495,7 +520,7 @@ public class TopDownController {
         linePane.getChildren().addAll(line, thresholdStart, thresholdEnd, lineLabel);
     }
 
-    private void drawExactLine(String label, int i, double startX, double endX, double yPos, int value, Color color){
+    private void drawExactLine(String label, double startX, double endX, double yPos, int value, Color color){
         // Main line
         Line line = new Line(startX, yPos, endX, yPos);
         line.setStroke(color);

@@ -214,6 +214,8 @@ public class MainController {
                 toggleDashboardButton.setVisible(false);
                 disabledMessageLabel.setVisible(false);
                 logger.info("Unknown role (" + userRole + "): Obstacle and dashboard features disabled.");
+//                disabledMessageLabel.setVisible(!enableButtons);
+//                logger.info("Admin role: All features enabled.");
                 break;
         }
     }
