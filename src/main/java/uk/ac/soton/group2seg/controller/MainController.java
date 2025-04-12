@@ -2,8 +2,11 @@ package uk.ac.soton.group2seg.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import java.util.List;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +21,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -27,8 +32,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.group2seg.model.*;
 
-import java.io.File;
-import javafx.stage.FileChooser;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -136,8 +139,8 @@ public class MainController {
         topDownController.setModelState(modelState);
         sideViewController.setModelState(modelState);
 
-        modelState.currentAirportProperty().addListener((obs, oldVal, newVal) -> updateAccessAndObstacleButtonsState());
-        modelState.currentRunwayProperty().addListener((obs, oldVal, newVal) ->  updateAccessAndObstacleButtonsState());
+        modelState.currentAirportProperty().addListener((obs, oldVal, newVal) -> updateAccessLevelsAndButtons());
+        modelState.currentRunwayProperty().addListener((obs, oldVal, newVal) ->  updateAccessLevelsAndButtons());
 
 
         // Disable mouse events on the divider node
@@ -168,7 +171,7 @@ public class MainController {
         }
     }
 
-    public void updateAccessAndObstacleButtonsState() {
+    public void updateAccessLevelsAndButtons() {
         // Get the current state of airport and runway selection
         boolean airportSelected = modelState.getCurrentAirport() != null;
         boolean runwaySelected = modelState.getCurrentRunway() != null;
@@ -183,7 +186,7 @@ public class MainController {
         addObstButton.setDisable(!enableButtons);
         addPreDefObstButton.setDisable(!enableButtons);
 
-        // Handle the role-based visibility and feature restrictions
+        // Different roles will have access to different buttons
         switch (userRole.toLowerCase()) {
             case "admin":
                 disabledMessageLabel.setVisible(!enableButtons);
@@ -214,8 +217,8 @@ public class MainController {
                 toggleDashboardButton.setVisible(false);
                 disabledMessageLabel.setVisible(false);
                 logger.info("Unknown role (" + userRole + "): Obstacle and dashboard features disabled.");
-//                disabledMessageLabel.setVisible(!enableButtons);
-//                logger.info("Admin role: All features enabled.");
+//            disabledMessageLabel.setVisible(!enableButtons);
+//            logger.info("Admin role: All features enabled.");
                 break;
         }
     }
@@ -537,9 +540,7 @@ public class MainController {
             return false;
         }
 
-        if (password.length() < 8 || !password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*")
-            || !password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*(),.?\":{}|<>_-].*")) {
-            showError("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one symbol.");
+        if (!validatePassword(password)) {
             return false;
         }
 
@@ -564,6 +565,15 @@ public class MainController {
             alert.setContentText(message);
             alert.showAndWait();
         });
+    }
+
+    private boolean validatePassword(String password) {
+        if (password.length() < 8 || !password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*")
+            || !password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*(),.?\":{}|<>_-].*")) {
+            showError("Password must be at least 8 characters long and include upper/lowercase, number, and symbol.");
+            return false;
+        }
+        return true;
     }
 
     public boolean usernameUnique(String username) {
@@ -659,6 +669,12 @@ public class MainController {
         transformer.transform(source, result);
     }
 
+    /**
+     * A button available exclusively to users with the admin role. It handles user registration,
+     * as it's more appropriate for new airport staff to be assigned their credentials
+     * rather than creating accounts themselves.
+     * @param event
+     */
     @FXML
     public void openAdminDashboard(ActionEvent event) {
         Stage dashboardStage = new Stage();
@@ -677,7 +693,7 @@ public class MainController {
         editUsersButton.getStyleClass().add("admin-buttons");
 
         registerButton.setOnAction(e -> loadRegistrationForm());
-        editUsersButton.setOnAction(e -> logger.info("Edit Existing Users clicked - not yet implemented"));
+        editUsersButton.setOnAction(e -> openEditUserSearchDialog());
 
         VBox layout = new VBox(20, titleLabel, registerButton, editUsersButton);
         layout.setAlignment(Pos.CENTER);
@@ -691,6 +707,307 @@ public class MainController {
         dashboardStage.setScene(scene);
         dashboardStage.showAndWait();
     }
+
+    /**
+     * Two ways of searching for a record to edit - both using the username.
+     */
+    public void openEditUserSearchDialog() {
+        Stage searchStage = new Stage();
+        searchStage.initModality(Modality.APPLICATION_MODAL);
+        searchStage.setTitle("Edit User - Search");
+
+        // Manual search - by typing
+        TextField manualField = new TextField();
+        manualField.setPromptText("Enter username");
+
+        Button manualSearchButton = new Button("Search");
+
+        HBox manualBox = new HBox(10, manualField, manualSearchButton);
+
+        // Username retrieval - pick a username from the list
+        TextField listPromptField = new TextField("Or select a username from the list below:");
+        listPromptField.setEditable(false);
+
+        ListView<String> userList = new ListView<>();
+        userList.setPrefHeight(150);
+        userList.setItems(fetchUsernamesFromDatabase());
+
+        Button listSelectButton = new Button("OK");
+        VBox listBox = new VBox(10, listPromptField, userList, listSelectButton);
+
+        VBox layout = new VBox(20, new Label("Search for a username:"), manualBox, new Separator(), listBox);
+        layout.setPadding(new Insets(20));
+
+        manualSearchButton.setOnAction(e -> {
+            String username = manualField.getText();
+            if (usernameExists(username)) {
+                searchStage.close();
+                openEditOptionsDialog(username);
+            } else {
+                showError("Username not found.");
+            }
+        });
+
+        listSelectButton.setOnAction(e -> {
+            String selected = userList.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                searchStage.close();
+                openEditOptionsDialog(selected);
+            } else {
+                showError("No user selected.");
+            }
+        });
+
+        Scene scene = new Scene(layout);
+        scene.getStylesheets().add(getClass().getResource("/css/form.css").toExternalForm());
+        searchStage.setScene(scene);
+        searchStage.showAndWait();
+    }
+
+    /**
+     * Retrieve all the usernames from the database. Admin can choose the username easily if the
+     * database is small, no need for manual searching.
+     * @return list of usernames
+     */
+    private ObservableList<String> fetchUsernamesFromDatabase() {
+        ObservableList<String> usernames = FXCollections.observableArrayList();
+        String query = "SELECT Username FROM Users";
+        try (Connection conn = connectToDatabase();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                usernames.add(rs.getString("Username"));
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to fetch usernames: " + e.getMessage());
+        }
+        return usernames;
+    }
+
+    /**
+     * Looks for the string provided as an argument in the username column of the database
+     * @param username
+     * @return
+     */
+    private boolean usernameExists(String username) {
+        String query = "SELECT 1 FROM Users WHERE Username = ?";
+        try (Connection conn = connectToDatabase();
+            PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            logger.error("Error checking username existence: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    /**
+     * Allows the admin to choose which fields of the record they want to change.
+     * @param username
+     */
+    public void openEditOptionsDialog(String username) {
+        Stage optionStage = new Stage();
+        optionStage.initModality(Modality.APPLICATION_MODAL);
+        optionStage.setTitle("Edit User - Choose Fields");
+        optionStage.setMinWidth(350);
+
+
+        Label label = new Label("Tick the fields you want to edit:");
+        label.setWrapText(true);
+
+        CheckBox usernameCheck = new CheckBox("Username");
+        CheckBox passwordCheck = new CheckBox("Password");
+        CheckBox roleCheck = new CheckBox("Role");
+        CheckBox airportCheck = new CheckBox("Airport ID");
+
+        Button okButton = new Button("OK");
+
+        okButton.setOnAction(e -> {
+            // Check if at least one checkbox is selected
+            if (!usernameCheck.isSelected() && !passwordCheck.isSelected() &&
+                !roleCheck.isSelected() && !airportCheck.isSelected()) {
+                showError("Please select at least one field to edit.");
+            } else {
+                optionStage.close();
+                openFieldEditingDialog(
+                    username,
+                    usernameCheck.isSelected(),
+                    passwordCheck.isSelected(),
+                    roleCheck.isSelected(),
+                    airportCheck.isSelected()
+                );
+            }
+        });
+
+        VBox content = new VBox(10, label, usernameCheck, passwordCheck, roleCheck, airportCheck, okButton);
+        content.setPadding(new Insets(20));
+        content.setAlignment(Pos.CENTER);
+
+        Region filler = new Region();
+        VBox.setVgrow(filler, Priority.ALWAYS);
+
+        content.getChildren().add(filler);
+
+        Scene scene = new Scene(content);
+        scene.getStylesheets().add(getClass().getResource("/css/form.css").toExternalForm());
+
+        optionStage.setScene(scene);
+        optionStage.show();
+    }
+
+
+    /**
+     * Opens the dialog to allow the admin to input new values for the fields that they checked to edit
+     * @param currentUsername
+     * @param editUsername
+     * @param editPassword
+     * @param editRole
+     * @param editAirportID
+     */
+    public void openFieldEditingDialog(String currentUsername, boolean editUsername, boolean editPassword,
+        boolean editRole, boolean editAirportID) {
+        Stage inputStage = new Stage();
+        inputStage.initModality(Modality.APPLICATION_MODAL);
+        inputStage.setTitle("Edit User - Input Values");
+        inputStage.setMinWidth(350);
+
+        VBox fieldsBox = new VBox(10);
+        Map<String, Control> fieldInputs = new HashMap<>();
+
+        PasswordField confirmPasswordField = null;
+
+        if (editUsername) {
+            TextField newUserField = new TextField();
+            newUserField.setPromptText("Enter new username");
+            fieldInputs.put("username", newUserField);
+            fieldsBox.getChildren().add(new Label("New Username for " + currentUsername + ":"));
+            fieldsBox.getChildren().add(newUserField);
+        }
+
+        if (editPassword) {
+            PasswordField newPasswordField = new PasswordField();
+            newPasswordField.setPromptText("Enter new password");
+            confirmPasswordField = new PasswordField();
+            confirmPasswordField.setPromptText("Confirm new password");
+            fieldInputs.put("password", newPasswordField);
+            fieldsBox.getChildren().add(new Label("New Password for " + currentUsername + ":"));
+            fieldsBox.getChildren().add(newPasswordField);
+            fieldsBox.getChildren().add(new Label("Confirm New Password for " + currentUsername + ":"));
+            fieldsBox.getChildren().add(confirmPasswordField);
+        }
+
+        if (editRole) {
+            ComboBox<String> roleBox = new ComboBox<>();
+            roleBox.getItems().addAll("Admin", "ATC", "Ground Crew", "Regulator");
+            roleBox.setPromptText("Select new role");
+            fieldInputs.put("role", roleBox);
+            fieldsBox.getChildren().add(new Label("New Role for " + currentUsername + ":"));
+            fieldsBox.getChildren().add(roleBox);
+        }
+
+        if (editAirportID) {
+            TextField newAirportField = new TextField();
+            newAirportField.setPromptText("Enter new Airport ID");
+            fieldInputs.put("airportID", newAirportField);
+            fieldsBox.getChildren().add(new Label("New Airport ID for " + currentUsername + ":"));
+            fieldsBox.getChildren().add(newAirportField);
+        }
+
+        Button submitButton = new Button("Submit");
+        PasswordField finalConfirmPasswordField = confirmPasswordField;
+        submitButton.setOnAction(e -> {
+            try (Connection conn = connectToDatabase()) {
+                StringBuilder sql = new StringBuilder("UPDATE Users SET ");
+                List<String> updates = new ArrayList<>();
+                List<Object> values = new ArrayList<>();
+
+                // used to display a meaningful alert if a field is empty
+                boolean anyEmpty =
+                    (fieldInputs.containsKey("username") && ((TextField) fieldInputs.get("username")).getText().trim().isEmpty()) ||
+                    (fieldInputs.containsKey("password") && ((PasswordField) fieldInputs.get("password")).getText().trim().isEmpty()) ||
+                    (finalConfirmPasswordField != null && finalConfirmPasswordField.getText().trim().isEmpty()) ||
+                    (fieldInputs.containsKey("role") && ((ComboBox<?>) fieldInputs.get("role")).getValue() == null) ||
+                    (fieldInputs.containsKey("airportID") && ((TextField) fieldInputs.get("airportID")).getText().trim().isEmpty());
+
+                if (anyEmpty) {
+                    showError("You have not selected a role or left one or more fields empty.");
+                    return;
+                }
+
+                if (fieldInputs.containsKey("username")) {
+                    String newUsername = ((TextField) fieldInputs.get("username")).getText();
+                    if (!usernameUnique(newUsername)) {
+                        showError("Username already exists.");
+                        return;
+                    }
+                    updates.add("Username = ?");
+                    values.add(newUsername);
+                }
+
+                if (fieldInputs.containsKey("password")) {
+                    String newPassword = ((PasswordField) fieldInputs.get("password")).getText();
+                    String confirmPassword = finalConfirmPasswordField.getText();
+
+                    if (!validatePassword(newPassword)) return;
+
+                    if (!newPassword.equals(confirmPassword)) {
+                        showError("Passwords do not match.");
+                        return;
+                    }
+
+                    updates.add("Password = ?");
+                    values.add(hashPassword(newPassword));
+                }
+
+                if (fieldInputs.containsKey("role")) {
+                    updates.add("Role = ?");
+                    values.add(((ComboBox<?>) fieldInputs.get("role")).getValue());
+                }
+
+                if (fieldInputs.containsKey("airportID")) {
+                    String newID = ((TextField) fieldInputs.get("airportID")).getText();
+                    if (!validAirport(newID)) {
+                        showError("Invalid Airport ID.");
+                        return;
+                    }
+                    updates.add("AirportID = ?");
+                    values.add(newID);
+                }
+
+                if (updates.isEmpty()) {
+                    showError("No fields selected.");
+                    return;
+                }
+
+                sql.append(String.join(", ", updates));
+                sql.append(" WHERE Username = ?");
+
+                PreparedStatement ps = conn.prepareStatement(sql.toString());
+                for (int i = 0; i < values.size(); i++) {
+                    ps.setObject(i + 1, values.get(i));
+                }
+                ps.setString(values.size() + 1, currentUsername);
+                ps.executeUpdate();
+
+                inputStage.close();
+                logger.info("User updated successfully.");
+            } catch (SQLException ex) {
+                logger.error("Database error during update: " + ex.getMessage());
+                showError("Error updating user.");
+            }
+        });
+
+        VBox layout = new VBox(15, fieldsBox, submitButton);
+        layout.setPadding(new Insets(20));
+
+        Scene scene = new Scene(layout);
+        scene.getStylesheets().add(getClass().getResource("/css/form.css").toExternalForm());
+        inputStage.setScene(scene);
+        inputStage.showAndWait();
+    }
+
 }
 
 
