@@ -212,13 +212,13 @@ public class MainController {
 
             default:
                 // Unknown role, treated as a guest
-                addObstButton.setVisible(false);
-                addPreDefObstButton.setVisible(false);
-                toggleDashboardButton.setVisible(false);
-                disabledMessageLabel.setVisible(false);
-                logger.info("Unknown role (" + userRole + "): Obstacle and dashboard features disabled.");
-//            disabledMessageLabel.setVisible(!enableButtons);
-//            logger.info("Admin role: All features enabled.");
+//                addObstButton.setVisible(false);
+//                addPreDefObstButton.setVisible(false);
+//                toggleDashboardButton.setVisible(false);
+//                disabledMessageLabel.setVisible(false);
+//                logger.info("Unknown role (" + userRole + "): Obstacle and dashboard features disabled.");
+                disabledMessageLabel.setVisible(!enableButtons);
+                logger.info("Admin role: All features enabled.");
                 break;
         }
     }
