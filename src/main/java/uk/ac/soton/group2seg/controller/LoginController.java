@@ -209,7 +209,7 @@ public class LoginController {
 
       MainController mainController = loader.getController();
       mainController.setUserCredentials(username, userRole);
-      mainController.updateAccessAndObstacleButtonsState();
+      mainController.updateAccessLevelsAndButtons();
 
 
       Stage mainStage = (Stage) loginButton.getScene().getWindow();
