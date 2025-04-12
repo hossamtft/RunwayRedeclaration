@@ -1,9 +1,10 @@
 package uk.ac.soton.group2seg.controller;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -13,15 +14,18 @@ import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.ModelState;
 import uk.ac.soton.group2seg.model.Obstacle;
 import uk.ac.soton.group2seg.model.Runway;
+import uk.ac.soton.group2seg.view.Arrow;
 
 public class SideViewController {
     private static SideViewController instance = new SideViewController();
     private final Logger logger = LogManager.getLogger(this.getClass());
 
-    @FXML public AnchorPane sideView;
+    @FXML public StackPane sideView;
 
     private final double RUNWAY_LENGTH = 650;
     private final double RUNWAY_WIDTH = 66.0;
+    private double CENTER_X;
+    private double CENTER_Y;
 
     private final Color toraColor = Color.RED;
     private final Color todaColor = Color.YELLOW;
@@ -40,9 +44,7 @@ public class SideViewController {
     private boolean initialSetupComplete = false;
 
     public SideViewController() {
-        viewPane = new Pane();
-        obstaclePane = new Pane();
-        linePane = new Pane();
+
         instance = this;
     }
 
@@ -56,19 +58,21 @@ public class SideViewController {
 
     public void initialize(){
         logger.info("Initialising side view");
-        AnchorPane.setTopAnchor(sideView, 0d);
-        AnchorPane.setBottomAnchor(sideView, 0d);
-        AnchorPane.setLeftAnchor(sideView, 0d);
-        AnchorPane.setRightAnchor(sideView, 0d);
+
+        viewPane = new Pane();
+        obstaclePane = new Pane();
+        linePane = new Pane();
 
         sideView.setMaxSize(1000, 1000);
 
         sideView.setStyle("-fx-background-color: skyblue");
+        sideView.setOpacity(100);
 
         sideView.getChildren().addAll(viewPane);
 
-        viewPane.setLayoutX(159.5);
-        viewPane.setLayoutY(470.75);
+        sideView.setAlignment(Pos.CENTER);
+
+        viewPane.setStyle("-fx-border-color: green");
 
         sideView.widthProperty().addListener((obs, oldVal, newVal) -> {
             logger.info("Width resize event");
@@ -91,20 +95,39 @@ public class SideViewController {
             return;
         }
 
-        logger.info(String.format("SideView height = %.2f \n"
-            + "width = %.2f", sideView.getHeight(), sideView.getWidth()));
+        CENTER_X = sideView.getWidth() / 2;
+        CENTER_Y = sideView.getHeight() / 2;
+
+        logger.info(String.format("Center X = %.2f \n"
+            + "Center Y = %.2f", CENTER_X, CENTER_Y));
 
         logger.info("Drawing runway strip");
 
-        Rectangle runway = new Rectangle(650, 15);
+        double runwayX = CENTER_X - (RUNWAY_LENGTH / 2);
+        Rectangle runway = new Rectangle(runwayX, CENTER_Y, RUNWAY_LENGTH, 15);
         runway.setFill(Color.DARKGREY);
 
-        Rectangle ground = new Rectangle(1200, 1000);
-        ground.setY(0);
-        ground.setX(-160);
+        // Arrows (adjusted for new runway position)
+        Arrow leftArrow = new Arrow(runwayX - 60, CENTER_Y - 50, runwayX - 10, CENTER_Y - 50);
+        leftArrow.setFill(Color.WHITE);
+        leftArrow.setStrokeWidth(2.5);
+
+        Arrow rightArrow = new Arrow(runwayX + RUNWAY_LENGTH + 60, CENTER_Y + 110, runwayX + RUNWAY_LENGTH + 10, CENTER_Y + 110);
+        rightArrow.setFill(Color.WHITE);
+        rightArrow.setStrokeWidth(2.5);
+
+        linePane.setLayoutX(CENTER_X - (RUNWAY_LENGTH / 2));
+        linePane.setLayoutY(CENTER_Y);
+
+        obstaclePane.setLayoutX(CENTER_X - (RUNWAY_LENGTH / 2));
+        obstaclePane.setLayoutY(CENTER_Y);
+
+        Rectangle ground = new Rectangle(sideView.getWidth(), sideView.getHeight()/2);
+        ground.setY(CENTER_Y);
         ground.setFill(Color.DARKGREEN);
 
-        viewPane.getChildren().addAll(ground, runway, linePane, obstaclePane);
+        viewPane.getChildren().addAll(ground, runway, leftArrow, rightArrow, linePane, obstaclePane);
+        viewPane.layout();
 
         try {
             scale = RUNWAY_LENGTH / currentRunway.getRunwayLength();
@@ -113,6 +136,8 @@ public class SideViewController {
             logger.info("No runway selected yet");
         }
     }
+
+
 
     public void updateRunway(){
         this.currentRunway = modelState.getCurrentRunway();
@@ -346,7 +371,7 @@ public class SideViewController {
         }
         logger.info(String.format("Threshold: %f \nEndX: %f", startX, endX));
 
-        double yPos = RUNWAY_WIDTH + (i * 200);
+        double yPos = RUNWAY_WIDTH + (i * 100);
 
         // Main line
         Line line = new Line(startX, yPos, endX, yPos);
@@ -377,7 +402,7 @@ public class SideViewController {
         int tora = logicalRunway.getCurrTora();
         double scaledTora = tora * scale;
 
-        double baseY = RUNWAY_WIDTH + (i * 200);
+        double baseY = RUNWAY_WIDTH + (i * 100);
         double spacing = i * 40; // Ensures at least 30px space between lines
 
         // TORA Line
@@ -399,7 +424,7 @@ public class SideViewController {
         double scaledToda = toda * scale;
         double scaledAsda = asda * scale;
 
-        double baseY = RUNWAY_WIDTH + (i * 200);
+        double baseY = RUNWAY_WIDTH + (i * 100);
         double spacing = i * 40; // Ensures at least 30px space between lines
 
         if(i == -1) {
@@ -480,7 +505,7 @@ public class SideViewController {
             endX = 0;
         }
 
-        double baseY = RUNWAY_WIDTH + (i * 200);
+        double baseY = RUNWAY_WIDTH + (i * 100);
 
         drawExactLine("LDA", i, startX, endX, baseY, lda, ldaColor);
 
@@ -519,7 +544,7 @@ public class SideViewController {
 
         //TODO: Change colour of glide slope and increase y coordinate to avoid clipping on obstacle
         Line glideSlope = new Line(startX, 0, endX, -1 * (endY + 2));
-        glideSlope.setStroke(Color.RED);
+        glideSlope.setStroke(Color.HOTPINK);
         glideSlope.setStrokeWidth(5);
 
 //        Line glideSlope2 = new Line(obstacleShapeX, -1 * obstacleHeight, endX, -1 * endY );
