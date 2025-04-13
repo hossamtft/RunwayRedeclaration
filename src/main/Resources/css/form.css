@@ -53,7 +53,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 120, 215, 0.15), 6, 0, 0, 0);
 }
 
-.button {
+.button  {
     -fx-background-color: #4d6478;
     -fx-text-fill: white;
     -fx-font-size: 13px;
@@ -67,6 +67,19 @@
     -fx-transition: 0.2s;
 }
 
+.toggle-button {
+    -fx-background-color: #4d6478;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: normal;
+    -fx-padding: 6px 12px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-min-width: 100px;
+    -fx-min-height: 32px;
+    -fx-transition: 0.2s;
+}
 .admin-buttons{
     -fx-background-color: #4d6478;
     -fx-text-fill: white;
