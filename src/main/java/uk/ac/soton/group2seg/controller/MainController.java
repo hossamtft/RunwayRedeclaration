@@ -401,6 +401,10 @@ public class MainController {
             PredefinedObstacleController controller = loader.getController();
             controller.setMainController(this);
 
+            if (modelState.getCurrentRunway() != null) {
+                controller.setRunways(modelState.getCurrentRunway());
+            }
+
             // Create and show the stage
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Select Predefined Obstacle");

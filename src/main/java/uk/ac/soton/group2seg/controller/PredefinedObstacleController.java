@@ -1,18 +1,22 @@
 package uk.ac.soton.group2seg.controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.Obstacle;
+import uk.ac.soton.group2seg.model.Runway;
 import uk.ac.soton.group2seg.model.utility.JaxbUtility;
 
+import java.net.URL;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
 public class PredefinedObstacleController {
 
@@ -39,9 +43,17 @@ public class PredefinedObstacleController {
     @FXML
     private Button cancelButton;
 
+    @FXML
+    public ToggleButton autoFillToggle;
+
+    private LogicalRunway lowerRunway;
+    private LogicalRunway higherRunway;
+
     private HashMap<String, Integer> obstacleList;
     private MainController mainController;
     private Stage dialogStage;
+    private boolean updatingFields = false;
+    private boolean autoFillEnabled = true;
 
     @FXML
     public void initialize() {
@@ -56,7 +68,72 @@ public class PredefinedObstacleController {
             // Populate obstacle dropdown
             obstacleComboBox.getItems().addAll(FXCollections.observableArrayList(obstacleList.keySet()));
         }
+        if (autoFillToggle != null) {
+            autoFillToggle.setSelected(true);
+            autoFillToggle.setText("Auto-fill: ON");
+
+            autoFillToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                autoFillEnabled = newValue;
+                autoFillToggle.setText(autoFillEnabled ? "Auto-fill: ON" : "Auto-fill: OFF");
+                if (!autoFillEnabled) {
+                    formDistL.setEditable(true);
+                    formDistR.setEditable(true);
+                }
+            });
+        }
+
+        // Set up listeners for threshold distance fields
+        formDistL.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!updatingFields && !newValue.isEmpty()) {
+                    try {
+                        updateOppositeThreshold(formDistL, formDistR);
+                    } catch (NumberFormatException e) {
+                    }
+                }
+            }
+        });
+
+        formDistR.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!updatingFields && !newValue.isEmpty()) {
+                    try {
+                        updateOppositeThreshold(formDistR, formDistL);
+                    } catch (NumberFormatException e) {
+                    }
+                }
+            }
+        });
     }
+
+    public void updateOppositeThreshold(TextField sourceDistance, TextField finalDistance) {
+        if (!autoFillEnabled) {
+            return;
+        }
+        try {
+            int distFromThreshold = Integer.parseInt(sourceDistance.getText());
+            if (distFromThreshold < 0) {
+                return;
+            }
+            updatingFields = true;
+            int runwayLength;
+            runwayLength = Math.min(lowerRunway.getLda(), higherRunway.getLda());
+            int oppositeDistance = runwayLength - distFromThreshold;
+            finalDistance.setText(String.valueOf(oppositeDistance));
+            updatingFields = false;
+            logger.debug("Updated opposite threshold: " + oppositeDistance + "m");
+        } catch (NumberFormatException e) {
+            logger.debug("Invalid number format in threshold distance field", e);
+        }
+    }
+
+    public void setRunways(Runway runway) {
+        lowerRunway = runway.getLowerRunway();
+        higherRunway = runway.getHigherRunway();
+    }
+
 
     @FXML
     private void handleObstacleSelection() {

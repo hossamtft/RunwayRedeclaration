@@ -59,6 +59,8 @@
     <Region VBox.vgrow="ALWAYS"/>
 
     <HBox spacing="15" alignment="CENTER_RIGHT">
+        <ToggleButton fx:id="autoFillToggle" text="Auto-fill: ON" selected="true"
+                      styleClass="toggle-button" />
         <Button fx:id="cancelButton" text="Cancel" onAction="#closeMenu" prefWidth="90"/>
         <Button fx:id="loadButton" text="Load Obstacle" onAction="#handleLoadObstacle" prefWidth="120"/>
     </HBox>
