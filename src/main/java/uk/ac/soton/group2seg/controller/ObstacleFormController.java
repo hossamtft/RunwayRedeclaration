@@ -107,18 +107,8 @@ public class ObstacleFormController implements Initializable {
       }
       updatingFields = true;
       int runwayLength;
-      int displacedThreshold;
-      if (sourceDistance == formDistL) {
-        runwayLength = lowerRunway.getTora();
-        displacedThreshold = lowerRunway.getDispThreshold();
-      } else if (sourceDistance == formDistR) {
-        runwayLength = higherRunway.getTora();
-        displacedThreshold = higherRunway.getDispThreshold();
-      } else {
-        runwayLength = 0;
-        displacedThreshold = 0;
-      }
-      int oppositeDistance = runwayLength - displacedThreshold - distFromThreshold;
+      runwayLength = Math.min(lowerRunway.getLda(), higherRunway.getLda());
+      int oppositeDistance = runwayLength - distFromThreshold;
       finalDistance.setText(String.valueOf(oppositeDistance));
       updatingFields = false;
       logger.debug("Updated opposite threshold: " + oppositeDistance + "m");
