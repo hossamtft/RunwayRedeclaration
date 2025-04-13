@@ -377,6 +377,11 @@ public class MainController {
             controller.setDialogStage(dialogStage);
             controller.setMainController(this);
 
+            if (modelState.getCurrentRunway() != null) {
+                Runway currentRunway = modelState.getCurrentRunway();
+                controller.setRunways(currentRunway);
+            }
+
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 

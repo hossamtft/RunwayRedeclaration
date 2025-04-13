@@ -1,16 +1,24 @@
 package uk.ac.soton.group2seg.controller;
 
-import javafx.event.ActionEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.stage.Stage;
+import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.Obstacle;
+import uk.ac.soton.group2seg.model.Runway;
 
-public class ObstacleFormController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ObstacleFormController implements Initializable {
 
   @FXML
   public TextField formDistL;
@@ -30,11 +38,94 @@ public class ObstacleFormController {
   @FXML
   public Button ObsFormCancel;
 
+  @FXML
+  public ToggleButton autoFillToggle;
+
   private final Logger logger = LogManager.getLogger(this.getClass());
   private MainController mainController;
   private Stage dialogStage;
   private boolean submitted = false;
+  private LogicalRunway lowerRunway;
+  private LogicalRunway higherRunway;
+  private boolean updatingFields = false;
+  private boolean autoFillEnabled = true;
 
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {
+    if (autoFillToggle != null) {
+      autoFillToggle.setSelected(true);
+      autoFillToggle.setText("Auto-fill: ON");
+
+      autoFillToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        autoFillEnabled = newValue;
+        autoFillToggle.setText(autoFillEnabled ? "Auto-fill: ON" : "Auto-fill: OFF");
+        if (!autoFillEnabled) {
+          formDistL.setEditable(true);
+          formDistR.setEditable(true);
+        }
+      });
+    }
+
+    // Set up listeners for threshold distance fields
+    formDistL.textProperty().addListener(new ChangeListener<String>() {
+      @Override
+      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        if (!updatingFields && !newValue.isEmpty()) {
+          try {
+            // Update the opposite threshold distance
+            updateOppositeThreshold(formDistL, formDistR);
+          } catch (NumberFormatException e) {
+            // Do nothing if the input is not a valid integer
+          }
+        }
+      }
+    });
+
+    formDistR.textProperty().addListener(new ChangeListener<String>() {
+      @Override
+      public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        if (!updatingFields && !newValue.isEmpty()) {
+          try {
+            // Update the opposite threshold distance
+            updateOppositeThreshold(formDistR, formDistL);
+          } catch (NumberFormatException e) {
+            // Do nothing if the input is not a valid integer
+          }
+        }
+      }
+    });
+  }
+
+  public void updateOppositeThreshold(TextField sourceDistance, TextField finalDistance) {
+    if (!autoFillEnabled) {
+      return;
+    }
+    try {
+      int distFromThreshold = Integer.parseInt(sourceDistance.getText());
+      if (distFromThreshold < 0) {
+        return;
+      }
+      updatingFields = true;
+      int runwayLength;
+      int displacedThreshold;
+      if (sourceDistance == formDistL) {
+        runwayLength = lowerRunway.getTora();
+        displacedThreshold = lowerRunway.getDispThreshold();
+      } else if (sourceDistance == formDistR) {
+        runwayLength = higherRunway.getTora();
+        displacedThreshold = higherRunway.getDispThreshold();
+      } else {
+        runwayLength = 0;
+        displacedThreshold = 0;
+      }
+      int oppositeDistance = runwayLength - displacedThreshold - distFromThreshold;
+      finalDistance.setText(String.valueOf(oppositeDistance));
+      updatingFields = false;
+      logger.debug("Updated opposite threshold: " + oppositeDistance + "m");
+    } catch (NumberFormatException e) {
+      logger.debug("Invalid number format in threshold distance field", e);
+    }
+  }
 
   public void generateObstacle() {
     if (isInputValid()) {
@@ -98,6 +189,11 @@ public class ObstacleFormController {
       alert.showAndWait();
       return false;
     }
+  }
+
+  public void setRunways(Runway runway) {
+    lowerRunway = runway.getLowerRunway();
+    higherRunway = runway.getHigherRunway();
   }
 
   public void setDialogStage(Stage dialogStage) {

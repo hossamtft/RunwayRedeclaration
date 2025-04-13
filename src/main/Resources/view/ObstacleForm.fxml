@@ -54,9 +54,12 @@
       <Label text="m" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
    </GridPane>
 
+
    <Region VBox.vgrow="ALWAYS"/>
 
    <HBox spacing="15" alignment="CENTER">
+      <ToggleButton fx:id="autoFillToggle" text="Auto-fill: ON" selected="true"
+                    styleClass="toggle-button" />
       <Button fx:id="ObsFormCancel" text="Cancel" onAction="#closeMenu" prefWidth="90"/>
       <Button fx:id="obstFormGen" text="Generate" onAction="#generateObstacle" prefWidth="90"/>
    </HBox>
