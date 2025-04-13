@@ -136,5 +136,16 @@ public class Runway {
         return maxLength;
     }
 
+    public int getThresholdDistance() {
+        int minLength = Integer.MAX_VALUE;
+        for(LogicalRunway runway : logicalRunways) {
+            if (runway.getLda() < minLength) {
+                minLength = runway.getLda();
+            }
+        }
+
+        return minLength;
+    }
+
 
 }
