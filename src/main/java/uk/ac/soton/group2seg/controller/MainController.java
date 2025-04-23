@@ -2,6 +2,7 @@ package uk.ac.soton.group2seg.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,6 +12,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -127,6 +129,16 @@ public class MainController {
     private Airport currentAirport;
 
 
+    /**
+     * Program specification method
+     * @param event
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    public void About(Event event) throws URISyntaxException, IOException {
+        LoginController loginController=new LoginController();
+        loginController.About((ActionEvent) event);
+    }
     /**
      * Initialise the application
      */

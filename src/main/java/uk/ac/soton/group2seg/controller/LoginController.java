@@ -1,10 +1,14 @@
 package uk.ac.soton.group2seg.controller;
 
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -14,9 +18,14 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import uk.ac.soton.group2seg.BCrypt.BCrypt;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.*;
 
 public class LoginController {
@@ -231,5 +240,38 @@ public class LoginController {
 
   public boolean checkPassword(String password, String hashedPassword) {
     return BCrypt.checkpw(password, hashedPassword);
+  }
+
+  public  void About(ActionEvent event) throws URISyntaxException, IOException {
+    Stage primaryStage=new Stage();
+
+    // Load PDF file
+    PDDocument document = PDDocument.load(new File("src/main/Resources/test2.pdf"));
+    PDFRenderer renderer = new PDFRenderer(document);
+
+
+    // Render the first page as the image
+    double w=0;
+    VBox box=new VBox();
+    for (int i=0;i<document.getNumberOfPages();i++){
+      BufferedImage bufferedImage = renderer.renderImage(i, 1.0f);
+      w=bufferedImage.getWidth();
+      Image fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
+      ImageView imageView = new ImageView(fxImage);
+      box.getChildren().add(imageView);
+    }
+
+    // Convert to JavaFX image
+    ScrollPane scrollPane=new ScrollPane(box);
+
+    // Set the scene
+    Scene scene = new Scene(scrollPane,w,500);
+
+    primaryStage.setTitle("User Guide");
+    primaryStage.setScene(scene);
+    primaryStage.show();
+
+    document.close();
+
   }
 }
