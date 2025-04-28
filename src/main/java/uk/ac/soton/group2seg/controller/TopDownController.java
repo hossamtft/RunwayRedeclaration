@@ -32,10 +32,10 @@ public class TopDownController {
     private double CENTER_Y;
     private double RUNWAY_X;
 
-    private Color toraColor = Color.RED;
-    private Color todaColor = Color.YELLOW;
-    private Color ldaColor = Color.WHITE;
-    private Color asdaColor = Color.CYAN;
+    private final Color asdaColor = Color.YELLOW;
+    private final Color todaColor = Color.ORANGE;
+    private final Color toraColor = Color.RED;
+    private final Color ldaColor = Color.WHITE;
 
     private Pane viewPane;
     private Pane obstaclePane;
@@ -91,6 +91,10 @@ public class TopDownController {
 
     public void updateRunway() {
         this.currentRunway = modelState.getCurrentRunway();
+        obstacle = null;
+        obstaclePane.getChildren().clear();
+        linePane.getChildren().clear();
+        runwayPane.getChildren().clear();
         drawView();
     }
 
