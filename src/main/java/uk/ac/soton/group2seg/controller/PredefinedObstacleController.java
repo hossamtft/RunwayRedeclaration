@@ -114,13 +114,17 @@ public class PredefinedObstacleController {
         }
         try {
             int distFromThreshold = Integer.parseInt(sourceDistance.getText());
-            if (distFromThreshold < 0) {
-                return;
-            }
             updatingFields = true;
             int runwayLength;
+            int oppositeDistance;
             runwayLength = Math.min(lowerRunway.getLda(), higherRunway.getLda());
-            int oppositeDistance = runwayLength - distFromThreshold;
+            if (distFromThreshold >= 0) {
+                oppositeDistance = runwayLength - distFromThreshold;
+            }
+            else {
+                oppositeDistance = runwayLength + Math.abs(distFromThreshold);
+            }
+
             finalDistance.setText(String.valueOf(oppositeDistance));
             updatingFields = false;
             logger.debug("Updated opposite threshold: " + oppositeDistance + "m");
