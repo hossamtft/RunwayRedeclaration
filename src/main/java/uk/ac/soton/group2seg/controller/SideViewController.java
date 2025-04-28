@@ -27,10 +27,10 @@ public class SideViewController {
     private double CENTER_X;
     private double CENTER_Y;
 
+    private final Color asdaColor = Color.YELLOW;
+    private final Color todaColor = Color.ORANGE;
     private final Color toraColor = Color.RED;
-    private final Color todaColor = Color.YELLOW;
     private final Color ldaColor = Color.WHITE;
-    private final Color asdaColor = Color.CYAN;
 
     private Pane viewPane;
     private Pane obstaclePane;
@@ -44,7 +44,6 @@ public class SideViewController {
     private boolean initialSetupComplete = false;
 
     public SideViewController() {
-
         instance = this;
     }
 
@@ -141,6 +140,9 @@ public class SideViewController {
 
     public void updateRunway(){
         this.currentRunway = modelState.getCurrentRunway();
+        obstacle = null;
+        obstaclePane.getChildren().clear();
+        linePane.getChildren().clear();
         drawView();
     }
 
@@ -530,7 +532,7 @@ public class SideViewController {
         }else{
             logger.info("Obstacle on left side of runway");
             slope = obstacleHeight / (startX - obstacleShapeX);
-            endX = Math.min((obstacleShapeX - 100.0), -200);
+            endX = Math.max((obstacleShapeX - 100.0), -200);
             endY = slope * Math.abs(startX - endX);
         }
 
@@ -544,7 +546,7 @@ public class SideViewController {
 
         //TODO: Change colour of glide slope and increase y coordinate to avoid clipping on obstacle
         Line glideSlope = new Line(startX, 0, endX, -1 * (endY + 2));
-        glideSlope.setStroke(Color.HOTPINK);
+        glideSlope.setStroke(Color.MAGENTA);
         glideSlope.setStrokeWidth(5);
 
 //        Line glideSlope2 = new Line(obstacleShapeX, -1 * obstacleHeight, endX, -1 * endY );
