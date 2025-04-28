@@ -4,68 +4,62 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
 
-<AnchorPane prefHeight="450.0" prefWidth="600.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.LoginController">
+<AnchorPane prefHeight="450.0" prefWidth="600.0" style="-fx-background-color: #f8f8f8;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.group2seg.controller.LoginController">
    <children>
       <VBox alignment="CENTER" layoutX="0.0" layoutY="0.0" prefHeight="450.0" prefWidth="600.0">
          <children>
-            <VBox alignment="CENTER" spacing="5.0">
+            <VBox alignment="CENTER" spacing="0.0">
                <children>
-                  <Label fx:id="toolTitle" alignment="CENTER" text="Runway Redeclaration Tool" textAlignment="CENTER">
+                  <Label fx:id="toolTitle" alignment="CENTER" text="Runway Redeclaration Tool" textAlignment="CENTER" style="-fx-text-fill: #333333;">
                      <font>
-                        <Font name="System Bold" size="32.0" />
+                        <Font name="System Bold" size="28.0" />
                      </font>
-                  </Label>
-                  <Separator prefWidth="300.0">
                      <VBox.margin>
-                        <Insets bottom="10.0" top="5.0" />
+                        <Insets bottom="5.0" />
                      </VBox.margin>
-                  </Separator>
+                  </Label>
+                  <Rectangle width="70.0" height="3.0" fill="#555555" />
                </children>
                <padding>
-                  <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+                  <Insets bottom="30.0" left="20.0" right="20.0" top="40.0" />
                </padding>
             </VBox>
-            <VBox alignment="CENTER" spacing="50.0" VBox.vgrow="ALWAYS">
+
+            <VBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="180.0" style="-fx-background-color: #000000; -fx-text-fill: white;" text="Login">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="guestButton" alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="180.0" style="-fx-background-color: #000000; -fx-border-color: #cccccc; -fx-border-radius: 3;" text="Continue as Guest" textFill="WHITE">
+                  <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #333333; -fx-text-fill: white; -fx-background-radius: 3;" text="Login">
                      <font>
                         <Font size="16.0" />
                      </font>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
                   </Button>
-                  <Button onAction="#About" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: #f5f5f5; -fx-border-color: #cccccc; -fx-border-radius: 3;" text="About">
+                  <Button fx:id="guestButton" alignment="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #f8f8f8; -fx-border-color: #666666; -fx-border-width: 1; -fx-text-fill: #333333; -fx-background-radius: 3; -fx-border-radius: 3;" text="Continue as Guest">
                      <font>
-                        <Font size="12.0" />
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="aboutButton" onAction="#About" alignment="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #f8f8f8; -fx-border-color: #666666; -fx-border-width: 1; -fx-text-fill: #333333; -fx-background-radius: 3; -fx-border-radius: 3;" text="About">
+                     <font>
+                        <Font size="14.0" />
                      </font>
                   </Button>
                </children>
-               <padding>
-                  <Insets left="20.0" right="20.0" />
-               </padding>
                <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
+                  <Insets bottom="20.0" top="20.0" />
                </VBox.margin>
             </VBox>
 
-            <!-- Bottom Section with Quit Button -->
             <HBox alignment="CENTER_RIGHT">
                <children>
-                  <Button fx:id="quitButton" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #db4437; -fx-text-fill: white;" text="Quit">
+                  <Button fx:id="quitButton" alignment="CENTER" mnemonicParsing="false" prefHeight="36.0" prefWidth="90.0" style="-fx-background-color: #999999; -fx-text-fill: white; -fx-background-radius: 3;" text="Quit">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
                </children>
                <padding>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
             </HBox>
          </children>
