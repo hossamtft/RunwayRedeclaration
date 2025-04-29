@@ -1,8 +1,6 @@
 package uk.ac.soton.group2seg.model;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -17,6 +15,8 @@ public class ModelState {
   private final ObjectProperty<Airport> currentAirport = new SimpleObjectProperty<>();
   private final ObjectProperty<Runway> currentRunway = new SimpleObjectProperty<>();
   private Obstacle obstacle;
+  private final HashMap<String, Airport> customAirports = new HashMap<>();
+  private final List<Obstacle> obstacleList = new ArrayList<>(); // to export multiple obstacles as xml
 
   /**
    * Initialise the model
@@ -25,6 +25,7 @@ public class ModelState {
     airportList = JaxbUtility.parseAirports();
     this.obstacle = null;
   }
+
 
   /**
    * Returns the hashmap of the airport list
@@ -101,5 +102,17 @@ public class ModelState {
 
   public ObjectProperty<Runway> currentRunwayProperty() {
     return currentRunway;
+  }
+
+  public List<Obstacle> getObstacleList() {
+    return obstacleList;
+  }
+
+  public void addObstacle(Obstacle obstacle) {
+    obstacleList.add(obstacle);
+  }
+
+  public void clearObstacles() {
+    obstacleList.clear();
   }
 }

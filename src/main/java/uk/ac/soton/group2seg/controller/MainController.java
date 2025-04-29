@@ -1,10 +1,26 @@
 package uk.ac.soton.group2seg.controller;
 
+import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import java.awt.image.BufferedImage;
+import javafx.embed.swing.SwingFXUtils;
+
+import javafx.stage.FileChooser;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javafx.scene.control.TextArea;
 
 import java.util.List;
 import java.util.Map;
@@ -26,19 +42,20 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.w3c.dom.NodeList;
 import uk.ac.soton.group2seg.model.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -117,6 +134,9 @@ public class MainController {
     private TextArea ldaTextArea;
     @FXML
     private SplitPane splitPane;
+
+    @FXML
+    private TextArea calculationsTextArea;
 
     private TopDownController topDownController;
     private SideViewController sideViewController;
@@ -438,6 +458,7 @@ public class MainController {
         logger.log(Level.DEBUG, "Adding obstacle");
 
         modelState.setObstacle(obstacle);
+        modelState.addObstacle(obstacle);
 
         // Recalculate the runway after the obstacle is added
         calculator.redeclareRunway(obstacle);
@@ -622,11 +643,9 @@ public class MainController {
             return false;
         }
     }
-
     public String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
-
     public void setCurrentAirport(Airport airport) {
         this.currentAirport = airport;
     }
@@ -651,43 +670,111 @@ public class MainController {
     private void exportToXml(File file) throws Exception {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-        // Root element
         Document doc = docBuilder.newDocument();
-        Element rootElement = doc.createElement("AirportData");
-        doc.appendChild(rootElement);
 
-        Element airport = doc.createElement("Airport");
-        airport.setAttribute("name", currentAirport.getName());
-        rootElement.appendChild(airport);
+        Element rootElem = doc.createElement("fullExport");
+        doc.appendChild(rootElem);
 
-        // add selected runway
-        Runway selectedRunway = modelState.getCurrentRunway();
-        Element runway = doc.createElement("Runway");
-        runway.setAttribute("name", selectedRunway.getName());
-        airport.appendChild(runway);
+        // === Airport ===
+        Element airportElem = doc.createElement("airport");
+        rootElem.appendChild(airportElem);
 
-        if (modelState.getObstacle() != null) {
-            Obstacle o = modelState.getObstacle();
-            Element obstacle = doc.createElement("Obstacle");
-            //obstacle.setAttribute("name", o.getName());
-            obstacle.setAttribute("height", String.valueOf(o.getHeight()));
-            // Add more attributes as needed
-            obstacle.setAttribute("distToHigherThreshold", String.valueOf(o.getDistHigherThreshold()));
-            obstacle.setAttribute("distToLowerThreshold", String.valueOf(o.getDistLowerThreshold()));
-            obstacle.setAttribute("distToCentreline", String.valueOf(o.getCentreOffset()));
-            rootElement.appendChild(obstacle);
+        Element nameElem = doc.createElement("name");
+        nameElem.appendChild(doc.createTextNode(currentAirport.getName()));
+        airportElem.appendChild(nameElem);
+
+        Element idElem = doc.createElement("id");
+        idElem.appendChild(doc.createTextNode("CSTM"));
+        airportElem.appendChild(idElem);
+
+        Element runwaysElem = doc.createElement("runways");
+        airportElem.appendChild(runwaysElem);
+
+        for (Runway runway : currentAirport.getRunwayList()) {
+            Element runwayElem = doc.createElement("runway");
+            runwaysElem.appendChild(runwayElem);
+
+            Element runwayNameElem = doc.createElement("runwayName");
+            runwayNameElem.appendChild(doc.createTextNode(runway.getName()));
+            runwayElem.appendChild(runwayNameElem);
+
+            // Lower Logical Runway
+            LogicalRunway lower = runway.getLowerRunway();
+            if (lower != null) {
+                runwayElem.appendChild(createLogicalRunwayElement(doc, lower));
+            }
+
+            // Higher Logical Runway
+            LogicalRunway higher = runway.getHigherRunway();
+            if (higher != null) {
+                runwayElem.appendChild(createLogicalRunwayElement(doc, higher));
+            }
         }
 
-// Create the Transformer to write the XML
+        // === Obstacles ===
+        Element obstacleListElem = doc.createElement("obstacleList");
+        rootElem.appendChild(obstacleListElem);
+
+        for (Obstacle o : modelState.getObstacleList()) {
+            Element obstacleElem = doc.createElement("obstacle");
+
+            Element name = doc.createElement("name");
+            name.appendChild(doc.createTextNode(o.getName()));
+            obstacleElem.appendChild(name);
+
+            Element height = doc.createElement("height");
+            height.appendChild(doc.createTextNode(String.valueOf(o.getHeight())));
+            obstacleElem.appendChild(height);
+
+            Element distToLower = doc.createElement("distToLowerThreshold");
+            distToLower.appendChild(doc.createTextNode(String.valueOf(o.getDistLowerThreshold())));
+            obstacleElem.appendChild(distToLower);
+
+            Element distToHigher = doc.createElement("distToHigherThreshold");
+            distToHigher.appendChild(doc.createTextNode(String.valueOf(o.getDistHigherThreshold())));
+            obstacleElem.appendChild(distToHigher);
+
+            Element centreOffset = doc.createElement("centreOffset");
+            centreOffset.appendChild(doc.createTextNode(String.valueOf(o.getCentreOffset())));
+            obstacleElem.appendChild(centreOffset);
+
+            obstacleListElem.appendChild(obstacleElem);
+        }
+
+        // === Write to file ===
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
-// Write the content to the file
         DOMSource source = new DOMSource(doc);
         StreamResult result = new StreamResult(file);
         transformer.transform(source, result);
+    }
+
+    private Element createLogicalRunwayElement(Document doc, LogicalRunway lr) {
+        Element logicalRunwayElem = doc.createElement("logicalRunway");
+
+        Element nameElem = doc.createElement("name");
+        nameElem.appendChild(doc.createTextNode(lr.getName()));
+        logicalRunwayElem.appendChild(nameElem);
+
+        Element toraElem = doc.createElement("tora");
+        toraElem.appendChild(doc.createTextNode(String.valueOf(lr.getTora())));
+        logicalRunwayElem.appendChild(toraElem);
+
+        Element todaElem = doc.createElement("toda");
+        todaElem.appendChild(doc.createTextNode(String.valueOf(lr.getToda())));
+        logicalRunwayElem.appendChild(todaElem);
+
+        Element asdaElem = doc.createElement("asda");
+        asdaElem.appendChild(doc.createTextNode(String.valueOf(lr.getAsda())));
+        logicalRunwayElem.appendChild(asdaElem);
+
+        Element ldaElem = doc.createElement("lda");
+        ldaElem.appendChild(doc.createTextNode(String.valueOf(lr.getLda())));
+        logicalRunwayElem.appendChild(ldaElem);
+
+        return logicalRunwayElem;
     }
 
     /**
@@ -1027,6 +1114,223 @@ public class MainController {
         scene.getStylesheets().add(getClass().getResource("/css/form.css").toExternalForm());
         inputStage.setScene(scene);
         inputStage.showAndWait();
+    }
+
+    private void writeMultiline(PDPageContentStream stream, String text) throws IOException {
+        for (String line : text.split("\n")) {
+            stream.showText(line);
+            stream.newLine();
+        }
+    }
+
+    private BufferedImage captureNodeAsImage(Node node) {
+        WritableImage fxImage = node.snapshot(new SnapshotParameters(), null);
+        return SwingFXUtils.fromFXImage(fxImage, null);
+    }
+
+    @FXML
+    private void calculationsPDF() {
+        BufferedImage topDownImage = captureNodeAsImage(topDownController.getTopDownViewNode());
+        BufferedImage sideOnImage = captureNodeAsImage(sideViewController.getSideDownViewNode());
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save PDF");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF files", "*.pdf"));
+        fileChooser.setInitialFileName("calculations.pdf");
+
+        File file = fileChooser.showSaveDialog(null);
+        if (file == null) return;
+
+        try (PDDocument document = new PDDocument()) {
+            PDPage page = new PDPage(PDRectangle.A4);
+            document.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            contentStream.setFont(PDType1Font.HELVETICA, 12);
+            contentStream.beginText();
+            contentStream.setLeading(16f);
+            contentStream.newLineAtOffset(50, 750);
+
+            contentStream.showText("ASDA:");
+            contentStream.newLine();
+            writeMultiline(contentStream, asdaTextArea.getText());
+
+            contentStream.newLine();
+            contentStream.showText("TORA:");
+            contentStream.newLine();
+            writeMultiline(contentStream, toraTextArea.getText());
+
+            contentStream.newLine();
+            contentStream.showText("TODA:");
+            contentStream.newLine();
+            writeMultiline(contentStream, todaTextArea.getText());
+
+            contentStream.newLine();
+            contentStream.showText("LDA:");
+            contentStream.newLine();
+            writeMultiline(contentStream, ldaTextArea.getText());
+
+            contentStream.endText();
+            contentStream.close();
+
+            PDPage imagePage = new PDPage(PDRectangle.A4);
+            document.addPage(imagePage);
+
+            PDPageContentStream imageStream = new PDPageContentStream(document, imagePage);
+            float margin = 50;
+            float maxImageWidth = PDRectangle.A4.getWidth() - 2 * margin;
+            float maxImageHeight = 300f;
+
+// === TOP DOWN ===
+            PDImageXObject topImg = LosslessFactory.createFromImage(document, topDownImage);
+            float topScale = Math.min(maxImageWidth / topDownImage.getWidth(), maxImageHeight / topDownImage.getHeight());
+            float topWidth = topDownImage.getWidth() * topScale;
+            float topHeight = topDownImage.getHeight() * topScale;
+
+            float topX = (PDRectangle.A4.getWidth() - topWidth) / 2;
+            float topY = PDRectangle.A4.getHeight() - topHeight - 100;
+
+            imageStream.drawImage(topImg, topX, topY, topWidth, topHeight);
+
+            imageStream.beginText();
+            imageStream.setFont(PDType1Font.HELVETICA_BOLD, 14);
+            imageStream.newLineAtOffset(margin, topY + topHeight + 15);
+            imageStream.showText("Top Down View");
+            imageStream.endText();
+
+            PDImageXObject sideImg = LosslessFactory.createFromImage(document, sideOnImage);
+            float sideScale = Math.min(maxImageWidth / sideOnImage.getWidth(), maxImageHeight / sideOnImage.getHeight());
+            float sideWidth = sideOnImage.getWidth() * sideScale;
+            float sideHeight = sideOnImage.getHeight() * sideScale;
+
+            float sideX = (PDRectangle.A4.getWidth() - sideWidth) / 2;
+            float sideY = topY - sideHeight - 80;
+
+            imageStream.drawImage(sideImg, sideX, sideY, sideWidth, sideHeight);
+
+            imageStream.beginText();
+            imageStream.setFont(PDType1Font.HELVETICA_BOLD, 14);
+            imageStream.newLineAtOffset(margin, sideY + sideHeight + 15);
+            imageStream.showText("Side On View");
+            imageStream.endText();
+
+            imageStream.close();
+
+            document.save(file);
+            System.out.println("PDF exported with visuals: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void importXML() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Full Export XML File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+
+        File file = fileChooser.showOpenDialog(null);
+        if (file == null) return;
+
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(file);
+            doc.getDocumentElement().normalize();
+
+            // === Airport ===
+            Element airportElem = (Element) doc.getElementsByTagName("airport").item(0);
+            String airportName = airportElem.getElementsByTagName("name").item(0).getTextContent();
+            String airportId = airportElem.getElementsByTagName("id").item(0).getTextContent();
+
+            Airport newAirport = new Airport(airportId, airportName);
+
+            // === Runways ===
+            NodeList runwayNodes = airportElem.getElementsByTagName("runway");
+            for (int i = 0; i < runwayNodes.getLength(); i++) {
+                Element runwayElem = (Element) runwayNodes.item(i);
+                String runwayName = runwayElem.getElementsByTagName("runwayName").item(0).getTextContent();
+
+                // Logical runways
+                NodeList logicalRunways = runwayElem.getElementsByTagName("logicalRunway");
+
+                Element lowerElem = (Element) logicalRunways.item(0);
+                String lowerName = lowerElem.getElementsByTagName("name").item(0).getTextContent();
+                int lowerTora = Integer.parseInt(lowerElem.getElementsByTagName("tora").item(0).getTextContent());
+                int lowerToda = Integer.parseInt(lowerElem.getElementsByTagName("toda").item(0).getTextContent());
+                int lowerAsda = Integer.parseInt(lowerElem.getElementsByTagName("asda").item(0).getTextContent());
+                int lowerLda = Integer.parseInt(lowerElem.getElementsByTagName("lda").item(0).getTextContent());
+
+                Element higherElem = (Element) logicalRunways.item(1);
+                String higherName = higherElem.getElementsByTagName("name").item(0).getTextContent();
+                int higherTora = Integer.parseInt(higherElem.getElementsByTagName("tora").item(0).getTextContent());
+                int higherToda = Integer.parseInt(higherElem.getElementsByTagName("toda").item(0).getTextContent());
+                int higherAsda = Integer.parseInt(higherElem.getElementsByTagName("asda").item(0).getTextContent());
+                int higherLda = Integer.parseInt(higherElem.getElementsByTagName("lda").item(0).getTextContent());
+
+                LogicalRunway lowerLR = new LogicalRunway(lowerName, lowerTora, lowerToda, lowerAsda, lowerLda);
+                LogicalRunway higherLR = new LogicalRunway(higherName, higherTora, higherToda, higherAsda, higherLda);
+
+                Runway runway = new Runway(lowerLR, higherLR);
+                runway.setName(runwayName);
+                newAirport.addRunway(runway);
+            }
+
+            newAirport.initialise();
+
+            modelState.currentAirportProperty().set(newAirport);
+
+            if (!newAirport.getRunwayList().isEmpty()) {
+                Runway firstRunway = newAirport.getRunwayList().get(0);
+                newAirport.selectRunway(firstRunway.getName());
+                modelState.currentRunwayProperty().set(newAirport.getCurrentRunway());
+
+                this.calculator = new Calculator(modelState.getCurrentRunway());
+                ldaTextArea.textProperty().bind(calculator.getLdaBreakdown());
+                toraTextArea.textProperty().bind(calculator.getToraBreakdown());
+                todaTextArea.textProperty().bind(calculator.getTodaBreakdown());
+                asdaTextArea.textProperty().bind(calculator.getAsdaBreakdown());
+
+                initialiseTables();
+                drawRunway();
+            }
+
+            Element obstacleListElem = (Element) doc.getElementsByTagName("obstacleList").item(0);
+            NodeList obstacles = obstacleListElem.getElementsByTagName("obstacle");
+
+            for (int i = 0; i < obstacles.getLength(); i++) {
+                Element obsElem = (Element) obstacles.item(i);
+                String name = obsElem.getElementsByTagName("name").item(0).getTextContent();
+                int height = Integer.parseInt(obsElem.getElementsByTagName("height").item(0).getTextContent());
+                int distLower = Integer.parseInt(obsElem.getElementsByTagName("distToLowerThreshold").item(0).getTextContent());
+                int distHigher = Integer.parseInt(obsElem.getElementsByTagName("distToHigherThreshold").item(0).getTextContent());
+                int centreOffset = Integer.parseInt(obsElem.getElementsByTagName("centreOffset").item(0).getTextContent());
+
+                Obstacle obstacle = new Obstacle(height, distLower, distHigher, centreOffset, name);
+                modelState.addObstacle(obstacle);
+            }
+
+
+            // === UI Updates ===
+            airportListCombo.setValue(airportName);
+            runwayListCombo.getItems().clear();
+            runwayListCombo.getItems().addAll(modelState.getRunways());
+            runwayListCombo.setVisible(true);
+            runwayLoadButton.setVisible(true);
+            runwayListCombo.setValue(modelState.getCurrentRunway().getName());
+            updateAccessLevelsAndButtons();
+
+            List<Obstacle> copyOfObstacles = new ArrayList<>(modelState.getObstacleList());
+            for (Obstacle importedObstacle : copyOfObstacles) {
+                modelState.setObstacle(importedObstacle);
+                addObstacle(importedObstacle);
+            }
+
+            System.out.println("Import completed successfully!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

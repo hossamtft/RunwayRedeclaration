@@ -129,7 +129,7 @@ public class ObstacleFormController implements Initializable {
       int distCent = (-1)*Integer.parseInt(formDistCent.getText());
       int height = Integer.parseInt(formHeight.getText());
 
-      Obstacle obstacle = new Obstacle(height, distL, distR, distCent);
+      Obstacle obstacle = new Obstacle(height, distL, distR, distCent, "Obstacle");
 
       if (mainController != null) {
         mainController.addObstacle(obstacle);

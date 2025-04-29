@@ -187,7 +187,7 @@ public class PredefinedObstacleController {
     private void generateObstacle(String obstacleName, int height, int distL, int distR, int distCent) {
         logger.info("Generating obstacle: " + obstacleName + " with height " + height);
 
-        Obstacle obstacle = new Obstacle(height, distL, distR, distCent);
+        Obstacle obstacle = new Obstacle(height, distL, distR, distCent, obstacleName);
 
         if (mainController != null) {
             mainController.addObstacle(obstacle);

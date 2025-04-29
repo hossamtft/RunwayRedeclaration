@@ -81,6 +81,10 @@
                                 <Button fx:id="exportXmlButton" mnemonicParsing="false" onAction="#handleExportAsXml" prefWidth="180"
                                         style="-fx-background-color: #f0f0f0; -fx-border-color: #666666; -fx-border-width: 1; -fx-text-fill: #333333; -fx-background-radius: 3; -fx-border-radius: 3;"
                                         text="Export Airport &amp; Obstacles" />
+                                <Button fx:id="importXMLButton" mnemonicParsing="false" onAction="#importXML"
+                                  prefWidth="200" prefHeight="35"
+                                  text="Import XML" styleClass="action-button"/>
+
                                 <Button fx:id="about" mnemonicParsing="false" onAction="#About" prefWidth="180"
                                         style="-fx-background-color: #f0f0f0; -fx-border-color: #666666; -fx-border-width: 1; -fx-text-fill: #333333; -fx-background-radius: 3; -fx-border-radius: 3;"
                                         text="About" />
@@ -170,6 +174,11 @@
                                     </Tab>
                                 </tabs>
                             </TabPane>
+                            <Button fx:id="exportPdfButton"
+                              text="Export Calculations as PDF"
+                              onAction="#calculationsPDF"
+                              prefWidth="200"
+                              styleClass="action-button"/>
                         </VBox>
 
                         <Region VBox.vgrow="ALWAYS" />
