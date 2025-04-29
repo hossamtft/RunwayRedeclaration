@@ -14,15 +14,17 @@ public class Obstacle {
     private int distHigherThreshold;
     private int centreOffset;
     private boolean isCloserLower;
+    private String name;
 
     public Obstacle() {
     }
 
-    public Obstacle(int height, int distLowerThreshold, int distHigherThreshold, int centreOffset) {
+    public Obstacle(int height, int distLowerThreshold, int distHigherThreshold, int centreOffset, String name) {
         this.height = height;
         this.distLowerThreshold = distLowerThreshold;
         this.distHigherThreshold = distHigherThreshold;
         this.centreOffset = centreOffset;
+        this.name = name;
     }
 
     public int getHeight() {
@@ -49,4 +51,13 @@ public class Obstacle {
         return isCloserLower;
     }
 
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 }
