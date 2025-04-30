@@ -66,6 +66,7 @@ import uk.ac.soton.group2seg.model.LogicalRunway;
 import uk.ac.soton.group2seg.model.ModelState;
 import uk.ac.soton.group2seg.model.Obstacle;
 import java.sql.*;
+import uk.ac.soton.group2seg.view.Notifications;
 
 /**
  * The main controller for the application
@@ -78,6 +79,8 @@ public class MainController {
     public Label currentSessionLabel;
     private String username;
     private String userRole;
+
+    private Stage primaryStage;
     @FXML
     public TableView<LogicalRunway> originalTableView;
     @FXML
@@ -159,6 +162,11 @@ public class MainController {
         LoginController loginController=new LoginController();
         loginController.About((ActionEvent) event);
     }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
     /**
      * Initialise the application
      */
@@ -302,7 +310,9 @@ public class MainController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AddAirportForm.fxml"));
             Parent root = loader.load();
 
+            // Get the controller and set the primaryStage
             AddAirportFormController controller = loader.getController();
+            controller.setPrimaryStage(primaryStage);
 
             // Set up a callback when the airport is successfully added
             controller.setOnAirportAddedCallback(airport -> {
@@ -326,6 +336,7 @@ public class MainController {
             alert.showAndWait();
         }
     }
+
 
     public void handleRunwaySelection() {
         String selectedRunway = runwayListCombo.getValue();
@@ -461,6 +472,7 @@ public class MainController {
         sideViewController.addObstacle(obstacle);
 
         updateTables();
+        Notifications.showSuccessNotification(primaryStage, "Obstacle placed successfully!");
 
     }
 

@@ -222,6 +222,9 @@ public class LoginController {
 
 
       Stage mainStage = (Stage) loginButton.getScene().getWindow();
+      mainController.setPrimaryStage(mainStage);
+
+
       Scene scene = new Scene(root, 1350, 800); // Set dimensions
       mainStage.setScene(scene);
       mainStage.setTitle("Runway View");
