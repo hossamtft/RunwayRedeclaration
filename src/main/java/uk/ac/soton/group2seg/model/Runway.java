@@ -129,12 +129,23 @@ public class Runway {
     public int getRunwayLength() {
         int maxLength = 0;
         for(LogicalRunway runway : logicalRunways) {
+            if(runway.getToda() > maxLength) {
+                maxLength = runway.getToda();
+            }
+        }
+        return maxLength;
+    }
+
+    public int getStripLength() {
+        int maxLength = 0;
+        for(LogicalRunway runway : logicalRunways) {
             if(runway.getTora() > maxLength) {
                 maxLength = runway.getTora();
             }
         }
         return maxLength;
     }
+
 
     public int getThresholdDistance() {
         int minLength = Integer.MAX_VALUE;
