@@ -1,13 +1,22 @@
 package uk.ac.soton.group2seg.controller;
 
+import javafx.animation.RotateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import javafx.scene.shape.Rectangle;
@@ -38,8 +47,10 @@ public class TopDownController {
     private final Color toraColor = Color.RED;
     private final Color ldaColor = Color.WHITE;
 
+    private Pane viewPort;
     private Pane viewPane;
     private Pane obstaclePane;
+    private Pane compass;
     private Pane linePane;
     private Pane runwayPane;
     private Rectangle obstacleShape;
@@ -48,6 +59,8 @@ public class TopDownController {
     private Runway currentRunway = null;
     private double scale;
     private boolean initialSetupComplete = false;
+    private boolean compassActive;
+    private double currentRotation;
 
     public Node getTopDownViewNode()
     {
@@ -69,6 +82,7 @@ public class TopDownController {
     public void initialize() {
         logger.info("Initialising TopDownController");
 
+        viewPort = new Pane();
         viewPane = new Pane();
         runwayPane = new Pane();
         linePane = new Pane();
@@ -76,7 +90,7 @@ public class TopDownController {
 
         topDownView.setMaxSize(1000, 1000);
         topDownView.setStyle("-fx-background-color: rgb(7, 51, 19)");
-        topDownView.getChildren().addAll(viewPane);
+        topDownView.getChildren().addAll(viewPort);
         topDownView.setAlignment(Pos.CENTER);
 
         // Setup listeners for resize events
@@ -89,6 +103,7 @@ public class TopDownController {
             drawView();
         });
 
+        viewPort.getChildren().add(viewPane);
         // Initial positioning
         drawView();
 
@@ -106,6 +121,9 @@ public class TopDownController {
 
     private void drawView() {
         viewPane.getChildren().clear();
+        viewPane.setRotate(0.0);
+        compassActive = false;
+        currentRotation = 0.0;
 
         if (!initialSetupComplete && (topDownView.getWidth() <= 0
             || topDownView.getHeight() <= 0)) {
@@ -141,6 +159,8 @@ public class TopDownController {
         obstaclePane.setLayoutX(CENTER_X - (RUNWAY_LENGTH / 2));
         obstaclePane.setLayoutY(CENTER_Y);
 
+
+
         viewPane.getChildren()
             .addAll(drawClearedAndGraded(), strip, centreLine, runwayPane, linePane, obstaclePane);
 
@@ -148,9 +168,12 @@ public class TopDownController {
             scale = RUNWAY_LENGTH / currentRunway.getRunwayLength();
             drawDesignators();
             drawLines();
+            createCompass();
         } catch (Exception e) {
             logger.info("No runway selected yet");
         }
+
+        //TODO: Render clearways, RESA and blast allowance
     }
 
     private void drawDesignators() {
@@ -223,6 +246,170 @@ public class TopDownController {
         clearedAndGraded.setLayoutY(CENTER_Y);
 
         return clearedAndGraded;
+    }
+
+    private void createCompass() {
+        if (compass != null) {
+            viewPort.getChildren().remove(compass);
+        }
+
+        // Create compass container
+        compass = new StackPane();
+        double compassSize = 60.0;
+        compass.setPrefSize(compassSize, compassSize);
+
+        // Background circle
+        Circle compassCircle = new Circle(compassSize / 2);
+        compassCircle.setFill(Color.rgb(20, 20, 30, 0.7));
+        compassCircle.setStroke(Color.WHITE);
+        compassCircle.setStrokeWidth(2);
+
+        // Create compass design
+        Pane compassDesign = new Pane();
+
+        // North direction
+        Line northLine = new Line(compassSize/2, 5, compassSize/2, compassSize/2 - 5);
+        northLine.setStroke(Color.RED);
+        northLine.setStrokeWidth(2);
+        Text northText = new Text("N");
+        northText.setFill(Color.RED);
+        northText.setFont(Font.font(10));
+        northText.setX(compassSize/2 - 3);
+        northText.setY(10);
+
+        // Other cardinal directions
+        Line eastLine = new Line(compassSize - 5, compassSize/2, compassSize/2 + 5, compassSize/2);
+        eastLine.setStroke(Color.WHITE);
+        eastLine.setStrokeWidth(1.5);
+        Text eastText = new Text("E");
+        eastText.setFill(Color.WHITE);
+        eastText.setFont(Font.font(10));
+        eastText.setX(compassSize - 10);
+        eastText.setY(compassSize/2 + 4);
+
+        Line southLine = new Line(compassSize/2, compassSize - 5, compassSize/2, compassSize/2 + 5);
+        southLine.setStroke(Color.WHITE);
+        southLine.setStrokeWidth(1.5);
+        Text southText = new Text("S");
+        southText.setFill(Color.WHITE);
+        southText.setFont(Font.font(10));
+        southText.setX(compassSize/2 - 3);
+        southText.setY(compassSize - 5);
+
+        Line westLine = new Line(5, compassSize/2, compassSize/2 - 5, compassSize/2);
+        westLine.setStroke(Color.WHITE);
+        westLine.setStrokeWidth(1.5);
+        Text westText = new Text("W");
+        westText.setFill(Color.WHITE);
+        westText.setFont(Font.font(10));
+        westText.setX(5);
+        westText.setY(compassSize/2 + 4);
+
+        compassDesign.getChildren().addAll(
+            northLine, eastLine, southLine, westLine,
+            northText, eastText, southText, westText
+        );
+
+        // Add components to compass
+        compass.getChildren().addAll(compassCircle, compassDesign);
+
+        // Position compass in top-right corner with some padding
+        compass.setLayoutX(topDownView.getWidth() - compassSize - 20);
+        compass.setLayoutY(20);
+
+        // Add hover effect
+        compass.setOnMouseEntered(e -> {
+            compassCircle.setFill(Color.rgb(30, 30, 40, 0.8));
+            compass.setScaleX(1.1);
+            compass.setScaleY(1.1);
+        });
+
+        compass.setOnMouseExited(e -> {
+            compassCircle.setFill(Color.rgb(20, 20, 30, 0.7));
+            compass.setScaleX(1.0);
+            compass.setScaleY(1.0);
+        });
+
+        // Add click event to rotate view
+        compass.setOnMouseClicked(this::handleCompassClick);
+
+        int bearing = getBearing(currentRunway.getLowerRunway().getName());
+        compass.setRotate(-90 + bearing);
+
+        // Add the compass to view
+        viewPort.getChildren().add(compass);
+    }
+
+    public void handleCompassClick(MouseEvent event) {
+        if (currentRunway == null) {
+            logger.info("Cannot rotate view - no runway selected");
+            return;
+        }
+
+        // Toggle between compass active and inactive mode
+        compassActive = !compassActive;
+
+        if (compassActive) {
+            // Get runway bearing from lower logical runway
+            int bearing = getBearing(currentRunway.getLowerRunway().getName());
+
+            // Calculate rotation angle needed
+            double targetRotation = -90 + bearing;
+
+            // Apply rotation to main view components
+            rotateViewToRunwayBearing(targetRotation);
+
+            // Update current rotation
+            currentRotation = targetRotation;
+
+            logger.info("View pane rotation = " + viewPane.getRotate());
+            logger.info("View rotated to runway bearing: " + bearing + " degrees");
+        } else {
+            // Reset rotation back to default (North up)
+            logger.info("View pane rotation = " + viewPane.getRotate());
+            rotateViewToRunwayBearing(-currentRotation);
+            currentRotation = 0.0;
+
+            logger.info("View reset to normal orientation");
+        }
+    }
+
+    /**
+     * Get bearing from runway designator (e.g. "09L" = 90 degrees)
+     * @param runwayName The name of the runway (e.g. "09L", "27R")
+     * @return The bearing in degrees
+     */
+    private int getBearing(String runwayName) {
+        // Extract the numeric part from the runway name
+        String numericPart = runwayName.substring(0, 2);
+        try {
+            int runwayNumber = Integer.parseInt(numericPart);
+            // Runway designators are in tens of degrees
+            return runwayNumber * 10;
+        } catch (NumberFormatException e) {
+            logger.error("Error parsing runway number: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Rotates the view to align with the runway bearing
+     * @param angleToRotate Degrees to rotate
+     */
+    private void rotateViewToRunwayBearing(double angleToRotate) {
+        logger.info("Rotating pane to " + angleToRotate);
+        // Apply rotation with animation
+        RotateTransition rotateTransition = new RotateTransition(Duration.millis(750));
+        rotateTransition.setByAngle(angleToRotate);
+
+        // Apply rotation to the main view pane
+        rotateTransition.setNode(viewPane);
+        rotateTransition.play();
+
+        // Keep compass oriented correctly (counter-rotate)
+        RotateTransition compassRotation = new RotateTransition(Duration.millis(750), compass);
+        compassRotation.setByAngle(-angleToRotate);
+        compassRotation.play();
     }
 
     private void drawLines() {
@@ -456,7 +643,7 @@ public class TopDownController {
             endX = scaledLda + threshold;
         } else {
             startX = RUNWAY_LENGTH - threshold;
-            endX = RUNWAY_LENGTH - scaledLda - threshold;
+            endX = RUNWAY_LENGTH - (scaledLda + threshold);
         }
         logger.info(String.format("Threshold: %f \nEndX: %f", startX, endX));
 
@@ -517,7 +704,7 @@ public class TopDownController {
         double spacing = i * 40; // Ensures at least 30px space between lines
 
         if (i == -1) {
-            logger.info("USING -1 FLAG");
+            logger.info("USING -1 FLAG \n Lower runway");
 
             drawExactLine("TORA",
                 i,
