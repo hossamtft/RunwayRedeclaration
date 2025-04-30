@@ -22,14 +22,18 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.group2seg.view.Notifications;
 
 public class AddAirportFormController {
     private static final Logger logger = LogManager.getLogger(AddAirportFormController.class);
+    @FXML private VBox airportBox;
+    private Stage primaryStage;
 
     @FXML private TextField airportIdField;
     @FXML private TextField airportNameField;
     @FXML private VBox runwaysContainer;
     @FXML private Node runway1;
+
 
     private List<RunwayInputController> runwayControllers = new ArrayList<>();
     private Consumer<Airport> onAirportAddedCallback;
@@ -44,6 +48,11 @@ public class AddAirportFormController {
         RunwayInputController firstRunwayController = getRunwayController(runway1);
         runwayControllers.add(firstRunwayController);
     }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
 
     public Connection connectToDB() {
         try {
@@ -165,6 +174,9 @@ public class AddAirportFormController {
             if (onAirportAddedCallback != null) {
                 onAirportAddedCallback.accept(airport);
             }
+            Stage stage = (Stage) airportBox.getScene().getWindow();
+            System.out.println("Stage: " + stage);
+            Notifications.showSuccessNotification(primaryStage, "Airport added successfully!");
 
             // Close the window
             closeWindow();
