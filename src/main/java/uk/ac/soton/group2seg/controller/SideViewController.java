@@ -1,14 +1,18 @@
 package uk.ac.soton.group2seg.controller;
 
+import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.group2seg.model.LogicalRunway;
@@ -23,17 +27,28 @@ public class SideViewController {
 
     @FXML public StackPane sideView;
 
-    private final double RUNWAY_LENGTH = 650;
-    private final double RUNWAY_WIDTH = 66.0;
+    private final double RENDER_LENGTH = 650;
+    private final double RUNWAY_WIDTH = 15.0;
     private double CENTER_X;
     private double CENTER_Y;
+
+    private double lowerTodaStart;
+    private double upperTodaStart;
 
     private final Color asdaColor = Color.YELLOW;
     private final Color todaColor = Color.ORANGE;
     private final Color toraColor = Color.RED;
     private final Color ldaColor = Color.WHITE;
 
+    private double currentZoom = 1.0;
+    private final double MIN_ZOOM = 0.2;
+    private final double MAX_ZOOM = 2.0;
+    private final double ZOOM_DELTA = 0.1;
+    private Pane zoomControls;
+
+    private Pane viewPort;
     private Pane viewPane;
+    private Pane runwayPane;
     private Pane obstaclePane;
     private Pane linePane;
     private Rectangle obstacleShape;
@@ -64,6 +79,8 @@ public class SideViewController {
     public void initialize(){
         logger.info("Initialising side view");
 
+        viewPort = new Pane();
+        runwayPane = new Pane();
         viewPane = new Pane();
         obstaclePane = new Pane();
         linePane = new Pane();
@@ -73,11 +90,10 @@ public class SideViewController {
         sideView.setStyle("-fx-background-color: skyblue");
         sideView.setOpacity(100);
 
-        sideView.getChildren().addAll(viewPane);
+        sideView.getChildren().addAll(viewPort);
 
         sideView.setAlignment(Pos.CENTER);
 
-        viewPane.setStyle("-fx-border-color: green");
 
         sideView.widthProperty().addListener((obs, oldVal, newVal) -> {
             logger.info("Width resize event");
@@ -88,9 +104,105 @@ public class SideViewController {
             drawView();
         });
 
+        viewPort.getChildren().add(viewPane);
+
         drawView();
+        createZoomControls();
 
         initialSetupComplete = true;
+    }
+
+    private void createZoomControls() {
+        if (zoomControls != null) {
+            viewPort.getChildren().remove(zoomControls);
+        }
+
+        // Create a container for zoom controls
+        zoomControls = new VBox(10);
+        zoomControls.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5); -fx-padding: 10; -fx-background-radius: 5;");
+
+        // Zoom in button
+        Button zoomInBtn = new Button("+");
+        zoomInBtn.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-min-width: 30px;");
+        zoomInBtn.setOnAction(event -> adjustZoom(ZOOM_DELTA));
+
+        // Zoom out button
+        Button zoomOutBtn = new Button("-");
+        zoomOutBtn.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-min-width: 30px;");
+        zoomOutBtn.setOnAction(event -> adjustZoom(-ZOOM_DELTA));
+
+        // Reset zoom button
+        Button resetZoomBtn = new Button("Reset");
+        resetZoomBtn.setStyle("-fx-font-size: 12px;");
+        resetZoomBtn.setOnAction(event -> resetZoom());
+
+        // Current zoom display
+        Label zoomLabel = new Label(String.format("%.0f%%", currentZoom * 100));
+        zoomLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+        zoomLabel.setId("zoomPercentLabel");
+
+        // Add components to the control panel
+        zoomControls.getChildren().addAll(zoomInBtn, zoomLabel, zoomOutBtn, resetZoomBtn);
+
+        // Position zoom controls
+        zoomControls.setLayoutX(20);
+        zoomControls.setLayoutY(20);
+
+        // Add to the view
+        viewPort.getChildren().add(zoomControls);
+
+        // Ensure controls stay on top
+        zoomControls.toFront();
+    }
+
+    private void adjustZoom(double zoomDelta) {
+        double newZoom = currentZoom + zoomDelta;
+        newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
+
+        if (newZoom != currentZoom) {
+            double scaleFactor = newZoom / currentZoom;
+
+            currentZoom = newZoom;
+
+            applyZoom(scaleFactor);
+
+            updateZoomLabel();
+
+            logger.info(String.format("Zoom adjusted to %.2f", currentZoom));
+        }
+    }
+
+    private void applyZoom(double scaleFactor) {
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(200), viewPane);
+
+        scaleTransition.setToX(viewPane.getScaleX() * scaleFactor);
+        scaleTransition.setToY(viewPane.getScaleY() * scaleFactor);
+
+        //Keep viewpane centered
+        viewPane.setTranslateX(viewPane.getTranslateX() * scaleFactor);
+        viewPane.setTranslateY(viewPane.getTranslateY() * scaleFactor);
+
+        scaleTransition.play();
+    }
+
+    private void resetZoom() {
+        currentZoom = 1.0;
+
+        viewPane.setScaleX(1.0);
+        viewPane.setScaleY(1.0);
+        viewPane.setTranslateX(0);
+        viewPane.setTranslateY(0);
+
+        updateZoomLabel();
+
+        logger.info("Zoom reset to 100%");
+    }
+
+    private void updateZoomLabel() {
+        Label zoomLabel = (Label) zoomControls.lookup("#zoomPercentLabel");
+        if (zoomLabel != null) {
+            zoomLabel.setText(String.format("%.0f%%", currentZoom * 100));
+        }
     }
 
     private void drawView() {
@@ -108,8 +220,8 @@ public class SideViewController {
 
         logger.info("Drawing runway strip");
 
-        double runwayX = CENTER_X - (RUNWAY_LENGTH / 2);
-        Rectangle runway = new Rectangle(runwayX, CENTER_Y, RUNWAY_LENGTH, 15);
+        double runwayX = CENTER_X - (RENDER_LENGTH / 2);
+        Rectangle runway = new Rectangle(runwayX, CENTER_Y, RENDER_LENGTH, 15);
         runway.setFill(Color.DARKGREY);
 
         // Arrows (adjusted for new runway position)
@@ -117,29 +229,60 @@ public class SideViewController {
         leftArrow.setFill(Color.WHITE);
         leftArrow.setStrokeWidth(2.5);
 
-        Arrow rightArrow = new Arrow(runwayX + RUNWAY_LENGTH + 60, CENTER_Y + 110, runwayX + RUNWAY_LENGTH + 10, CENTER_Y + 110);
+        Arrow rightArrow = new Arrow(runwayX + RENDER_LENGTH
+            + 60, CENTER_Y + 110, runwayX + RENDER_LENGTH + 10, CENTER_Y + 110);
         rightArrow.setFill(Color.WHITE);
         rightArrow.setStrokeWidth(2.5);
 
-        linePane.setLayoutX(CENTER_X - (RUNWAY_LENGTH / 2));
+        linePane.setLayoutX(CENTER_X - (RENDER_LENGTH / 2));
         linePane.setLayoutY(CENTER_Y);
 
-        obstaclePane.setLayoutX(CENTER_X - (RUNWAY_LENGTH / 2));
+        obstaclePane.setLayoutX(CENTER_X - (RENDER_LENGTH / 2));
         obstaclePane.setLayoutY(CENTER_Y);
 
         Rectangle ground = new Rectangle(sideView.getWidth(), sideView.getHeight()/2);
         ground.setY(CENTER_Y);
         ground.setFill(Color.rgb(7, 51, 19));
 
-        viewPane.getChildren().addAll(ground, runway, leftArrow, rightArrow, linePane, obstaclePane);
+        viewPane.getChildren().addAll(ground, runway, leftArrow, rightArrow, runwayPane, linePane, obstaclePane);
         viewPane.layout();
 
         try {
-            scale = RUNWAY_LENGTH / currentRunway.getRunwayLength();
+            scale = RENDER_LENGTH / currentRunway.getRunwayLength();
             drawLines();
+            renderStrip();
         }catch (Exception e) {
             logger.info("No runway selected yet");
         }
+    }
+
+    private void renderStrip() {
+        double stopwayLower = (currentRunway.getLowerRunway().getAsda() - currentRunway.getLowerRunway().getTora()) * scale;
+        double clearwayLower = (currentRunway.getLowerRunway().getToda() - currentRunway.getLowerRunway().getTora()) * scale;
+
+        lowerTodaStart = RENDER_LENGTH + clearwayLower;
+        Rectangle lowerClearway = new Rectangle(CENTER_X + 325, CENTER_Y, clearwayLower, RUNWAY_WIDTH);
+        lowerClearway.setFill(Color.PURPLE);
+
+        Rectangle lowerStopway = new Rectangle(CENTER_X + 325, CENTER_Y, stopwayLower, RUNWAY_WIDTH);
+        lowerStopway.setFill(Color.RED);
+
+        double stopwayHigher = (currentRunway.getHigherRunway().getAsda() - currentRunway.getHigherRunway().getTora()) * scale;
+        double clearwayHigher = (currentRunway.getHigherRunway().getToda() - currentRunway.getHigherRunway().getTora()) * scale;
+
+        upperTodaStart = 0 - clearwayHigher;
+        Rectangle upperClearway = new Rectangle((CENTER_X - 325 - clearwayHigher), CENTER_Y, clearwayHigher, RUNWAY_WIDTH);
+        upperClearway.setFill(Color.PURPLE);
+
+        runwayPane.getChildren().addAll(lowerClearway, lowerStopway, upperClearway);
+        double stripLength = currentRunway.getRunwayLength();
+
+        logger.info("Strip length = " + stripLength +
+            "\nLower runway stopway = " + stopwayLower +
+            "\nHigher runway stopway = " + stopwayHigher +
+            "\nLower runway clearway = " + clearwayLower +
+            "\nHigher runway clearway = " + clearwayHigher);
+
     }
 
 
@@ -213,8 +356,8 @@ public class SideViewController {
             startX = 0;
             endX = length;
         }else{
-            startX = RUNWAY_LENGTH;
-            endX = RUNWAY_LENGTH - length;
+            startX = RENDER_LENGTH;
+            endX = RENDER_LENGTH - length;
         }
 
         // Main line
@@ -250,8 +393,8 @@ public class SideViewController {
             startX = threshPos;
             endX = endPos + threshPos ;
         } else{
-            startX = RUNWAY_LENGTH - threshPos;
-            endX = RUNWAY_LENGTH - endPos - threshPos;
+            startX = RENDER_LENGTH - threshPos;
+            endX = RENDER_LENGTH - endPos - threshPos;
         }
         logger.info(String.format("Threshold: %f \nEndX: %f", startX, endX));
 
@@ -322,7 +465,7 @@ public class SideViewController {
         obstacleShape = new Rectangle(15, obstacle.getHeight(), Color.RED);
         int displacedThreshold = logicalRunway.getDispThreshold();
 
-        double x = (obstacle.getDistLowerThreshold() + displacedThreshold) * scale;
+        double x = ((obstacle.getDistLowerThreshold() + displacedThreshold) * scale) - 7.5;
         double y = -1 * obstacle.getHeight();
 
         obstacleShape.setX(x);
@@ -350,13 +493,39 @@ public class SideViewController {
             takeoffLinesTowards(-1, lowerRunway);
             ldaTowards(-1, lowerRunway);
 
+            drawResaHigher();
+
         }else{
             takeoffLinesAway(-1, lowerRunway);
             ldaOver(-1, lowerRunway);
 
             takeoffLinesTowards(1, higherRunway);
             ldaTowards(1, higherRunway);
+
+            drawResaLower();
         }
+    }
+
+    private void drawResaLower() {
+        logger.info("Drawing RESA rectangle");
+        Rectangle resa = new Rectangle((240 * scale), RUNWAY_WIDTH);
+        resa.setX(obstacleShape.getX() + 15);
+        resa.setY(0);
+        resa.setFill(Color.RED);
+        resa.setOpacity(0.4);
+
+        obstaclePane.getChildren().addLast(resa);
+    }
+
+    private void drawResaHigher() {
+        logger.info("Drawing RESA rectangle");
+        Rectangle resa = new Rectangle((240 * scale), RUNWAY_WIDTH);
+        resa.setX(obstacleShape.getX() - resa.getWidth());
+        resa.setY(0);
+        resa.setFill(Color.RED);
+        resa.setOpacity(0.4);
+
+        obstaclePane.getChildren().addLast(resa);
     }
 
     private void ldaTowards(int i, LogicalRunway logicalRunway) {
@@ -374,8 +543,8 @@ public class SideViewController {
             startX = threshold;
             endX = scaledLda + threshold;
         }else {
-            startX = RUNWAY_LENGTH - threshold;
-            endX = RUNWAY_LENGTH - scaledLda - threshold;
+            startX = RENDER_LENGTH - threshold;
+            endX = RENDER_LENGTH - scaledLda - threshold;
         }
         logger.info(String.format("Threshold: %f \nEndX: %f", startX, endX));
 
@@ -435,35 +604,33 @@ public class SideViewController {
         double baseY = RUNWAY_WIDTH + (i * 100);
         double spacing = i * 40; // Ensures at least 30px space between lines
 
-        if(i == -1) {
-            logger.info("USING -1 FLAG");
+        if (i == -1) {
+            logger.info("USING -1 FLAG \n Lower runway");
 
             drawExactLine("TORA",
                 i,
-                RUNWAY_LENGTH -scaledTora,
-                RUNWAY_LENGTH,
+                RENDER_LENGTH - scaledTora,
+                RENDER_LENGTH,
                 baseY + spacing,
                 tora,
                 toraColor);
 
-            // TORA Line
             drawExactLine("TODA",
                 i,
-                RUNWAY_LENGTH - scaledToda,
-                RUNWAY_LENGTH,
+                RENDER_LENGTH - scaledToda,
+                lowerTodaStart,
                 baseY + 2 * spacing,
                 toda,
                 todaColor);
 
-            // TORA Line
             drawExactLine("ASDA",
                 i,
-                RUNWAY_LENGTH - scaledAsda,
-                RUNWAY_LENGTH,
+                RENDER_LENGTH - scaledAsda,
+                RENDER_LENGTH,
                 baseY + 3 * spacing,
                 asda,
                 asdaColor);
-        }else {
+        } else {
             logger.info("USING +1 FLAG");
 
             drawExactLine("TORA",
@@ -474,16 +641,14 @@ public class SideViewController {
                 tora,
                 toraColor);
 
-            // TORA Line
             drawExactLine("TODA",
                 i,
                 scaledToda,
-                0,
+                upperTodaStart,
                 baseY + 2 * spacing,
                 toda,
                 todaColor);
 
-            // TORA Line
             drawExactLine("ASDA",
                 i,
                 scaledAsda,
@@ -505,8 +670,8 @@ public class SideViewController {
 
         if(i == -1) {
             logger.info("USING -1 FLAG");
-            startX = RUNWAY_LENGTH - scaledLda;
-            endX = RUNWAY_LENGTH;
+            startX = RENDER_LENGTH - scaledLda;
+            endX = RENDER_LENGTH;
         }else {
             logger.info("USING +1 FLAG");
             startX = scaledLda;

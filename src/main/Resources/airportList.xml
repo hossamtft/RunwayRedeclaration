@@ -12,4 +12,8 @@
         <id>EGGW</id>
         <name>London Luton</name>
     </airport>
+    <airport>
+        <id>EGCC</id>
+        <name>Manchester</name>
+    </airport>
 </airportList>

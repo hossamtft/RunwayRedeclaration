@@ -1,21 +1,22 @@
 package uk.ac.soton.group2seg.controller;
 
 import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,9 +36,13 @@ public class TopDownController {
     @FXML
     public StackPane topDownView;
 
-    private final double RUNWAY_LENGTH = 650;
+    private final double RENDER_LENGTH = 650;
     private final double RUNWAY_WIDTH = 66.0;
     private final double WIDTH_SCALE = 66/40;
+
+    private double lowerTodaStart;
+    private double upperTodaStart;
+
     private double CENTER_X;
     private double CENTER_Y;
     private double RUNWAY_X;
@@ -47,16 +52,24 @@ public class TopDownController {
     private final Color toraColor = Color.RED;
     private final Color ldaColor = Color.WHITE;
 
+    private double currentZoom = 1.0;
+    private final double MIN_ZOOM = 0.2;  // 20% of original size
+    private final double MAX_ZOOM = 2.0;  // 200% of original size
+    private final double ZOOM_DELTA = 0.1;
+    private Pane zoomControls;
+
     private Pane viewPort;
     private Pane viewPane;
     private Pane obstaclePane;
     private Pane compass;
     private Pane linePane;
     private Pane runwayPane;
+    private Button resetButton;
     private Rectangle obstacleShape;
     private Obstacle obstacle;
     private ModelState modelState;
     private Runway currentRunway = null;
+
     private double scale;
     private boolean initialSetupComplete = false;
     private boolean compassActive;
@@ -104,10 +117,105 @@ public class TopDownController {
         });
 
         viewPort.getChildren().add(viewPane);
-        // Initial positioning
+
         drawView();
 
+        createZoomControls();
+
         initialSetupComplete = true;
+    }
+
+    private void createZoomControls() {
+        if (zoomControls != null) {
+            viewPort.getChildren().remove(zoomControls);
+        }
+
+        // Create a container for zoom controls
+        zoomControls = new VBox(10);
+        zoomControls.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5); -fx-padding: 10; -fx-background-radius: 5;");
+
+        // Zoom in button
+        Button zoomInBtn = new Button("+");
+        zoomInBtn.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-min-width: 30px;");
+        zoomInBtn.setOnAction(event -> adjustZoom(ZOOM_DELTA));
+
+        // Zoom out button
+        Button zoomOutBtn = new Button("-");
+        zoomOutBtn.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-min-width: 30px;");
+        zoomOutBtn.setOnAction(event -> adjustZoom(-ZOOM_DELTA));
+
+        // Reset zoom button
+        Button resetZoomBtn = new Button("Reset");
+        resetZoomBtn.setStyle("-fx-font-size: 12px;");
+        resetZoomBtn.setOnAction(event -> resetZoom());
+
+        // Current zoom display
+        Label zoomLabel = new Label(String.format("%.0f%%", currentZoom * 100));
+        zoomLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+        zoomLabel.setId("zoomPercentLabel");
+
+        // Add components to the control panel
+        zoomControls.getChildren().addAll(zoomInBtn, zoomLabel, zoomOutBtn, resetZoomBtn);
+
+        // Position zoom controls
+        zoomControls.setLayoutX(20);
+        zoomControls.setLayoutY(20);
+
+        // Add to the view
+        viewPort.getChildren().add(zoomControls);
+
+        // Ensure controls stay on top
+        zoomControls.toFront();
+    }
+
+    private void adjustZoom(double zoomDelta) {
+        double newZoom = currentZoom + zoomDelta;
+        newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
+
+        if (newZoom != currentZoom) {
+            double scaleFactor = newZoom / currentZoom;
+
+            currentZoom = newZoom;
+
+            applyZoom(scaleFactor);
+
+            updateZoomLabel();
+
+            logger.info(String.format("Zoom adjusted to %.2f", currentZoom));
+        }
+    }
+
+    private void applyZoom(double scaleFactor) {
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(200), viewPane);
+
+        scaleTransition.setToX(viewPane.getScaleX() * scaleFactor);
+        scaleTransition.setToY(viewPane.getScaleY() * scaleFactor);
+
+        //Keep viewpane centered
+        viewPane.setTranslateX(viewPane.getTranslateX() * scaleFactor);
+        viewPane.setTranslateY(viewPane.getTranslateY() * scaleFactor);
+
+        scaleTransition.play();
+    }
+
+    private void resetZoom() {
+        currentZoom = 1.0;
+
+        viewPane.setScaleX(1.0);
+        viewPane.setScaleY(1.0);
+        viewPane.setTranslateX(0);
+        viewPane.setTranslateY(0);
+
+        updateZoomLabel();
+
+        logger.info("Zoom reset to 100%");
+    }
+
+    private void updateZoomLabel() {
+        Label zoomLabel = (Label) zoomControls.lookup("#zoomPercentLabel");
+        if (zoomLabel != null) {
+            zoomLabel.setText(String.format("%.0f%%", currentZoom * 100));
+        }
     }
 
     public void updateRunway() {
@@ -131,32 +239,29 @@ public class TopDownController {
         }
 
         CENTER_X = topDownView.getWidth() / 2;
-        CENTER_Y = topDownView.getHeight() / 2;
+        CENTER_Y = (topDownView.getHeight() / 2) - 33;
 
         logger.info(String.format("Center X = %.2f \n"
             + "Center Y = %.2f", CENTER_X, CENTER_Y));
 
         logger.info("Drawing runway strip");
 
-        //drawRunway();
-        drawClearedAndGraded();
-
-        RUNWAY_X = CENTER_X - (RUNWAY_LENGTH / 2);
-        Rectangle strip = new Rectangle(RUNWAY_X, CENTER_Y, RUNWAY_LENGTH, RUNWAY_WIDTH);
+        RUNWAY_X = CENTER_X - (RENDER_LENGTH / 2);
+        Rectangle strip = new Rectangle(RUNWAY_X, CENTER_Y, RENDER_LENGTH, RUNWAY_WIDTH);
         strip.setFill(Color.DARKGREY);
         strip.setStroke(Color.WHITE);
         strip.setStrokeWidth(2);
 
         Line centreLine = new Line(
-            RUNWAY_X + 75, CENTER_Y + RUNWAY_WIDTH / 2, RUNWAY_LENGTH, CENTER_Y + RUNWAY_WIDTH / 2);
+            RUNWAY_X + 75, CENTER_Y + RUNWAY_WIDTH / 2, RENDER_LENGTH, CENTER_Y + RUNWAY_WIDTH / 2);
         centreLine.getStrokeDashArray().addAll(15.0, 10.0);
         centreLine.setStroke(Color.WHITE);
         centreLine.setStrokeWidth(5);
 
-        linePane.setLayoutX(CENTER_X - (RUNWAY_LENGTH / 2));
+        linePane.setLayoutX(RUNWAY_X);
         linePane.setLayoutY(CENTER_Y);
 
-        obstaclePane.setLayoutX(CENTER_X - (RUNWAY_LENGTH / 2));
+        obstaclePane.setLayoutX(RUNWAY_X);
         obstaclePane.setLayoutY(CENTER_Y);
 
 
@@ -165,15 +270,46 @@ public class TopDownController {
             .addAll(drawClearedAndGraded(), strip, centreLine, runwayPane, linePane, obstaclePane);
 
         try {
-            scale = RUNWAY_LENGTH / currentRunway.getRunwayLength();
+            scale = RENDER_LENGTH / currentRunway.getRunwayLength();
             drawDesignators();
             drawLines();
+            renderStrip();
             createCompass();
         } catch (Exception e) {
             logger.info("No runway selected yet");
         }
+    }
 
-        //TODO: Render clearways, RESA and blast allowance
+    private void renderStrip() {
+        double stopwayLower = (currentRunway.getLowerRunway().getAsda() - currentRunway.getLowerRunway().getTora()) * scale;
+        double clearwayLower = (currentRunway.getLowerRunway().getToda() - currentRunway.getLowerRunway().getTora()) * scale;
+
+        lowerTodaStart = RENDER_LENGTH + clearwayLower;
+        Rectangle lowerClearway = new Rectangle(CENTER_X + 325, CENTER_Y, clearwayLower, RUNWAY_WIDTH);
+        lowerClearway.setFill(Color.ORANGE);
+        lowerClearway.setOpacity(0.25);
+
+        Rectangle lowerStopway = new Rectangle(CENTER_X + 325, CENTER_Y, stopwayLower, RUNWAY_WIDTH);
+        lowerStopway.setFill(Color.RED);
+        lowerStopway.setOpacity(0.3);
+
+        double stopwayHigher = (currentRunway.getHigherRunway().getAsda() - currentRunway.getHigherRunway().getTora()) * scale;
+        double clearwayHigher = (currentRunway.getHigherRunway().getToda() - currentRunway.getHigherRunway().getTora()) * scale;
+
+        upperTodaStart = 0 - clearwayHigher;
+        Rectangle upperClearway = new Rectangle((CENTER_X - 325 - clearwayHigher), CENTER_Y, clearwayHigher, RUNWAY_WIDTH);
+        upperClearway.setFill(Color.ORANGE);
+        upperClearway.setOpacity(0.25);
+
+        runwayPane.getChildren().addAll(lowerClearway, lowerStopway, upperClearway);
+        double stripLength = currentRunway.getRunwayLength();
+
+        logger.info("Strip length = " + stripLength +
+            "\nLower runway stopway = " + stopwayLower +
+            "\nHigher runway stopway = " + stopwayHigher +
+            "\nLower runway clearway = " + clearwayLower +
+            "\nHigher runway clearway = " + clearwayHigher);
+
     }
 
     private void drawDesignators() {
@@ -187,11 +323,13 @@ public class TopDownController {
 
         String higherRunway = currentRunway.getHigherRunway().getName();
         String higherText = higherRunway.replaceAll("([0-9]+)([A-Z]?)", "$1\n$2").trim();
-        Arrow rightArrow = new Arrow(RUNWAY_X + RUNWAY_LENGTH + 60, CENTER_Y + 110,
-            RUNWAY_X + RUNWAY_LENGTH + 10, CENTER_Y + 110);
+        Arrow rightArrow = new Arrow(RUNWAY_X + RENDER_LENGTH + 60, CENTER_Y + 110,
+            RUNWAY_X + RENDER_LENGTH + 10, CENTER_Y + 110);
         rightArrow.setFill(Color.WHITE);
         rightArrow.setStrokeWidth(2.5);
 
+
+        //TODO: Fix designator alignment on rendering (currently too far up)
         //Label for lower runway designator
         Label lowerLabel = new Label(lowerText);
         lowerLabel.setLayoutX(RUNWAY_X + 25);
@@ -201,7 +339,7 @@ public class TopDownController {
             "-fx-font-family: 'Helvetica'; -fx-font-size: 24px; -fx-font-weight: bold; -fx-alignment: center; -fx-text-alignment: center; -fx-text-fill: white");
 
         Label higherLabel = new Label(higherText);
-        higherLabel.setLayoutX(RUNWAY_LENGTH + 25);
+        higherLabel.setLayoutX(RENDER_LENGTH + 25);
         higherLabel.setLayoutY(CENTER_Y);
         higherLabel.setRotate(270);
         higherLabel.setStyle(
@@ -216,11 +354,11 @@ public class TopDownController {
      * @return The generated polygon
      */
     private Polygon drawClearedAndGraded() {
-        double runwayCenterX = RUNWAY_LENGTH / 2;
+        double runwayCenterX = RENDER_LENGTH / 2;
         double runwayCenterY = RUNWAY_WIDTH / 2;
 
         // Calculate proportions based on original dimensions
-        double lengthRatio = RUNWAY_LENGTH / 900.0;
+        double lengthRatio = RENDER_LENGTH / 900.0;
         double widthRatio = RUNWAY_WIDTH / 100.0;
 
         // Define points relative to the runway center using proportions
@@ -242,7 +380,7 @@ public class TopDownController {
         clearedAndGraded.setFill(Color.rgb(58, 30, 179));
 
         // Adjust position of the cleared and graded area based on the center
-        clearedAndGraded.setLayoutX(CENTER_X - (RUNWAY_LENGTH / 2));
+        clearedAndGraded.setLayoutX(CENTER_X - (RENDER_LENGTH / 2));
         clearedAndGraded.setLayoutY(CENTER_Y);
 
         return clearedAndGraded;
@@ -251,20 +389,18 @@ public class TopDownController {
     private void createCompass() {
         if (compass != null) {
             viewPort.getChildren().remove(compass);
+            viewPort.getChildren().remove(resetButton);
         }
 
-        // Create compass container
         compass = new StackPane();
         double compassSize = 60.0;
         compass.setPrefSize(compassSize, compassSize);
 
-        // Background circle
         Circle compassCircle = new Circle(compassSize / 2);
         compassCircle.setFill(Color.rgb(20, 20, 30, 0.7));
         compassCircle.setStroke(Color.WHITE);
         compassCircle.setStrokeWidth(2);
 
-        // Create compass design
         Pane compassDesign = new Pane();
 
         // North direction
@@ -317,6 +453,10 @@ public class TopDownController {
         compass.setLayoutX(topDownView.getWidth() - compassSize - 20);
         compass.setLayoutY(20);
 
+        resetButton = new Button("RESET");
+        resetButton.setLayoutX(compass.getLayoutX() - 60);
+        resetButton.setLayoutY(20);
+
         // Add hover effect
         compass.setOnMouseEntered(e -> {
             compassCircle.setFill(Color.rgb(30, 30, 40, 0.8));
@@ -334,10 +474,10 @@ public class TopDownController {
         compass.setOnMouseClicked(this::handleCompassClick);
 
         int bearing = getBearing(currentRunway.getLowerRunway().getName());
-        compass.setRotate(-90 + bearing);
+        compass.setRotate(90 - bearing);
 
         // Add the compass to view
-        viewPort.getChildren().add(compass);
+        viewPort.getChildren().addAll(compass, resetButton);
     }
 
     public void handleCompassClick(MouseEvent event) {
@@ -408,7 +548,7 @@ public class TopDownController {
 
         // Keep compass oriented correctly (counter-rotate)
         RotateTransition compassRotation = new RotateTransition(Duration.millis(750), compass);
-        compassRotation.setByAngle(-angleToRotate);
+        compassRotation.setByAngle(angleToRotate);
         compassRotation.play();
     }
 
@@ -478,8 +618,8 @@ public class TopDownController {
             startX = 0;
             endX = length;
         } else {
-            startX = RUNWAY_LENGTH;
-            endX = RUNWAY_LENGTH - length;
+            startX = RENDER_LENGTH;
+            endX = RENDER_LENGTH - length;
         }
 
         // Main line
@@ -516,8 +656,8 @@ public class TopDownController {
             startX = threshPos;
             endX = endPos + threshPos;
         } else {
-            startX = RUNWAY_LENGTH - threshPos;
-            endX = RUNWAY_LENGTH - endPos - threshPos;
+            startX = RENDER_LENGTH - threshPos;
+            endX = RENDER_LENGTH - endPos - threshPos;
         }
         logger.info(String.format("Threshold: %f \nEndX: %f", startX, endX));
 
@@ -571,6 +711,7 @@ public class TopDownController {
 
         // Add all elements to the pane
         linePane.getChildren().addAll(line, thresholdStart, thresholdEnd, lineLabel);
+        logger.info("Drawing " + label + " line starting at: " + startX + "\nto: " + endX);
     }
 
     public void addObstacle(Obstacle obstacle) {
@@ -590,8 +731,8 @@ public class TopDownController {
         obstacleShape = new Rectangle(15, 15, Color.RED);
         int displacedThreshold = logicalRunway.getDispThreshold();
 
-        double x = (obstacle.getDistLowerThreshold() + displacedThreshold) * scale;
-        double y = -1 * ((obstacle.getCentreOffset() * WIDTH_SCALE) - 0.5 * (RUNWAY_WIDTH - 7.5));
+        double x = (obstacle.getDistLowerThreshold() + displacedThreshold) * scale - 7.5;
+        double y = -1 * ((obstacle.getCentreOffset() * WIDTH_SCALE) - 0.5 * (RUNWAY_WIDTH - 8));
 
         obstacleShape.setX(x);
         obstacleShape.setY(y);
@@ -618,13 +759,39 @@ public class TopDownController {
             takeoffLinesTowards(-1, lowerRunway);
             ldaTowards(-1, lowerRunway);
 
+            drawResaHigher();
+
         } else {
             takeoffLinesAway(-1, lowerRunway);
             ldaOver(-1, lowerRunway);
 
             takeoffLinesTowards(1, higherRunway);
             ldaTowards(1, higherRunway);
+
+            drawResaLower();
         }
+    }
+
+    private void drawResaLower() {
+        logger.info("Drawing RESA rectangle");
+        Rectangle resa = new Rectangle((240 * scale), RUNWAY_WIDTH);
+        resa.setX(obstacleShape.getX() + 15);
+        resa.setY(0);
+        resa.setFill(Color.RED);
+        resa.setOpacity(0.4);
+
+        obstaclePane.getChildren().addLast(resa);
+    }
+
+    private void drawResaHigher() {
+        logger.info("Drawing RESA rectangle");
+        Rectangle resa = new Rectangle((240 * scale), RUNWAY_WIDTH);
+        resa.setX(obstacleShape.getX() - resa.getWidth());
+        resa.setY(0);
+        resa.setFill(Color.RED);
+        resa.setOpacity(0.4);
+
+        obstaclePane.getChildren().addLast(resa);
     }
 
     private void ldaTowards(int i, LogicalRunway logicalRunway) {
@@ -642,8 +809,8 @@ public class TopDownController {
             startX = threshold;
             endX = scaledLda + threshold;
         } else {
-            startX = RUNWAY_LENGTH - threshold;
-            endX = RUNWAY_LENGTH - (scaledLda + threshold);
+            startX = RENDER_LENGTH - threshold;
+            endX = RENDER_LENGTH - (scaledLda + threshold);
         }
         logger.info(String.format("Threshold: %f \nEndX: %f", startX, endX));
 
@@ -676,7 +843,12 @@ public class TopDownController {
 
     private void takeoffLinesTowards(int i, LogicalRunway logicalRunway) {
         int tora = logicalRunway.getCurrTora();
+        int toda = logicalRunway.getCurrToda();
+        int asda = logicalRunway.getCurrAsda();
+
         double scaledTora = tora * scale;
+        double scaledToda = toda * scale;
+        double scaledAsda = asda * scale;
 
         double baseY = RUNWAY_WIDTH + (i * 100);
         double spacing = i * 40; // Ensures at least 30px space between lines
@@ -685,10 +857,10 @@ public class TopDownController {
         drawSingleLine("TORA", i, scaledTora, baseY + spacing, tora, toraColor);
 
         // TODA Line
-        drawSingleLine("TODA", i, scaledTora, baseY + 2 * spacing, tora, todaColor);
+        drawSingleLine("TODA", i, scaledToda, baseY + 2 * spacing, tora, todaColor);
 
         // ASDA Line
-        drawSingleLine("ASDA", i, scaledTora, baseY + 3 * spacing, tora, asdaColor);
+        drawSingleLine("ASDA", i, scaledAsda, baseY + 3 * spacing, tora, asdaColor);
     }
 
     private void takeoffLinesAway(int i, LogicalRunway logicalRunway) {
@@ -708,26 +880,24 @@ public class TopDownController {
 
             drawExactLine("TORA",
                 i,
-                RUNWAY_LENGTH - scaledTora,
-                RUNWAY_LENGTH,
+                RENDER_LENGTH - scaledTora,
+                RENDER_LENGTH,
                 baseY + spacing,
                 tora,
                 toraColor);
 
-            // TORA Line
             drawExactLine("TODA",
                 i,
-                RUNWAY_LENGTH - scaledToda,
-                RUNWAY_LENGTH,
+                RENDER_LENGTH - scaledToda,
+                lowerTodaStart,
                 baseY + 2 * spacing,
                 toda,
                 todaColor);
 
-            // TORA Line
             drawExactLine("ASDA",
                 i,
-                RUNWAY_LENGTH - scaledAsda,
-                RUNWAY_LENGTH,
+                RENDER_LENGTH - scaledAsda,
+                RENDER_LENGTH,
                 baseY + 3 * spacing,
                 asda,
                 asdaColor);
@@ -742,16 +912,14 @@ public class TopDownController {
                 tora,
                 toraColor);
 
-            // TORA Line
             drawExactLine("TODA",
                 i,
                 scaledToda,
-                0,
+                upperTodaStart,
                 baseY + 2 * spacing,
                 toda,
                 todaColor);
 
-            // TORA Line
             drawExactLine("ASDA",
                 i,
                 scaledAsda,
@@ -760,7 +928,6 @@ public class TopDownController {
                 asda,
                 asdaColor);
         }
-
 
     }
 
@@ -773,8 +940,8 @@ public class TopDownController {
 
         if (i == -1) {
             logger.info("USING -1 FLAG");
-            startX = RUNWAY_LENGTH - scaledLda;
-            endX = RUNWAY_LENGTH;
+            startX = RENDER_LENGTH - scaledLda;
+            endX = RENDER_LENGTH;
         } else {
             logger.info("USING +1 FLAG");
             startX = scaledLda;

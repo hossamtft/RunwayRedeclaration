@@ -129,8 +129,8 @@ public class Runway {
     public int getRunwayLength() {
         int maxLength = 0;
         for(LogicalRunway runway : logicalRunways) {
-            if(runway.getToda() > maxLength) {
-                maxLength = runway.getToda();
+            if(runway.getTora() > maxLength) {
+                maxLength = runway.getTora();
             }
         }
         return maxLength;
