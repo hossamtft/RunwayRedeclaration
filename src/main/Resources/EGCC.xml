@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<airport>
+    <id>EGCC</id>
+    <name>Manchester</name>
+    <runways>
+        <runway>
+            <runwayName>05R/23L</runwayName>
+            <logicalRunway>
+                <name>05R</name>
+                <asda>3047</asda>
+                <toda>3347</toda>
+                <tora>3047</tora>
+                <lda>2864</lda>
+            </logicalRunway>
+            <logicalRunway>
+                <name>23L</name>
+                <asda>3200</asda>
+                <toda>3500</toda>
+                <tora>3200</tora>
+                <lda>2864</lda>
+            </logicalRunway>
+        </runway>
+        <runway>
+            <runwayName>05L/23R</runwayName>
+            <logicalRunway>
+                <name>05L</name>
+                <asda>3014</asda>
+                <toda>3229</toda>
+                <tora>3014</tora>
+                <lda>2587</lda>
+            </logicalRunway>
+            <logicalRunway>
+                <name>23R</name>
+                <asda>2897</asda>
+                <toda>3197</toda>
+                <tora>2897</tora>
+                <lda>2714</lda>
+            </logicalRunway>
+        </runway>
+    </runways>
+</airport>

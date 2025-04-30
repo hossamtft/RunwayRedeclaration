@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<airport>
+    <id>EGGW</id>
+    <name>London Luton</name>
+    <runways>
+        <runway>
+            <runwayName>07/25</runwayName>
+            <logicalRunway>
+                <name>07</name>
+                <asda>2162</asda>
+                <toda>3243</toda>
+                <tora>2162</tora>
+                <lda>2162</lda>
+            </logicalRunway>
+            <logicalRunway>
+                <name>25</name>
+                <asda>2219</asda>
+                <toda>3243</toda>
+                <tora>2162</tora>
+                <lda>2080</lda>
+            </logicalRunway>
+        </runway>
+    </runways>
+</airport>
