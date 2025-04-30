@@ -271,7 +271,6 @@ public class MainController {
         }
         airportListCombo.getItems()
             .addAll(FXCollections.observableArrayList(modelState.getAirportList().keySet()));
-        airportListCombo.getItems().add("Add New Airport");
     }
 
     /**
@@ -283,10 +282,6 @@ public class MainController {
 
         if (selectedAirport == null) {
             logger.debug("No selected airport");
-            return;
-        }
-        if (selectedAirport.equals("Add New Airport")) {
-            openAddAirportForm();
             return;
         }
 
@@ -796,18 +791,21 @@ public class MainController {
 
         Button registerButton = new Button("Register New User");
         Button editUsersButton = new Button("Edit Existing Users");
+        Button addAirportButton = new Button("Add New Airport");
 
         registerButton.getStyleClass().add("admin-buttons");
         editUsersButton.getStyleClass().add("admin-buttons");
+        addAirportButton.getStyleClass().add("admin-buttons");
 
         registerButton.setOnAction(e -> loadRegistrationForm());
         editUsersButton.setOnAction(e -> openEditUserSearchDialog());
+        addAirportButton.setOnAction(e -> openAddAirportForm());
 
-        VBox layout = new VBox(20, titleLabel, registerButton, editUsersButton);
+        VBox layout = new VBox(20, titleLabel, registerButton, editUsersButton, addAirportButton);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(50));
         layout.setPrefWidth(600);
-        layout.setPrefHeight(400);
+        layout.setPrefHeight(450);
 
         Scene scene = new Scene(layout);
         scene.getStylesheets().add(getClass().getResource("/css/form.css").toExternalForm());
@@ -815,6 +813,7 @@ public class MainController {
         dashboardStage.setScene(scene);
         dashboardStage.showAndWait();
     }
+
 
     /**
      * Two ways of searching for a record to edit - both using the username.
