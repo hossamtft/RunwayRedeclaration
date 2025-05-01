@@ -24,7 +24,7 @@ class CalculatorTest {
 
     @Test
     void testLandingOverObstacle() {
-        Obstacle obstacle = new Obstacle(25, 3384, 500, 0);
+        Obstacle obstacle = new Obstacle(25, 3384, 500, 0, "");
         calculator.redeclareRunway(obstacle);
         int newLDA = runway09L27R.getHigherRunway().getCurrLda();
         assertEquals(2074, newLDA);
@@ -32,7 +32,7 @@ class CalculatorTest {
 
     @Test
     void testLandingTowardsObstacle() {
-        Obstacle obstacle = new Obstacle(0, 2600, 1302, 0);
+        Obstacle obstacle = new Obstacle(0, 2600, 1302, 0, "");
         calculator.redeclareRunway(obstacle);
         int newLDA = runway09L27R.getLowerRunway().getCurrLda();
         assertEquals(2300, newLDA);
@@ -41,7 +41,7 @@ class CalculatorTest {
 
     @Test
     void testTakingOffTowardsObstacle() {
-        Obstacle obstacle = new Obstacle(25, 2500, 1402, 0);
+        Obstacle obstacle = new Obstacle(25, 2500, 1402, 0, "");
         calculator.redeclareRunway(obstacle);
         int newTORA = runway09L27R.getLowerRunway().getCurrTora();
         // Test fails due to displaced threshold being calculated differently to what's in the project definition
@@ -53,7 +53,7 @@ class CalculatorTest {
 
     @Test
     void testTakingOffAwayFromObstacle() {
-        Obstacle obstacle = new Obstacle(0, 3384, 500, 0); // Distance from 27R threshold
+        Obstacle obstacle = new Obstacle(0, 3384, 500, 0, ""); // Distance from 27R threshold
         calculator.redeclareRunway(obstacle);
         int newTORA = runway09L27R.getHigherRunway().getCurrTora();
         assertEquals(3084, newTORA);

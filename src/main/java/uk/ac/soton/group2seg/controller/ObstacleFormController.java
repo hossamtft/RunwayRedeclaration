@@ -96,9 +96,9 @@ public class ObstacleFormController implements Initializable {
     });
   }
 
-  public void updateOppositeThreshold(TextField sourceDistance, TextField finalDistance) {
+  public Integer updateOppositeThreshold(TextField sourceDistance, TextField finalDistance) {
     if (!autoFillEnabled) {
-      return;
+      return null;
     }
     try {
       int distFromThreshold = Integer.parseInt(sourceDistance.getText());
@@ -116,8 +116,10 @@ public class ObstacleFormController implements Initializable {
       finalDistance.setText(String.valueOf(oppositeDistance));
       updatingFields = false;
       logger.debug("Updated opposite threshold: " + oppositeDistance + "m");
+      return oppositeDistance;
     } catch (NumberFormatException e) {
       logger.debug("Invalid number format in threshold distance field", e);
+      return null;
     }
   }
 
