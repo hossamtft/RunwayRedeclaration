@@ -52,7 +52,35 @@ public class Notifications {
     hideTimeline.setCycleCount(1);
     hideTimeline.play();
   }
+
+  public static void showFailedNotification(Stage primaryStage, String message) {
+    Popup popup = new Popup();
+
+    Label crossIcon = new Label("\u2716"); // ✖
+    crossIcon.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+
+    Label messageLabel = new Label(message);
+    messageLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 0 0 0 10px;");
+
+    HBox content = new HBox(10, crossIcon, messageLabel);
+    content.setStyle("-fx-background-color: #F44336; -fx-background-radius: 5; -fx-padding: 10;");
+    content.setAlignment(Pos.CENTER_LEFT);
+
+    VBox wrapper = new VBox(content);
+    wrapper.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0, 2, 2);");
+
+    popup.getContent().add(wrapper);
+    popup.setAutoFix(true);
+    popup.setAutoHide(true);
+    popup.setHideOnEscape(true);
+
+    double x = primaryStage.getX() + 30;
+    double y = primaryStage.getY() + primaryStage.getHeight() - 150; // Positioned slightly above success notification
+    popup.setX(x);
+    popup.setY(y);
+    popup.show(primaryStage);
+    Timeline hideTimeline = new Timeline(new KeyFrame(Duration.seconds(6), e -> popup.hide()));
+    hideTimeline.setCycleCount(1);
+    hideTimeline.play();
+  }
 }
-
-
-

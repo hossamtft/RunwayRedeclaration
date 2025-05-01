@@ -466,10 +466,27 @@ public class MainController {
         modelState.setObstacle(obstacle);
         modelState.addObstacle(obstacle);
 
-        // Recalculate the runway after the obstacle is added
-        calculator.redeclareRunway(obstacle);
         topDownController.addObstacle(obstacle);
         sideViewController.addObstacle(obstacle);
+        if (obstacle.getCentreOffset() >= 75){
+            Notifications.showFailedNotification(primaryStage,"Obstacle too far away from Centreline! No Calculation Needed");
+            return;
+        }
+        if (obstacle.getCentreOffset() <= -75){
+            Notifications.showFailedNotification(primaryStage,"Obstacle too far away from Centreline! No Calculation Needed");
+            return;
+        }
+        if (obstacle.getDistLowerThreshold() <= -60){
+            Notifications.showFailedNotification(primaryStage,"Obstacle too far away from Runway Parameters! No Calculation Needed");
+            return;
+        }
+        if (obstacle.getDistHigherThreshold() <= -60){
+            Notifications.showFailedNotification(primaryStage,"Obstacle too far away from Runway Parameters! No Calculation Needed");
+            return;
+        }
+        // Recalculate the runway after the obstacle is added
+        calculator.redeclareRunway(obstacle);
+
 
         updateTables();
         Notifications.showSuccessNotification(primaryStage, "Obstacle placed successfully!");
