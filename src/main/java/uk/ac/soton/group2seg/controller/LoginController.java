@@ -249,7 +249,7 @@ public class LoginController {
     Stage primaryStage=new Stage();
 
     // Load PDF file
-    PDDocument document = PDDocument.load(new File("src/main/Resources/test2.pdf"));
+    PDDocument document = PDDocument.load(new File("src/main/Resources/helpDocument.pdf"));
     PDFRenderer renderer = new PDFRenderer(document);
 
 
@@ -257,7 +257,7 @@ public class LoginController {
     double w=0;
     VBox box=new VBox();
     for (int i=0;i<document.getNumberOfPages();i++){
-      BufferedImage bufferedImage = renderer.renderImage(i, 1.0f);
+      BufferedImage bufferedImage = renderer.renderImage(i, 1.5f);
       w=bufferedImage.getWidth();
       Image fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
       ImageView imageView = new ImageView(fxImage);
@@ -265,10 +265,10 @@ public class LoginController {
     }
 
     // Convert to JavaFX image
-    ScrollPane scrollPane=new ScrollPane(box);
+    ScrollPane scrollPane = new ScrollPane(box);
 
     // Set the scene
-    Scene scene = new Scene(scrollPane,w,500);
+    Scene scene = new Scene(scrollPane,w,850);
 
     primaryStage.setTitle("User Guide");
     primaryStage.setScene(scene);

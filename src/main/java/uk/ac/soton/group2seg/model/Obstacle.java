@@ -27,6 +27,13 @@ public class Obstacle {
         this.name = name;
     }
 
+    public Obstacle(int height, int distLowerThreshold, int distHigherThreshold, int centreOffset){
+        this.height = height;
+        this.distLowerThreshold = distLowerThreshold;
+        this.distHigherThreshold = distHigherThreshold;
+        this.centreOffset = centreOffset;
+    }
+
     public int getHeight() {
         return height;
     }
