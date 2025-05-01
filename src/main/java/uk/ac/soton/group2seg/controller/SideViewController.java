@@ -257,6 +257,7 @@ public class SideViewController {
     }
 
     private void renderStrip() {
+        runwayPane.getChildren().clear();
         double stopwayLower = (currentRunway.getLowerRunway().getAsda() - currentRunway.getLowerRunway().getTora()) * scale;
         double clearwayLower = (currentRunway.getLowerRunway().getToda() - currentRunway.getLowerRunway().getTora()) * scale;
 
@@ -292,6 +293,7 @@ public class SideViewController {
         obstacle = null;
         obstaclePane.getChildren().clear();
         linePane.getChildren().clear();
+        runwayPane.getChildren().clear();
         drawView();
     }
 
