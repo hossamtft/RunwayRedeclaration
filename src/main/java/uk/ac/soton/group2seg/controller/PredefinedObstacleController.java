@@ -4,7 +4,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +16,7 @@ import uk.ac.soton.group2seg.model.Obstacle;
 import uk.ac.soton.group2seg.model.Runway;
 import uk.ac.soton.group2seg.model.utility.JaxbUtility;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -205,5 +208,21 @@ public class PredefinedObstacleController {
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
+    }
+    @FXML
+    private void handleCreateObstacle() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreateObstacleForm.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Create Obstacle");
+            stage.setScene(new Scene(loader.load()));
+
+            CreateObstacleController controller = loader.getController();
+            controller.setDialogStage(stage);
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
