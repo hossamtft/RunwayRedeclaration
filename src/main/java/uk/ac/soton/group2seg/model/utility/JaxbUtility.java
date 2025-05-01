@@ -254,4 +254,38 @@ public class JaxbUtility {
 
     return null;
   }
+  public static void saveObstacle(String name, int height) {
+    File xmlFile = new File("src/main/resources/obstacleList.xml");
+
+    try {
+      JAXBContext jaxbContext = JAXBContext.newInstance(ObstacleListXML.class);
+      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+      ObstacleListXML obstacleListXML;
+
+      if (xmlFile.exists()) {
+        obstacleListXML = (ObstacleListXML) unmarshaller.unmarshal(xmlFile);
+      } else {
+        obstacleListXML = new ObstacleListXML();
+        obstacleListXML.setObstacles(new ArrayList<>());
+      }
+
+      // Check if the obstacle already exists
+      boolean obstacleExists = obstacleListXML.getObstacles().stream()
+              .anyMatch(obstacle -> obstacle.getName().equals(name));
+
+      if (!obstacleExists) {
+        ObstacleXml newObstacle = new ObstacleXml();
+        newObstacle.setName(name);
+        newObstacle.setHeight(height);
+        obstacleListXML.getObstacles().add(newObstacle);
+
+        // Save the updated obstacle list
+        Marshaller marshaller = jaxbContext.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(obstacleListXML, xmlFile);
+      }
+    } catch (JAXBException e) {
+      e.printStackTrace();
+    }
+  }
 }
