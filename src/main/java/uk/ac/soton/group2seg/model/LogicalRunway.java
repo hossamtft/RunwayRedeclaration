@@ -130,5 +130,7 @@ public class LogicalRunway {
         this.currTora = currTora;
     }
 
-
+    public void setLda(int lda) {
+        this.lda = lda;
+    }
 }
