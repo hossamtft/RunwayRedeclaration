@@ -486,7 +486,8 @@ public class MainController {
         }
         // Recalculate the runway after the obstacle is added
         calculator.redeclareRunway(obstacle);
-
+        topDownController.addObstacle(obstacle);
+        sideViewController.addObstacle(obstacle);
 
         updateTables();
         Notifications.showSuccessNotification(primaryStage, "Obstacle placed successfully!");
