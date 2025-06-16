@@ -54,16 +54,6 @@ README.md
 
 ---
 
-## Team Members
-
-- Eren Rafet  
-- Bozhang Wu  
-- Louis Townsend  
-- Abdullah Hariry  
-- Hossameldin Tammam
-
----
-
 ## Credits
 
 Coursework specification © University of Southampton, Electronics & Computer Science.
